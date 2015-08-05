@@ -26,4 +26,19 @@ object Database extends Schema{
       g.game_id is(autoIncremented)
     }
   }
+
+  val gameStatus2GamePlay =
+      oneToManyRelation(gameStatusTable, gamePlayTable).via((a,b) => a.id === b.game_id)
+
+  val player2GamePlay =
+      oneToManyRelation(playerTable, gamePlayTable).via((a,b) => a.id === b.player_id)
+
+  val gameStatus2RoundResult =
+      oneToManyRelation(gameStatusTable, roundResultTable).via((a,b) => a.id  === b.game_id)
+
+  val player2PlayerStatus =
+      oneToManyRelation(playerTable, playerStatusTable).via((a,b) => a.id === b.player_id)
+
+  val gameStatus2PlayerStatus =
+      oneToManyRelation(gameStatusTable, playerStatusTable).via((a,b) => a.id === b.game_id)
 }

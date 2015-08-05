@@ -1,6 +1,7 @@
 package models
 
 import org.squeryl.KeyedEntity
+import org.squeryl.dsl.OneToMany
 
 /**
  * Created by saheb on 8/4/15.
@@ -12,7 +13,9 @@ case class Player(
                  email : String,
                  games_played : Int,
                  games_won : Int,
-                 rank : Int)
+                 rank : Int) extends KeyedEntity[Long]{
+  def id = player_id
+}
 
 case class GamePLay(
                    game_id : Long,
@@ -40,13 +43,16 @@ case class RoundResult(
                       result : String
                         )
 
-case class GameStatus(
+case class GameStatus (
                      game_id : Long,
                      joined_players : Int,
                      max_players : Int,
                      winner_player : Int,
                      status : String
-                       )
+                       ) extends KeyedEntity[Long]{
+  def id = game_id
+  lazy val getPlayerStatus : OneToMany[PlayerStatus] = Database.gameStatus2PlayerStatus.left(this)
+}
 
 case class LoginDetails(
                        player_id : Long,

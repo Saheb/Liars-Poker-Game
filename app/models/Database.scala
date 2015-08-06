@@ -18,27 +18,28 @@ object Database extends Schema{
   on(playerTable) {
     p => declare{
       p.player_id is(autoIncremented)
+      p.email is(unique)
     }
   }
 
-  on(gameStatusTable){
-    g => declare {
-      g.game_id is(autoIncremented)
-    }
-  }
+//  on(gameStatusTable){
+//    g => declare {
+//      g.game_id is(autoIncremented)
+//    }
+//  }
 
-  val gameStatus2GamePlay =
-      oneToManyRelation(gameStatusTable, gamePlayTable).via((a,b) => a.id === b.game_id)
-
-  val player2GamePlay =
-      oneToManyRelation(playerTable, gamePlayTable).via((a,b) => a.id === b.player_id)
-
-  val gameStatus2RoundResult =
-      oneToManyRelation(gameStatusTable, roundResultTable).via((a,b) => a.id  === b.game_id)
-
-  val player2PlayerStatus =
-      oneToManyRelation(playerTable, playerStatusTable).via((a,b) => a.id === b.player_id)
-
-  val gameStatus2PlayerStatus =
-      oneToManyRelation(gameStatusTable, playerStatusTable).via((a,b) => a.id === b.game_id)
+//  val gameStatus2GamePlay =
+//      oneToManyRelation(gameStatusTable, gamePlayTable).via((a,b) => a.id === b.game_id)
+//
+//  val player2GamePlay =
+//      oneToManyRelation(playerTable, gamePlayTable).via((a,b) => a.id === b.player_id)
+//
+//  val gameStatus2RoundResult =
+//      oneToManyRelation(gameStatusTable, roundResultTable).via((a,b) => a.id  === b.game_id)
+//
+//  val player2PlayerStatus =
+//      oneToManyRelation(playerTable, playerStatusTable).via((a,b) => a.id === b.player_id)
+//
+//  val gameStatus2PlayerStatus =
+//      oneToManyRelation(gameStatusTable, playerStatusTable).via((a,b) => a.id === b.game_id)
 }

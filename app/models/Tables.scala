@@ -8,12 +8,13 @@ import org.squeryl.dsl.OneToMany
  */
 
 case class Player(
-                 player_id : Long,
                  name : String,
                  email : String,
                  games_played : Int,
                  games_won : Int,
-                 rank : Int) extends KeyedEntity[Long]{
+                 rank : Int) extends KeyedEntity[Long]
+{
+  val player_id : Long = 0
   def id = player_id
 }
 
@@ -44,14 +45,15 @@ case class RoundResult(
                         )
 
 case class GameStatus (
-                     game_id : Long,
                      joined_players : Int,
                      max_players : Int,
                      winner_player : Int,
                      status : String
-                       ) extends KeyedEntity[Long]{
+                       ) extends KeyedEntity[Long]
+{
+  val game_id : Long = 0
   def id = game_id
-  lazy val getPlayerStatus : OneToMany[PlayerStatus] = Database.gameStatus2PlayerStatus.left(this)
+  //lazy val getPlayerStatus : OneToMany[PlayerStatus] = Database.gameStatus2PlayerStatus.left(this)
 }
 
 case class LoginDetails(

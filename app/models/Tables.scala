@@ -44,10 +44,11 @@ case class RoundResult(
                       result : String
                         )
 
-case class GameStatus (
+case class GameStatus(
+                     name  : String,
                      joined_players : Int,
                      max_players : Int,
-                     winner_player : Int,
+                     winner_player : Long,
                      status : String
                        ) extends KeyedEntity[Long]
 {

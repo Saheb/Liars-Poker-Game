@@ -22,11 +22,12 @@ object Database extends Schema{
     }
   }
 
-//  on(gameStatusTable){
-//    g => declare {
-//      g.game_id is(autoIncremented)
-//    }
-//  }
+  on(gameStatusTable){
+    g => declare {
+      g.game_id is(autoIncremented)
+      g.game_id is(unique)
+    }
+  }
 
 //  val gameStatus2GamePlay =
 //      oneToManyRelation(gameStatusTable, gamePlayTable).via((a,b) => a.id === b.game_id)

@@ -1,9 +1,8 @@
-import models.{Player, Database}
+import models.{LoginDetails, Player, Database}
 import org.scalatest.FlatSpec
 import org.specs2.matcher.ShouldMatchers
 import play.api.test.FakeApplication
 import play.api.test.Helpers._
-import org.squeryl.PrimitiveTypeMode.inTransaction
 import org.squeryl.PrimitiveTypeMode._
 /**
  * Created by saheb on 8/7/15.
@@ -15,8 +14,9 @@ class PlayerSpec extends FlatSpec with ShouldMatchers{
       inTransaction{
         Database.create
         val player = Database.playerTable insert(new Player("Saheb", "sahebmotiani@gmail.com", 0, 0 ,0))
-        println("Saheb inserted in player table")
-        player.id should not equals(0)
+        val loginDetails = Database.loginDetailsTable insert (new LoginDetails(player.id,"saheb123"))
+        println("Saheb inserted in player table with player_id : " + player.id)
+        assert(loginDetails.player_id == player.id)
       }
 
       inTransaction{

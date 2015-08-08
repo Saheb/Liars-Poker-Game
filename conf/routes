@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /home                       controllers.Application.home
 
 # Map static resources from the /public folder to the /assets URL path
+GET     /favicon.ico                controllers.Assets.at(path="/public/images", file = "favicon.ico")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

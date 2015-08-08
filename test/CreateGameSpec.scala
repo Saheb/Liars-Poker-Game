@@ -15,8 +15,8 @@ class CreateGameSpec extends FunSuite{
         val player = Database.playerTable.insert(new Player("Neel", "neelshah@gmail.com",0,0,0))
         val game = Database.gameStatusTable.insert(new GameStatus("Neel's Game", 1, 6, -1, "Waiting"))
         val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.id,game.id,1,2,"Admin"))
-        assert(game.id == 0)
-        assert(player.id == 0)
+        assert(game.id == 1)
+        assert(player.id == 1)
         assert(playerStatus.game_id==game.id)
         assert(playerStatus.num_of_cards == 2)
       }

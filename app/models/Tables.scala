@@ -15,10 +15,10 @@ case class Player(
                  rank : Int) extends KeyedEntity[Long]
 {
   val player_id : Long = 0
-  def id = player_id
+  val id : Long = player_id
 }
 
-case class GamePLay(
+case class GamePlay(
                    game_id : Long,
                    round_number : Int,
                    player_id : Long,
@@ -53,7 +53,7 @@ case class GameStatus(
                        ) extends KeyedEntity[Long]
 {
   val game_id : Long = 0
-  def id = game_id
+  val id : Long = game_id
   //lazy val getPlayerStatus : OneToMany[PlayerStatus] = Database.gameStatus2PlayerStatus.left(this)
 }
 

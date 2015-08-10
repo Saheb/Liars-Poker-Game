@@ -1,107 +1,152 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
 
-    <title>Liar's Poker Game</title>
+        <title>Liar's Poker Game</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
 
-</head>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '962083260497512',
+              xfbml      : true,
+              version    : 'v2.4'
+            });
+          };
 
-<body>
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+    </script>
+
+    </head>
+
+    <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Liar's Poker Game</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#rules">Rules</a></li>
+                    <li><a data-target="#loginModal" data-toggle="modal">Login</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Liar's Poker Game</a>
+        <div>
+            <img src="@routes.Assets.at("images/cards.jpg")" height="500" width="100%">
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#rules">Rules</a></li>
-                <li><a data-target="#loginModal" data-toggle="modal">Login</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</nav>
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-lg btn-primary">Start Game</button>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-lg btn-primary">Join Game</button>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-lg btn-primary">Watch Game</button>
+            </div>
+        </div>
 
-<div class="container">
-    <div>
-        <img src="@routes.Assets.at("images/cards.jpg")" height="500" width="100%">
-    </div>
-    <div class="btn-group btn-group-justified" role="group" aria-label="...">
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-lg btn-primary">Start Game</button>
-        </div>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-lg btn-primary">Join Game</button>
-        </div>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-lg btn-primary">Watch Game</button>
-        </div>
-    </div>
+    </div><!-- /.container -->
 
-</div><!-- /.container -->
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Please Login</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <a href="#"><img src="http://techulus.com/buttons/fb.png" /></a><br/>
-                            <a href="#"><img src="http://techulus.com/buttons/tw.png" /></a><br/>
-                            <a href="#"><img src="http://techulus.com/buttons/gplus.png" /></a>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="verticalLine">
-                            <form class="form-horizontal">
-                                <fieldset>
-                                    <input id="textinput" name="textinput" type="text" placeholder="Enter User Name" class="form-control input-md">
-                                    <div class="spacing"><input type="checkbox" name="checkboxes" id="checkboxes-0" value="1"><small> Remember me</small></div>
-                                    <input id="textinput" name="textinput" type="text" placeholder="Enter Password" class="form-control input-md">
-                                    <div class="spacing"><a href="#"><small> Forgot Password?</small></a><br/></div>
-                                </fieldset>
-                            </form>
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Please Login</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <a href="#"><img id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
+                                <a href="#"><img src="http://techulus.com/buttons/tw.png" /></a><br/>
+                                <a href="#"><img src="http://techulus.com/buttons/gplus.png" /></a>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="verticalLine">
+                                <form class="form-horizontal">
+                                    <fieldset>
+                                        <input id="textinput" name="textinput" type="text" placeholder="Enter User Name" class="form-control input-md">
+                                        <div class="spacing"><input type="checkbox" name="checkboxes" id="checkboxes-0" value="1"><small> Remember me</small></div>
+                                        <input id="textinput" name="textinput" type="text" placeholder="Enter Password" class="form-control input-md">
+                                        <div class="spacing"><a href="#"><small> Forgot Password?</small></a><br/></div>
+                                    </fieldset>
+                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Login</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Login</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
-<script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-</body>
-</html>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+        <script>
+            document.getElementById('fb-login-btn').onclick = function() {
+              FB.getLoginStatus(function(response) {
+              if (response.status === 'connected') {
+                console.log('Logged in.');
+              }
+              else
+              {
+                FB.login(function(response) {
+                console.info('FB.login response', response);
+                 }, { scope : 'email'});
+              }
+
+             FB.api('/me', function(response) {
+                  console.log(response);
+                  var userId = response.id
+                  FB.api('/' + userId, {fields : 'email'} , function(response) {
+                  console.log(response);
+                });
+                });
+
+            });
+
+           }
+        </script>
+    </body>
+    </html>

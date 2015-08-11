@@ -18,6 +18,8 @@
         <!-- Custom styles for this template -->
         <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
 
+        <script src="https://apis.google.com/js/api:client.js"></script>
+
         <script>
           window.fbAsyncInit = function() {
             FB.init({
@@ -35,7 +37,38 @@
              fjs.parentNode.insertBefore(js, fjs);
            }(document, 'script', 'facebook-jssdk'));
 
-    </script>
+            var googleUser = {};
+              var startApp = function() {
+                gapi.load('auth2', function(){
+                  // Retrieve the singleton for the GoogleAuth library and set up the client.
+                  auth2 = gapi.auth2.init({
+                    client_id: '116777801623-0l4ivhohb1ob3l7le4n5bdi09q7udeqq.apps.googleusercontent.com',
+                    cookiepolicy: 'single_host_origin',
+                    // Request scopes in addition to 'profile' and 'email'
+                    //scope: 'additional_scope'
+                  });
+                  attachSignin(document.getElementById('google-login-btn'));
+                });
+              };
+
+              startApp()
+
+            //attachSignin(document.getElementById('google-login-btn'));
+
+            function attachSignin(element) {
+            console.log(element.id);
+            auth2.attachClickHandler(element, {},
+                function(googleUser) {
+                  document.getElementById('name').innerText =
+                      googleUser.getBasicProfile().getName();
+                      $('#loginModal').modal('hide');
+                }, function(error) {
+                  alert(JSON.stringify(error, undefined, 2));
+                });
+            }
+           </script>
+            <meta name="google-signin-scope" content="profile email">
+
 
     </head>
 
@@ -55,7 +88,7 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#rules">Rules</a></li>
-                    <li><a data-target="#loginModal" data-toggle="modal">Login</a></li>
+                    <li><a id="name" data-target="#loginModal" data-toggle="modal">Login</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -92,7 +125,7 @@
                             <div class="col-md-5">
                                 <a href="#"><img id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
                                 <a href="#"><img src="http://techulus.com/buttons/tw.png" /></a><br/>
-                                <a href="#"><img src="http://techulus.com/buttons/gplus.png" /></a>
+                                <a href="#"><img id="google-login-btn" src="http://techulus.com/buttons/gplus.png" /></a>
                             </div>
                             <div class="col-md-7">
                                 <div class="verticalLine">
@@ -139,12 +172,27 @@
              FB.api('/me', function(response) {
                   console.log(response);
                   var userId = response.id
-                  FB.api('/' + userId, {fields : 'email'} , function(response) {
+                  FB.api('/' + userId, {fields : ['email','name']} , function(response) {
                   console.log(response);
+                  document.getElementById('name').innerText = response.name
+                  $('#loginModal').modal('hide');
                 });
                 });
 
-            });
+              });
+
+//              document.getElementById('google-login-btn').onclick = function(googleUser) {
+//                // Useful data for your client-side scripts:
+//                var profile = googleUser.getBasicProfile();
+//                console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+//                console.log("Name: " + profile.getName());
+//                console.log("Image URL: " + profile.getImageUrl());
+//                console.log("Email: " + profile.getEmail());
+//
+//                // The ID token you need to pass to your backend:
+//                var id_token = googleUser.getAuthResponse().id_token;
+//                console.log("ID Token: " + id_token);
+//              };
 
            }
         </script>

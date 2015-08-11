@@ -23,63 +23,62 @@
         <script type="text/javascript" src="@routes.Assets.at("javascripts/codebird.js")"></script>
 
         <script type="text/javascript">
-        var cb = new Codebird;
-        cb.setConsumerKey("3tZ6woyPs0eYLLkCETRDVIICO", "zozuay9xan5IRXdiViE6mpi71JcutREwfWikTZpCPXsWm9RCfE");
-        // gets a request token
-
-        </script>
+            var cb = new Codebird;
+            cb.setConsumerKey("3tZ6woyPs0eYLLkCETRDVIICO", "zozuay9xan5IRXdiViE6mpi71JcutREwfWikTZpCPXsWm9RCfE");
 
 
-        <script>
-          window.fbAsyncInit = function() {
-            FB.init({
-              appId      : '962083260497512',
-              xfbml      : true,
-              version    : 'v2.4'
-            });
-          };
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId: '962083260497512',
+                    xfbml: true,
+                    version: 'v2.4'
+                });
+            };
 
-          (function(d, s, id){
-             var js, fjs = d.getElementsByTagName(s)[0];
-             if (d.getElementById(id)) {return;}
-             js = d.createElement(s); js.id = id;
-             js.src = "//connect.facebook.net/en_US/sdk.js";
-             fjs.parentNode.insertBefore(js, fjs);
-           }(document, 'script', 'facebook-jssdk'));
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if(d.getElementById(id)) {
+                    return;
+                }
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
 
             var googleUser = {};
-              var startApp = function() {
-                gapi.load('auth2', function(){
-                  // Retrieve the singleton for the GoogleAuth library and set up the client.
-                  auth2 = gapi.auth2.init({
-                    client_id: '116777801623-0l4ivhohb1ob3l7le4n5bdi09q7udeqq.apps.googleusercontent.com',
-                    cookiepolicy: 'single_host_origin',
-                    // Request scopes in addition to 'profile' and 'email'
-                    //scope: 'additional_scope'
-                  });
-                  attachSignin(document.getElementById('google-login-btn'));
+            var startApp = function() {
+                gapi.load('auth2', function() {
+                    // Retrieve the singleton for the GoogleAuth library and set up the client.
+                    auth2 = gapi.auth2.init({
+                        client_id: '116777801623-0l4ivhohb1ob3l7le4n5bdi09q7udeqq.apps.googleusercontent.com',
+                        cookiepolicy: 'single_host_origin',
+                        // Request scopes in addition to 'profile' and 'email'
+                        //scope: 'additional_scope'
+                    });
+                    attachSignin(document.getElementById('google-login-btn'));
+                    //auth2.attachClickHandler('google-login-btn', {});
                 });
-              };
+            };
 
-              startApp()
+            startApp()
 
             //attachSignin(document.getElementById('google-login-btn'));
 
             function attachSignin(element) {
-            console.log(element.id);
-            auth2.attachClickHandler(element, {},
-                function(googleUser) {
-                  document.getElementById('loginName').innerText =
-                      googleUser.getBasicProfile().getName();
-                      $('#loginModal').modal('hide');
-                }, function(error) {
-                  alert(JSON.stringify(error, undefined, 2));
-                });
+                console.log(element.id);
+                auth2.attachClickHandler(element, {},
+                    function(googleUser) {
+                        document.getElementById('loginName').innerText =
+                            googleUser.getBasicProfile().getName();
+                        $('#loginModal').modal('hide');
+                    },
+                    function(error) {
+                        alert(JSON.stringify(error, undefined, 2));
+                    });
             }
-           </script>
-            <meta name="google-signin-scope" content="profile email">
-
-
+        </script>
+        <meta name="google-signin-scope" content="profile email">
     </head>
 
     <body>
@@ -132,16 +131,14 @@
                     </div>
                     <div class="panel-body">
                         <div>
-                            <div align="center">
-                                <a href="#"><img style="" id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
-                                <a href="#"><img style="" id="twitter-login-btn" src="http://techulus.com/buttons/tw.png" /></a><br/>
-                                <a href="#"><img style="" id="google-login-btn" src="http://techulus.com/buttons/gplus.png" /></a>
-                                <form class="form-horizontal">
-                                    <fieldset>
-                                        <input style="display: none;" id="pin" name="textinput" type="text" placeholder="Enter Pin" class="form-control input-md">
-                                    </fieldset>
-                                </form>
+                            <div id="login-btns" style=""  align="center">
+                                <a href="#"><img id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
+                                <a href="#"><img id="twitter-login-btn" src="http://techulus.com/buttons/tw.png" /></a><br/>
+                                <a href="#"><img id="google-login-btn" src="http://techulus.com/buttons/gplus.png" /></a><br/>
                             </div>
+                            <form>
+                                <input style="display: none;" id="pin" name="textinput" type="text" placeholder="Enter Twitter Pin" class="form-control input-md">
+                            </form>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -158,57 +155,60 @@
     <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-
         <script>
             document.getElementById('fb-login-btn').onclick = function() {
-              FB.getLoginStatus(function(response) {
-              if (response.status === 'connected') {
-                console.log('Logged in.');
-              }
-              else
-              {
-                FB.login(function(response) {
-                console.info('FB.login response', response);
-                 }, { scope : 'email'});
-              }
-
-             FB.api('/me', function(response) {
-                  console.log(response);
-                  var userId = response.id
-                  FB.api('/' + userId, {fields : ['email','name']} , function(response) {
-                  console.log(response);
-                  document.getElementById('loginName').innerText = response.name
-                  $('#loginModal').modal('hide');
-                });
-                });
-
-              });
+            FB.getLoginStatus(function(response) {
+                if(response.status === 'connected') {
+                    console.log('Logged in.');
                 }
-//              document.getElementById('google-login-btn').onclick = function(googleUser) {
-//                // Useful data for your client-side scripts:
-//                var profile = googleUser.getBasicProfile();
-//                console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-//                console.log("Name: " + profile.getName());
-//                console.log("Image URL: " + profile.getImageUrl());
-//                console.log("Email: " + profile.getEmail());
-//
-//                // The ID token you need to pass to your backend:
-//                var id_token = googleUser.getAuthResponse().id_token;
-//                console.log("ID Token: " + id_token);
-//              };
+                else
+                {
+                    FB.login(function(response) {
+                        console.info('FB.login response', response);
+                    }, {
+                        scope: 'email'
+                    });
+                }
 
-                document.getElementById('twitter-login-btn').onclick = function() {
+                FB.api('/me', function(response) {
+                    console.log(response);
+                    var userId = response.id
+                    FB.api('/' + userId, {
+                        fields: ['email', 'name']
+                    }, function(response) {
+                        console.log(response);
+                        document.getElementById('loginName').innerText = response.name
+                        $('#loginModal').modal('hide');
+                    });
+                });
 
-                    // the below is equivalent to document.getElementById
-                    $("#fb-login-btn").get(0).style.display = "none";
-                    $("#google-login-btn").get(0).style.display = "none";
-                    $("#twitter-login-btn").get(0).style.display = "none";
-                    $("#pin").get(0).style.display = "inline-block";
+            });
+        }
+        //              document.getElementById('google-login-btn').onclick = function(googleUser) {
+        //                // Useful data for your client-side scripts:
+        //                var profile = googleUser.getBasicProfile();
+        //                console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        //                console.log("Name: " + profile.getName());
+        //                console.log("Image URL: " + profile.getImageUrl());
+        //                console.log("Email: " + profile.getEmail());
+        //
+        //                // The ID token you need to pass to your backend:
+        //                var id_token = googleUser.getAuthResponse().id_token;
+        //                console.log("ID Token: " + id_token);
+        //              };
 
-                        cb.__call(
+            document.getElementById('twitter-login-btn').onclick = function() {
+
+                // the below is equivalent to document.getElementById
+                $("#login-btns").get(0).style.display = "none";
+                $("#pin").get(0).style.display = "inline-block";
+            // gets a request token
+                cb.__call(
                     "oauth_requestToken",
-                    {oauth_callback: "oob"},
-                    function (reply) {
+                    {
+                        oauth_callback: "oob"
+                    },
+                    function(reply) {
                         // stores it
                         cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
@@ -216,34 +216,35 @@
                         cb.__call(
                             "oauth_authorize",
                             {},
-                            function (auth_url) {
+                            function(auth_url) {
                                 window.codebird_auth = window.open(auth_url);
                             }
                         );
                     }
                 );
-                 }
+            }
 
-                          document.getElementById('submitPin').onclick = function(){
-                          cb.__call(
-                        "oauth_accessToken",
-                        {oauth_verifier: document.getElementById("pin").value},
-                        function (reply) {
-                            // store the authenticated token, which may be different from the request token (!)
-                            cb.setToken(reply.oauth_token, reply.oauth_token_secret);
+            document.getElementById('submitPin').onclick = function() {
+                cb.__call(
+                    "oauth_accessToken",
+                    {
+                        oauth_verifier: document.getElementById("pin").value
+                    },
+                    function(reply) {
+                        // store the authenticated token, which may be different from the request token (!)
+                        cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
-                            // if you need to persist the login after page reload,
-                            // consider storing the token in a cookie or HTML5 local storage
+                        // if you need to persist the login after page reload,
+                        // consider storing the token in a cookie or HTML5 local storage
 
-                             document.getElementById('loginName').innerText = reply.screen_name
-                             console.log(reply.screen_name)
-                             console.log(reply.user_id)
-                             $('#loginModal').modal('hide');
-                        }
-                          );
+                        document.getElementById('loginName').innerText = reply.screen_name
+                        console.log(reply.screen_name)
+                        console.log(reply.user_id)
+                        $('#loginModal').modal('hide');
+                    }
+                );
 
-                }
-
+            }
 
         </script>
     </body>

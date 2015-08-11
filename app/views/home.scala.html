@@ -20,6 +20,16 @@
 
         <script src="https://apis.google.com/js/api:client.js"></script>
 
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/codebird.js")"></script>
+
+        <script type="text/javascript">
+        var cb = new Codebird;
+        cb.setConsumerKey("3tZ6woyPs0eYLLkCETRDVIICO", "zozuay9xan5IRXdiViE6mpi71JcutREwfWikTZpCPXsWm9RCfE");
+        // gets a request token
+
+        </script>
+
+
         <script>
           window.fbAsyncInit = function() {
             FB.init({
@@ -124,17 +134,14 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <a href="#"><img id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
-                                <a href="#"><img src="http://techulus.com/buttons/tw.png" /></a><br/>
+                                <a href="#"><img id="twitter-login-btn" src="http://techulus.com/buttons/tw.png" /></a><br/>
                                 <a href="#"><img id="google-login-btn" src="http://techulus.com/buttons/gplus.png" /></a>
                             </div>
                             <div class="col-md-7">
                                 <div class="verticalLine">
                                 <form class="form-horizontal">
                                     <fieldset>
-                                        <input id="textinput" name="textinput" type="text" placeholder="Enter User Name" class="form-control input-md">
-                                        <div class="spacing"><input type="checkbox" name="checkboxes" id="checkboxes-0" value="1"><small> Remember me</small></div>
-                                        <input id="textinput" name="textinput" type="text" placeholder="Enter Password" class="form-control input-md">
-                                        <div class="spacing"><a href="#"><small> Forgot Password?</small></a><br/></div>
+                                        <input id="pin" name="textinput" type="text" placeholder="Enter Pin" class="form-control input-md">
                                     </fieldset>
                                 </form>
                                 </div>
@@ -143,7 +150,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Login</button>
+                        <button id="submitPin" type="button" class="btn btn-primary">Login</button>
                     </div>
                 </div>
             </div>
@@ -180,7 +187,7 @@
                 });
 
               });
-
+                }
 //              document.getElementById('google-login-btn').onclick = function(googleUser) {
 //                // Useful data for your client-side scripts:
 //                var profile = googleUser.getBasicProfile();
@@ -194,7 +201,47 @@
 //                console.log("ID Token: " + id_token);
 //              };
 
-           }
+                document.getElementById('twitter-login-btn').onclick = function() {
+                        cb.__call(
+                    "oauth_requestToken",
+                    {oauth_callback: "oob"},
+                    function (reply) {
+                        // stores it
+                        cb.setToken(reply.oauth_token, reply.oauth_token_secret);
+
+                        // gets the authorize screen URL
+                        cb.__call(
+                            "oauth_authorize",
+                            {},
+                            function (auth_url) {
+                                window.codebird_auth = window.open(auth_url);
+                            }
+                        );
+                    }
+                );
+                 }
+
+                          document.getElementById('submitPin').onclick = function(){
+                          cb.__call(
+                        "oauth_accessToken",
+                        {oauth_verifier: document.getElementById("pin").value},
+                        function (reply) {
+                            // store the authenticated token, which may be different from the request token (!)
+                            cb.setToken(reply.oauth_token, reply.oauth_token_secret);
+
+                            // if you need to persist the login after page reload,
+                            // consider storing the token in a cookie or HTML5 local storage
+
+                             document.getElementById('name').innerText = reply.screen_name
+                             console.log(reply.screen_name)
+                             console.log(reply.user_id)
+                             $('#loginModal').modal('hide');
+                        }
+                          );
+
+                }
+
+
         </script>
     </body>
     </html>

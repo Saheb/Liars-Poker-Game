@@ -1,4 +1,4 @@
-import models.{LoginDetails, Player, Database}
+import models.{Player, Database}
 import org.scalatest.FlatSpec
 import org.specs2.matcher.ShouldMatchers
 import play.api.test.FakeApplication
@@ -13,10 +13,9 @@ class PlayerSpec extends FlatSpec with ShouldMatchers{
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
       inTransaction{
         Database.create
-        val player = Database.playerTable insert(new Player("Saheb", "sahebmotiani@gmail.com", 0, 0 ,0))
-        val loginDetails = Database.loginDetailsTable insert (new LoginDetails(player.id,"saheb123"))
-        println("Saheb inserted in player table with player_id : " + player.id)
-        assert(loginDetails.player_id == player.id)
+        val player = Database.playerTable insert(new Player("Saheb", "sahebmotiani@gmail.com"))
+        val selectPlayer = from(Database.playerTable)(p => where(p.player_id === player.player_id) select (p)).single
+        assert(selectPlayer.player_id == player.player_id)
       }
 
       inTransaction{

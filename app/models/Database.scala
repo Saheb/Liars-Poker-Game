@@ -9,14 +9,15 @@ import org.squeryl.PrimitiveTypeMode._
 object Database extends Schema{
 
   val playerTable = table[Player]("player")
+  val playerStats = table[PlayerStats]("playerStats")
   val gamePlayTable = table[GamePlay]("game_play")
   val playerStatusTable = table[PlayerStatus]("player_status")
   val gameStatusTable = table[GameStatus]("game_status")
   val roundResultTable = table[RoundResult]("round_result")
-  val loginDetailsTable = table[LoginDetails]("login_details")
 
   on(playerTable) {
     p => declare{
+      p.player_id is autoIncremented
       p.email is(unique)
     }
   }

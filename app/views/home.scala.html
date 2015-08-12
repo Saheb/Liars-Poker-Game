@@ -73,12 +73,8 @@
                             googleUser.getBasicProfile().getName();
 
                         var player = {
-                            player_id : Number(googleUser.getBasicProfile().getId()),
                             name : googleUser.getBasicProfile().getName(),
-                            email : googleUser.getBasicProfile().getEmail(),
-                            games_played : 0,
-                            games_won : 0,
-                            rank : 0
+                            email : googleUser.getBasicProfile().getEmail()
                         }
 
                         var jqxhr = $.ajax({
@@ -173,20 +169,9 @@
     <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script>
-            document.getElementById('fb-login-btn').onclick = function() {
-            FB.getLoginStatus(function(response) {
-                if(response.status === 'connected') {
-                    console.log('Logged in.');
-                }
-                else
-                {
-                    FB.login(function(response) {
-                        console.info('FB.login response', response);
-                    }, {
-                        scope: 'email'
-                    });
-                }
-
+            document.getElementById('fb-login-btn').onclick = function()
+        {
+            var fbCallback = function() {
                 FB.api('/me', function(response) {
                     console.log(response);
                     var userId = response.id
@@ -197,12 +182,8 @@
                         document.getElementById('loginName').innerText = response.name
 
                         var player = {
-                            player_id : Number(response.id),
                             name : response.name,
-                            email : response.email,
-                            games_played : 0,
-                            games_won : 0,
-                            rank : 0
+                            email : response.email
                         }
 
                         var jqxhr = $.ajax({
@@ -215,8 +196,23 @@
                         $('#loginModal').modal('hide');
                     });
                 });
-
-            });
+                }
+                FB.getLoginStatus(function(response) {
+                    if(response.status === 'connected') {
+                        console.log('Logged in.');
+                        fbCallback()
+                    }
+                    else
+                    {
+                        FB.login(function(response) {
+                            console.info('FB.login response', response);
+                            fbCallback()
+                        }, {
+                            scope: 'email'
+                        });
+                    }
+                 }
+                );
         }
         //              document.getElementById('google-login-btn').onclick = function(googleUser) {
         //                // Useful data for your client-side scripts:
@@ -276,12 +272,8 @@
                         console.log(reply.user_id)
 
                         var player = {
-                            player_id : Number(reply.user_id),
                             name : reply.screen_name,
-                            email : reply.screen_name + "@Html("@twitter.com")",
-                            games_played : 0,
-                            games_won : 0,
-                            rank : 0
+                            email : reply.screen_name + "@Html("@twitter.com")"
                         }
 
                         var jqxhr = $.ajax({

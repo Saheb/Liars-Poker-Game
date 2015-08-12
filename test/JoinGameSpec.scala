@@ -13,12 +13,12 @@ class JoinGameSpec extends FunSuite{
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       inTransaction {
         Database.create
-        val player = Database.playerTable.insert(new Player("Neel", "neelshah@gmail.com",0,0,0))
+        val player = Database.playerTable.insert(new Player("Neel", "neelshah@gmail.com"))
         val game = Database.gameStatusTable.insert(new GameStatus("Neel's Game", 1, 6, -1, "Waiting"))
-        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.id,game.id,1,2,"Admin"))
-        val new_player = Database.playerTable.insert(new Player("Saheb", "sm@gmail.com",0,0,0))
+        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id,game.id,1,2,"Admin"))
+        val new_player = Database.playerTable.insert(new Player("Saheb", "sm@gmail.com"))
         //new_player joins the game -> Neel's Game
-        val newPlayerStatus = Database.playerStatusTable insert (new PlayerStatus(new_player.id,game.id,2,2,"Joined"))
+        val newPlayerStatus = Database.playerStatusTable insert (new PlayerStatus(new_player.player_id,game.id,2,2,"Joined"))
         // we also need to update game status as 2 player have joined the game!
         //val newGameStatus = game.copy(joined_players = game.joined_players + 1)
 
@@ -27,7 +27,7 @@ class JoinGameSpec extends FunSuite{
 
         val players = from(Database.playerTable)(select(_))
         for(p <- players)
-          println(p.name + " " + p.id)
+          println(p.name + " " + p.player_id)
 
         val updatedGameStatus = from(Database.gameStatusTable)(g => where(g.id === game.id) select(g)).single
         assert(updatedGameStatus.joined_players == 2)

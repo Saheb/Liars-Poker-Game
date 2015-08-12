@@ -71,6 +71,23 @@
                     function(googleUser) {
                         document.getElementById('loginName').innerText =
                             googleUser.getBasicProfile().getName();
+
+                        var player = {
+                            player_id : Number(googleUser.getBasicProfile().getId()),
+                            name : googleUser.getBasicProfile().getName(),
+                            email : googleUser.getBasicProfile().getEmail(),
+                            games_played : 0,
+                            games_won : 0,
+                            rank : 0
+                        }
+
+                        var jqxhr = $.ajax({
+                            type : "PUT",
+                            url : "/persistLoginInfo",
+                            contentType : "application/json",
+                            data : JSON.stringify(player)
+                        })
+
                         $('#loginModal').modal('hide');
                     },
                     function(error) {
@@ -174,10 +191,27 @@
                     console.log(response);
                     var userId = response.id
                     FB.api('/' + userId, {
-                        fields: ['email', 'name']
+                        fields: ['id', 'email', 'name']
                     }, function(response) {
                         console.log(response);
                         document.getElementById('loginName').innerText = response.name
+
+                        var player = {
+                            player_id : Number(response.id),
+                            name : response.name,
+                            email : response.email,
+                            games_played : 0,
+                            games_won : 0,
+                            rank : 0
+                        }
+
+                        var jqxhr = $.ajax({
+                            type : "PUT",
+                            url : "/persistLoginInfo",
+                            contentType : "application/json",
+                            data : JSON.stringify(player)
+                        })
+
                         $('#loginModal').modal('hide');
                     });
                 });
@@ -242,9 +276,9 @@
                         console.log(reply.user_id)
 
                         var player = {
-                            player_id : 0,
+                            player_id : Number(reply.user_id),
                             name : reply.screen_name,
-                            email : 'harcoded',
+                            email : reply.screen_name + "@Html("@twitter.com")",
                             games_played : 0,
                             games_won : 0,
                             rank : 0

@@ -240,6 +240,23 @@
                         document.getElementById('loginName').innerText = reply.screen_name
                         console.log(reply.screen_name)
                         console.log(reply.user_id)
+
+                        var player = {
+                            player_id : 0,
+                            name : reply.screen_name,
+                            email : 'harcoded',
+                            games_played : 0,
+                            games_won : 0,
+                            rank : 0
+                        }
+
+                        var jqxhr = $.ajax({
+                            type : "PUT",
+                            url : "/persistLoginInfo",
+                            contentType : "application/json",
+                            data : JSON.stringify(player)
+                        })
+
                         $('#loginModal').modal('hide');
                     }
                 );

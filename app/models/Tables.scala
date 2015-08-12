@@ -8,15 +8,12 @@ import org.squeryl.dsl.OneToMany
  */
 
 case class Player(
+                 player_id : Long,
                  name : String,
                  email : String,
                  games_played : Int,
                  games_won : Int,
-                 rank : Int) extends KeyedEntity[Long]
-{
-  val player_id : Long = 0
-  val id : Long = player_id
-}
+                 rank : Int)
 
 case class GamePlay(
                    game_id : Long,

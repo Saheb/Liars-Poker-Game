@@ -17,7 +17,6 @@ object Database extends Schema{
 
   on(playerTable) {
     p => declare{
-      p.player_id is (autoIncremented)
       p.email is(unique)
     }
   }

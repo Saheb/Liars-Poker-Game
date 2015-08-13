@@ -1,6 +1,6 @@
 package models
 
-import org.squeryl.Query
+import org.squeryl.{KeyedEntity, Query}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsPath, Reads,Json}
@@ -8,7 +8,7 @@ import play.api.libs.json.{Writes, JsPath, Reads,Json}
 /**
  * Created by saheb on 8/4/15.
  */
-object Players {
+object Player {
   import models.Database.{playerTable}
 
   def playerQ : Query[Player] = from(playerTable){
@@ -39,4 +39,12 @@ object Players {
       (JsPath \ "name").read[String] and
       (JsPath \ "email").read[String]
   )(Player.apply _)
+}
+
+case class Player(
+                   name : String,
+                   email : String) extends KeyedEntity[Long]
+{
+  val player_id : Long = 0
+  val id :Long = player_id
 }

@@ -12,10 +12,10 @@ class GamePlaySpec extends FunSuite{
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       inTransaction {
         Database.create
-        val player = Database.playerTable.insert(new Player("Neel", "neelshah@gmail.com"))
-        val game = Database.gameStatusTable.insert(new GameStatus("Neel's Game", 1, 6, -1, "Waiting"))
+        val player = Database.playerTable.insert(new Player(1, "Neel", "neelshah@gmail.com"))
+        val game = Database.gameStatusTable.insert(new GameStatus(1, "Neel's Game", 1, 6, -1, "Waiting"))
         val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id, game.id, 1, 2, "Admin"))
-        val new_player = Database.playerTable.insert(new Player("Saheb", "sm@gmail.com"))
+        val new_player = Database.playerTable.insert(new Player(2, "Saheb", "sm@gmail.com"))
         val newPlayerStatus = Database.playerStatusTable insert (new PlayerStatus(new_player.player_id, game.id, 2, 2, "Joined"))
 
         update(Database.gameStatusTable)(s =>

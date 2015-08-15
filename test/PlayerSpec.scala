@@ -13,7 +13,7 @@ class PlayerSpec extends FlatSpec with ShouldMatchers{
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())){
       inTransaction{
         Database.create
-        val player = Database.playerTable insert(new Player("Saheb", "sahebmotiani@gmail.com"))
+        val player = Database.playerTable insert(new Player(1,"Saheb", "sahebmotiani@gmail.com"))
         val selectPlayer = from(Database.playerTable)(p => where(p.player_id === player.player_id) select (p)).single
         assert(selectPlayer.player_id == player.player_id)
       }

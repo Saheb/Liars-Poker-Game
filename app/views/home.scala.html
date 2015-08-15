@@ -309,8 +309,14 @@
                             type : "PUT",
                             url : "/createGame",
                             contentType : "application/json",
-                            data : JSON.stringify(game)
+                            data : JSON.stringify(game),
+                            success : function(response) {
+                                console.log(response) // game_id
+                                location.href = "/createGame/" + response
+                            }
                         })
+
+
                     }
                     else
                         alert("You need to login to Join or Create a Game!")

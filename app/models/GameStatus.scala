@@ -11,9 +11,12 @@ import org.squeryl.annotations.Column
  */
 object GameStatus {
 
+  def findByGameId(game_id : Long) : GameStatus = from(Database.gameStatusTable) (
+    game => where(game_id === game.game_id) select(game)
+  ).single
+
   def getGame : Query[GameStatus] = from(Database.gameStatusTable) {
-    game => select(game)
-      //where(game.status.equals("Waiting"))
+    game => where(game.status === "Waiting") select(game)
   }
 
   def getGameList : Iterable[GameStatus] = inTransaction {

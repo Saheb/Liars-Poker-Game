@@ -6,10 +6,12 @@
 GET        /                        controllers.Application.index
 GET        /home                    controllers.Application.home
 
-PUT        /persistLoginInfo        controllers.Login.persistLoginInfo
-PUT        /createGame              controllers.Game.createGame
-POST       /modifyGame              controllers.Game.modifyGame
-PUT        /startGame               controllers.Game.startGame
+PUT        /persistLoginInfo        controllers.LoginController.persistLoginInfo
 
+PUT        /createGame              controllers.CreateGameController.createGame
+POST       /modifyGame              controllers.CreateGameController.modifyGame
+PUT        /startGame               controllers.CreateGameController.startGame
+
+GET        /activeGames             controllers.JoinGameController.getActiveGames
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file            controllers.Assets.at(path="/public", file)

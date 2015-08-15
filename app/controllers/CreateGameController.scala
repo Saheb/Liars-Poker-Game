@@ -9,7 +9,7 @@ import models.GameStatus._
 /**
  * Created by saheb on 8/13/15.
  */
-object Game extends Controller{
+object CreateGameController extends Controller{
 
   def createGame = Action(parse.json) { request =>
     val gameJson = request.body

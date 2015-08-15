@@ -9,7 +9,7 @@ import org.squeryl.PrimitiveTypeMode._
 /**
  * Created by saheb on 8/12/15.
  */
-object Login extends Controller{
+object LoginController extends Controller{
 
   def persistLoginInfo = Action(parse.json) { request =>
     val playerJson = request.body

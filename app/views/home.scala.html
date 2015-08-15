@@ -73,6 +73,7 @@
                             googleUser.getBasicProfile().getName();
 
                         var player = {
+                            id : 0,
                             name : googleUser.getBasicProfile().getName(),
                             email : googleUser.getBasicProfile().getEmail()
                         }
@@ -122,13 +123,13 @@
         </div>
         <div class="btn-group btn-group-justified" role="group" aria-label="...">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-lg btn-primary">Start Game</button>
+                <button id="createGameBtn" type="button" class="btn btn-lg btn-primary">Start Game</button>
             </div>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-lg btn-primary">Join Game</button>
+                <button id="joinGameBtn" type="button" class="btn btn-lg btn-primary">Join Game</button>
             </div>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-lg btn-primary">Watch Game</button>
+                <button id="watchGameBtn" type="button" class="btn btn-lg btn-primary">Watch Game</button>
             </div>
         </div>
 
@@ -182,6 +183,7 @@
                         document.getElementById('loginName').innerText = response.name
 
                         var player = {
+                            id : 0,
                             name : response.name,
                             email : response.email
                         }
@@ -272,6 +274,7 @@
                         console.log(reply.user_id)
 
                         var player = {
+                            id : 0,
                             name : reply.screen_name,
                             email : reply.screen_name + "@Html("@twitter.com")"
                         }
@@ -286,7 +289,49 @@
                         $('#loginModal').modal('hide');
                     }
                 );
+            }
 
+            $("#createGameBtn").get(0).onclick = function() {
+                    var isLoggedIn = $("#loginName").text()!="Login"
+                    if(isLoggedIn)
+                    {
+                        var game = {
+                        "id" : 0,
+                        "name" : $("#loginName").text() + "'s Game",
+                        "joined_players" : 1,
+                        "max_players" : 5,
+                        "winner_player" : -1,
+                        "status" : "Waiting"
+                        }
+
+                        var jqxhr = $.ajax(
+                        {
+                            type : "PUT",
+                            url : "/createGame",
+                            contentType : "application/json",
+                            data : JSON.stringify(game)
+                        })
+                    }
+                    else
+                        alert("You need to login to Join or Create a Game!")
+
+             }
+
+            $("#joinGameBtn").get(0).onclick = function() {
+                    var isLoggedIn = $("#loginName").text()!="Login"
+                    if(isLoggedIn)
+                    {
+                        var jqxhr = $.ajax({
+                            type : "GET",
+                            url : "/activeGames",
+                            dataType : "json",
+                            success : function(response) {
+                                console.log(response)
+                            }
+                        })
+                    }
+                    else
+                        alert("You need to login to Join or Create a Game!")
             }
 
         </script>

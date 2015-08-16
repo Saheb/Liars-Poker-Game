@@ -1,4 +1,4 @@
-@(gameName: String)
+@(gameName: String, joinedPlayers : List[Player])
 
 <!DOCTYPE html>
 
@@ -13,6 +13,12 @@
         <title>@gameName</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
+        <script>
+            function checkLogin() {
+             if(window.sessionStorage.length!=0)
+                document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+            }
+        </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
 
@@ -25,7 +31,7 @@
         <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
     </head>
-    <body>
+    <body onload="checkLogin()">
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -63,13 +69,9 @@
             <div class="panel panel-success">
                 <div class="panel-heading">Joined Players</div>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">
-                        Cras justo odio
-                    </a>
-                    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                    <a href="#" class="list-group-item">Morbi leo risus</a>
-                    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                    <a href="#" class="list-group-item">Vestibulum at eros</a>
+                @for(player <- joinedPlayers){
+                    <a href="#" class="list-group-item">@player.name</a>
+                }
                 </div>
             </div>
 

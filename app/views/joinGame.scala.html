@@ -15,6 +15,12 @@
             /**/
         /*}*/
         </style>
+        <script>
+            function checkLogin() {
+             if(window.sessionStorage.length!=0)
+                document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+            }
+        </script>
         <title>Joining Game</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
@@ -30,7 +36,7 @@
         <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
     </head>
-    <body>
+    <body onload="checkLogin()">
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -61,7 +67,7 @@
                 <div class="col-xs-3 custom_border" >
                     <h3>@game.name</h3>
                     <p id="@game.game_id"> </p>
-                    <p><a class="btn btn-success" href="#" role="button">Join &raquo;</a></p>
+                    <p name="@game.game_id"><a class="btn btn-success" href="#" role="button" onclick="joinClicked(this)">Join &raquo;</a></p>
                 </div>
 
                 <script>
@@ -77,4 +83,25 @@
         </div>
 
     </body>
+    <script>
+        function joinClicked(btn){
+            console.log(btn)
+            var player = {
+                id : Number(window.sessionStorage.getItem("loginId")),
+                name : window.sessionStorage.getItem("loginName"),
+                email : window.sessionStorage.getItem("loginEmail")
+            }
+            var jqxhr = $.ajax({
+                type : "PUT",
+                url : "/joinGame/"+Number(btn.parentElement.getAttribute("name")),
+                data : JSON.stringify(player),
+                contentType : "application/json",
+                success : function(response) {
+                            console.log(response)
+                            location.href = "/createGame/" + btn.parentElement.getAttribute("name")
+                        }
+            })
+
+        }
+    </script>
 </html>

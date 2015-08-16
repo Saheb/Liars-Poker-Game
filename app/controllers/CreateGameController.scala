@@ -20,6 +20,7 @@ object CreateGameController extends Controller{
     try {
       inTransaction {
         val selectGameStatus = Database.gameStatusTable.insert(gameStatus)
+        val playerStatus = Database.playerStatusTable.insert(new PlayerStatus(gameStatus.admin_player, selectGameStatus.game_id,1,2,"Admin" ))
         Ok(Json.toJson(selectGameStatus.game_id))
       }
     }
@@ -35,7 +36,7 @@ object CreateGameController extends Controller{
   def gotoCreateGamePage(game_id : Long) = Action{
     inTransaction{
       val game = GameStatus.findByGameId(game_id)
-      Ok(views.html.createGame(game.name))
+      Ok(views.html.createGame(game.name,PlayerStatus.getJoinedPlayerList(game_id).toList))
     }
   }
 

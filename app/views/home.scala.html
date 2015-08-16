@@ -18,6 +18,13 @@
         <!-- Custom styles for this template -->
         <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
 
+        <script>
+            function checkLogin() {
+                if(window.sessionStorage.length!=0)
+                    document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+            }
+        </script>
+
         <script src="https://apis.google.com/js/api:client.js"></script>
 
         <script type="text/javascript" src="@routes.Assets.at("javascripts/codebird.js")"></script>
@@ -82,7 +89,13 @@
                             type : "PUT",
                             url : "/persistLoginInfo",
                             contentType : "application/json",
-                            data : JSON.stringify(player)
+                            data : JSON.stringify(player),
+                            success : function(response){
+                                console.log(response)
+                                window.sessionStorage.setItem("loginId", response)
+                                window.sessionStorage.setItem("loginName", player.name)
+                                window.sessionStorage.setItem("loginEmail", player.email)
+                            }
                         })
 
                         $('#loginModal').modal('hide');
@@ -95,7 +108,7 @@
         <meta name="google-signin-scope" content="profile email">
     </head>
 
-    <body>
+    <body onload="checkLogin()">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -192,7 +205,13 @@
                             type : "PUT",
                             url : "/persistLoginInfo",
                             contentType : "application/json",
-                            data : JSON.stringify(player)
+                            data : JSON.stringify(player),
+                            success : function(response){
+                                console.log(response)
+                                window.sessionStorage.setItem("loginId", response)
+                                window.sessionStorage.setItem("loginName", player.name)
+                                window.sessionStorage.setItem("loginEmail", player.email)
+                            }
                         })
 
                         $('#loginModal').modal('hide');
@@ -283,7 +302,13 @@
                             type : "PUT",
                             url : "/persistLoginInfo",
                             contentType : "application/json",
-                            data : JSON.stringify(player)
+                            data : JSON.stringify(player),
+                            success : function(response){
+                                console.log(response)
+                                window.sessionStorage.setItem("loginId", response)
+                                window.sessionStorage.setItem("loginName", player.name)
+                                window.sessionStorage.setItem("loginEmail", player.email)
+                            }
                         })
 
                         $('#loginModal').modal('hide');
@@ -298,6 +323,7 @@
                         var game = {
                         "id" : 0,
                         "name" : $("#loginName").text() + "'s Game",
+                        "admin_player" : Number(window.sessionStorage.getItem("loginId")),
                         "joined_players" : 1,
                         "max_players" : 5,
                         "winner_player" : -1,

@@ -26,6 +26,7 @@ object GameStatus {
   implicit object GameStatusWrites extends Writes[GameStatus] {
     def writes(game : GameStatus) = Json.obj(
       "name" -> Json.toJson(game.name),
+      "admin_player" -> Json.toJson(game.admin_player),
       "joined_players" -> Json.toJson(game.joined_players),
       "max_players" -> Json.toJson(game.max_players),
       "winner_player" -> Json.toJson(game.winner_player),
@@ -35,6 +36,7 @@ object GameStatus {
     implicit val GameStatusReads : Reads[GameStatus] = (
       (JsPath \ "id").read[Long] and
       (JsPath \ "name" ).read[String] and
+        (JsPath \ "admin_player").read[Long] and
       (JsPath \ "joined_players").read[Int] and
       (JsPath \ "max_players").read[Int] and
         (JsPath \ "winner_player").read[Long] and
@@ -46,6 +48,7 @@ case class GameStatus(
                        @Column("game_id")
                        id : Long,
                        name  : String,
+                       admin_player : Long,
                        joined_players : Int,
                        max_players : Int,
                        winner_player : Long,

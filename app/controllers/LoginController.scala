@@ -1,7 +1,11 @@
 package controllers
 
+import java.util.concurrent.ExecutionException
+
 import models.{Database, Player}
+import org.h2.jdbc.JdbcSQLException
 import play.api.db.DB
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.Play.current
 import models.Player._
@@ -12,6 +16,8 @@ import play.api.Logger
  */
 object LoginController extends Controller{
 
+  import Database._
+
   val logger = Logger(this.getClass)
 
   def persistLoginInfo = Action(parse.json) { request =>
@@ -21,17 +27,28 @@ object LoginController extends Controller{
     logger.info("Inserting record to database")
     try {
       inTransaction {
-        Database.playerTable.insert(player)
+//        val inserted = player.save
+//        inserted match {
+//          case Some(p) => Ok("Saved")
+//          case None => BadRequest("Record alerady exists!")
+//        }
+        val selectQuery = from(Database.playerTable) (p => where(p.email === player.email) select(p))
+        if(selectQuery.isEmpty) {
+          val insertedPlayer = Database.playerTable.insert(player)
+          Ok(Json.toJson(insertedPlayer.player_id))
+        }
+        else
+          Ok(Json.toJson(selectQuery.single.player_id))
       }
-      Ok("Player record inserted")
     }
       catch {
-        case e : IllegalArgumentException => BadRequest("Player Not Found")
+        case e : IllegalArgumentException => BadRequest(e.getMessage)
+        case j : JdbcSQLException => BadRequest(j.getMessage)
+        case ex : ExecutionException => BadRequest(ex.getMessage)
       }
     finally {
       conn.close()
     }
-
   }
 
 }

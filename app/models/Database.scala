@@ -38,9 +38,9 @@ object Database extends Schema{
 //  val gameStatus2RoundResult =
 //      oneToManyRelation(gameStatusTable, roundResultTable).via((a,b) => a.id  === b.game_id)
 //
-//  val player2PlayerStatus =
-//      oneToManyRelation(playerTable, playerStatusTable).via((a,b) => a.id === b.player_id)
-//
-//  val gameStatus2PlayerStatus =
-//      oneToManyRelation(gameStatusTable, playerStatusTable).via((a,b) => a.id === b.game_id)
+  val player2PlayerStatus =
+      oneToManyRelation(playerTable, playerStatusTable).via((a,b) => a.id === b.player_id)
+
+  val gameStatus2PlayerStatus =
+      oneToManyRelation(gameStatusTable, playerStatusTable).via((a,b) => a.id === b.game_id)
 }

@@ -14,6 +14,11 @@ object JoinGameController extends Controller{
       Ok(Json.toJson(gameList))
   }
 
+  def gotoJoinGamePage = Action {
+      val activeGames = GameStatus.getGameList
+      Ok(views.html.joinGame(activeGames.toList))
+  }
+
 //  def joinGame = Action{
 //
 //  }

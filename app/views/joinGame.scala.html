@@ -1,16 +1,21 @@
-@(gameName: String)
-
+@(activeGames : List[GameStatus])
 <!DOCTYPE html>
 
 <html>
     <head>
         <style>
-            body {
-            padding-top: 70px;
-            padding-bottom: 30px;
-            }
+        body {
+        padding-top: 70px;
+        padding-bottom: 30px;
+        }
+        /*.col-xs-3.custom_border {*/
+            /*border-radius: 10px;*/
+            /*border-style : solid;*/
+            /*border-width : 3px;*/
+            /**/
+        /*}*/
         </style>
-        <title>@gameName</title>
+        <title>Joining Game</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
             <!-- Bootstrap core CSS -->
@@ -48,34 +53,28 @@
 
         <div class="container">
             <h2>
-                @gameName
-                <span class="glyphicon glyphicon-edit"></span>
+                Active Games
             </h2>
-            <h3>
-                <span class="label label-primary">Public</span>
-                <span class="label label-info">Max : 5</span>
-            </h3>
-            <hr/>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span class="sr-only">20% Complete</span></div>
-            </div>
 
-            <div class="panel panel-success">
-                <div class="panel-heading">Joined Players</div>
-                <div class="list-group">
-                    <a href="#" class="list-group-item">
-                        Cras justo odio
-                    </a>
-                    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                    <a href="#" class="list-group-item">Morbi leo risus</a>
-                    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                    <a href="#" class="list-group-item">Vestibulum at eros</a>
+            <div class="row container-fluid">
+            @for(game <- activeGames){
+                <div class="col-xs-3 custom_border" >
+                    <h3>@game.name</h3>
+                    <p id="@game.game_id"> </p>
+                    <p><a class="btn btn-success" href="#" role="button">Join &raquo;</a></p>
                 </div>
+
+                <script>
+                    var remaining_players = @game.max_players - @game.joined_players
+                    var game_id = @game.game_id
+                    document.getElementById(game_id).innerText = remaining_players + " seats left"
+                </script>
+
+            }
+
+
             </div>
-
-            <button type="button" class="btn btn-lg btn-success">Start Game</button>
         </div>
-
 
     </body>
 </html>

@@ -311,8 +311,8 @@
                             contentType : "application/json",
                             data : JSON.stringify(game),
                             success : function(response) {
-                                console.log(response) // game_id
-                                location.href = "/createGame/" + response
+                                console.log(response)
+                                location.href = "/createGame/"+response
                             }
                         })
 
@@ -330,9 +330,10 @@
                         var jqxhr = $.ajax({
                             type : "GET",
                             url : "/activeGames",
-                            dataType : "json",
+                            dataType : "html",
                             success : function(response) {
                                 console.log(response)
+                                location.href = "/joinGame"
                             }
                         })
                     }

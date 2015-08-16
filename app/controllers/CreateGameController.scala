@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Database, GameStatus}
+import models.{PlayerStatus, Database, GameStatus}
 import play.api.db.DB
 import play.api.mvc._
 import play.api.Play.current
@@ -36,6 +36,13 @@ object CreateGameController extends Controller{
     inTransaction{
       val game = GameStatus.findByGameId(game_id)
       Ok(views.html.createGame(game.name))
+    }
+  }
+
+  def getJoinedPlayerList(game_id : Long) = Action {
+    inTransaction {
+      val joined_players = PlayerStatus.getJoinedPlayerList(game_id)
+      Ok(Json.toJson(joined_players))
     }
   }
 

@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>Game Play</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
+        <script>
+            function checkLogin() {
+             if(window.sessionStorage.length!=0)
+                document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+            }
+        </script>
+            <!-- Bootstrap core CSS -->
+        <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
+
+            <!-- Custom styles for this template -->
+        <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
+
+            <!-- Bootstrap core JavaScript
+    ================================================== -->
+            <!-- Placed at the end of the document so the pages load faster -->
+        <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/paper-full.min.js")"></script>
+        <script type="text/paperscript" canvas="canvas">
+        paper.view.setCenter(window.screen.availWidth/2 , window.screen.availHeight/2)
+        paper.view.setViewSize(window.screen.availWidth,window.screen.availHeight)
+        // var a = new Point(10,20)
+        // console.log(a)
+        // var b = new Point(50,100)
+        // console.log(b)
+        // var path = new Path()
+        // path.strokeColor = 'black';
+        // path.add(a)
+        // path.add(b)
+        var size = new Size(400,300)
+        // var rect = new Rectangle(a,size)
+        // path.add(rect)
+        // console.log(rect)
+        var path = new Path.Circle(view.center, 250);
+         path.fillColor = 'green'
+        //var rectangle = new Rectangle(view.center,size);
+        //var cornerSize = new Size(20, 20);
+        //var path = new Path.RoundRectangle(rectangle, cornerSize);
+        //path.fillColor = 'green';
+        </script>
+    </head>
+<body onLoad="checkLogin()">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Liar's Poker Game</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#rules">Rules</a></li>
+                    <li><a id="loginName" data-target="#loginModal" data-toggle="modal">Login</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <canvas id="canvas" resize="true"></canvas>
+</body>
+<html>

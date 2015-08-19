@@ -36,7 +36,7 @@ object CreateGameController extends Controller{
   def gotoCreateGamePage(game_id : Long) = Action{
     inTransaction{
       val game = GameStatus.findByGameId(game_id)
-      Ok(views.html.createGame(game.name,PlayerStatus.getJoinedPlayerList(game_id).toList))
+      Ok(views.html.createGame(game.name,game_id : Long,PlayerStatus.getJoinedPlayerList(game_id).toList))
     }
   }
 
@@ -51,8 +51,8 @@ object CreateGameController extends Controller{
     Ok("Game modified!")
   }
 
-  def startGame = Action {
-    Ok("Game starts!")
+  def startGame(game_id : Long) = Action {
+    Ok(views.html.gameplay())
   }
 
 }

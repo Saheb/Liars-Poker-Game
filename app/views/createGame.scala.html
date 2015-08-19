@@ -1,4 +1,4 @@
-@(gameName: String, joinedPlayers : List[Player])
+@(gameName: String, game_id : Long, joinedPlayers : List[Player])
 
 <!DOCTYPE html>
 
@@ -78,6 +78,18 @@
     <script>
     if(window.sessionStorage.getItem("isAdmin")==="true")
         $("#startGameBtn").get(0).style.display = "block";
+
+    $("#startGameBtn").get(0).onclick = function() {
+        var xhr = $.ajax({
+                url : "/startGame/" + @game_id,
+                type : "GET",
+                dataType: "html",
+                success : function(response) {
+                    location.href = "/startGame/"+@game_id
+                }
+        })
+    }
+
     </script>
 
     </body>

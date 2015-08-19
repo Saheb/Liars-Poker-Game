@@ -10,7 +10,7 @@ PUT         /persistLoginInfo                         controllers.LoginControlle
 
 PUT         /createGame                               controllers.CreateGameController.createGame
 POST        /modifyGame                               controllers.CreateGameController.modifyGame
-PUT         /startGame                                controllers.CreateGameController.startGame
+GET         /startGame/:game_id                       controllers.CreateGameController.startGame(game_id : Long)
 
 GET         /createGame/:game_id                      controllers.CreateGameController.gotoCreateGamePage(game_id : Long)
 GET         /createGame/:game_id/joinedPlayers        controllers.CreateGameController.getJoinedPlayerList(game_id : Long )

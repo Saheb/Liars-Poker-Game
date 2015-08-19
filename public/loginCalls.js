@@ -234,8 +234,7 @@ $("#createGameBtn").get(0).onclick = function() {
                     location.href = "/createGame/" + response
                 }
             })
-
-
+        window.sessionStorage.setItem("isAdmin", true);
     }
     else
         alert("You need to login to Join or Create a Game!")
@@ -255,6 +254,7 @@ $("#joinGameBtn").get(0).onclick = function() {
                 location.href = "/joinGame"
             }
         })
+        window.sessionStorage.setItem("isAdmin", false);
     }
     else
         alert("You need to login to Join or Create a Game!")

@@ -35,6 +35,9 @@ object JoinGameController extends Controller{
             playerStatusTable.insert(new PlayerStatus(player.player_id, game_id, 1, 2, "Joined"))
           else
             playerStatusTable.insert(new PlayerStatus(player.player_id, game_id, lastPlayer.head.position + 1, 2, "Joined"))
+          // Also update game status!
+          update(gameStatusTable)(s =>
+            where(s.id === game_id) set(s.joined_players := s.joined_players.~ + 1))
           Ok("Joined")
         }
       else

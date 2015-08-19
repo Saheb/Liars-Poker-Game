@@ -60,11 +60,9 @@
             <h3>
                 <span class="label label-primary">Public</span>
                 <span class="label label-info">Max : 5</span>
+                <span class="label label-info">Joined : @joinedPlayers.size </span>
             </h3>
             <hr/>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span class="sr-only">20% Complete</span></div>
-            </div>
 
             <div class="panel panel-success">
                 <div class="panel-heading">Joined Players</div>
@@ -75,9 +73,12 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-lg btn-success">Start Game</button>
+            <button id="startGameBtn" style="display: none;" type="button" class="btn btn-lg btn-success">Start Game</button>
         </div>
-
+    <script>
+    if(window.sessionStorage.getItem("isAdmin")==="true")
+        $("#startGameBtn").get(0).style.display = "block";
+    </script>
 
     </body>
 </html>

@@ -91,9 +91,14 @@
                 name : window.sessionStorage.getItem("loginName"),
                 email : window.sessionStorage.getItem("loginEmail")
             }
+
+            var gameIdJoined = Number(btn.parentElement.getAttribute("name"))
+
+            // TODO : Figure out some way to stop a user from joining his own game!
+
             var jqxhr = $.ajax({
                 type : "PUT",
-                url : "/joinGame/"+Number(btn.parentElement.getAttribute("name")),
+                url : "/joinGame/"+gameIdJoined,
                 data : JSON.stringify(player),
                 contentType : "application/json",
                 success : function(response) {

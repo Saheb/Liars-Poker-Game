@@ -48,5 +48,6 @@ object JoinGameController extends Controller{
     }
 
   }
+
   
 }

@@ -30,6 +30,7 @@ object Player {
 
   implicit object PlayerWrites extends Writes[Player]{
     def writes(p : Player) = Json.obj(
+      "id" -> Json.toJson(p.player_id),
       "name" -> Json.toJson(p.name),
       "email" -> Json.toJson(p.email)
     )

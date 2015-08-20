@@ -90,6 +90,12 @@
         })
     }
 
+    var event = new EventSource("@routes.CreateGameController.updatedJoinedPlayers(game_id)");
+    event.addEventListener('message', function( event ) {
+       alert(event.data);
+    }
+    );
+
     </script>
 
     </body>

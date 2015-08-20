@@ -12,6 +12,8 @@ PUT         /createGame                               controllers.CreateGameCont
 POST        /modifyGame                               controllers.CreateGameController.modifyGame
 GET         /startGame/:game_id                       controllers.CreateGameController.startGame(game_id : Long)
 
+GET         /updatedJoinedPlayers/:game_id            controllers.CreateGameController.updatedJoinedPlayers(game_id : Long)
+
 GET         /createGame/:game_id                      controllers.CreateGameController.gotoCreateGamePage(game_id : Long)
 GET         /createGame/:game_id/joinedPlayers        controllers.CreateGameController.getJoinedPlayerList(game_id : Long )
 

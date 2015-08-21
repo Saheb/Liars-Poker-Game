@@ -1,20 +1,16 @@
 package controllers
 
-import models.{Player, PlayerStatus, Database, GameStatus}
+import models.{PlayerStatus, Database, GameStatus}
 import play.api.db.DB
-import play.api.libs.EventSource
-import play.api.libs.concurrent.Promise
-import play.api.libs.iteratee.{Concurrent, Enumerator}
+import play.api.libs.iteratee.{Enumerator}
 import play.api.mvc._
 import play.api.Play.current
 import org.squeryl.PrimitiveTypeMode._
 import models.GameStatus._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json}
 import models.Player._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Random
-import scala.concurrent.duration._
 
 /**
  * Created by saheb on 8/13/15.
@@ -65,12 +61,12 @@ object CreateGameController extends Controller{
 
 
   def updatedJoinedPlayers(game_id : Long) = Action {
-    val enum = Enumerator.generateM[String](Promise.timeout(Some(Random.nextString(5)),3 seconds))
+    //val enum = Enumerator.generateM[String](Promise.timeout(Some(Random.nextString(5)),3 seconds))
     //var (joined_players, channel) = Concurrent.broadcast[PlayerStatus]
     inTransaction{
-      val player = Enumerator.enumerate(PlayerStatus.getJoinedPlayerList(game_id).toList)
-      //def playerJsonEnumerator() : Enumerator[Player] = Enumerator.map(player.writes(_))
-      Ok.chunked(enum &> EventSource()).as("text/event-stream")
+      val playerEnum = Enumerator.enumerate(PlayerStatus.getJoinedPlayerList(game_id).toList)
+      def playerJsonEnumerator() : Enumerator[String] = playerEnum.map( p => p.toString)
+      Ok.chunked(playerJsonEnumerator()).as("text/event-stream")
     }
   }
 

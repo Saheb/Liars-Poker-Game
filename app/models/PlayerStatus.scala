@@ -10,6 +10,10 @@ object PlayerStatus{
 
   import Database._
 
+  def getPlayerSttusById(player_id : Long, game_id : Long) = {
+    from(playerStatusTable)(ps => where(ps.game_id===game_id and ps.player_id===player_id) select(ps)).single
+  }
+
   def getJoinedPlayerList(game_id : Long) = {
     join(playerTable, playerStatusTable)( (p,ps) =>
       where(ps.game_id === game_id).

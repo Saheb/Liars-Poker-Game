@@ -18,6 +18,7 @@
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
+            window.sessionStorage.setItem("joinedPlayersSize", @joinedPlayers.size)
         </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
@@ -60,7 +61,7 @@
             <h3>
                 <span class="label label-primary">Public</span>
                 <span class="label label-info">Max : 5</span>
-                <span class="label label-info">Joined : @joinedPlayers.size </span>
+                <span id="joinedPlayersSize" class="label label-info">Joined : @joinedPlayers.size </span>
             </h3>
             <hr/>
 
@@ -68,7 +69,7 @@
                 <div class="panel-heading">Joined Players</div>
                 <div class="list-group">
                 @for(player <- joinedPlayers){
-                    <a href="#" class="list-group-item">@player.name</a>
+                    <li class="list-group-item">@player.name</li>
                 }
                 </div>
             </div>
@@ -78,14 +79,34 @@
     <script>
     if(window.sessionStorage.getItem("isAdmin")==="true")
         $("#startGameBtn").get(0).style.display = "block";
+    else
+     {
+        // will be doing polling every 30 seconds to know if game has started or not!
+        function gameStartedPolling () {
+            $.ajax({
+                url : '/gamePlay/gameStarted/' + @game_id,
+                type : 'GET',
+                contentType: "application/json",
+                success : function(response) {
+                    location.href = "/gamePlay/" + @game_id
+                    clearInterval()
+                    },
+                error : function(response){
+                    console.log("Game hasn't started yet");
+                    }
+                })
+        }
+        //gameStartedPolling()
+        setInterval(gameStartedPolling, 10000)
+     }
 
     $("#startGameBtn").get(0).onclick = function() {
         var xhr = $.ajax({
-                url : "/startGame/" + @game_id,
+                url : "/gamePlay/" + @game_id,
                 type : "GET",
                 dataType: "html",
                 success : function(response) {
-                    location.href = "/startGame/"+@game_id
+                    location.href = "/gamePlay/"+@game_id
                 }
         })
     }
@@ -94,7 +115,10 @@
     event.addEventListener('message', function( event ) {
        console.log(event.data);
        var player = JSON.parse(event.data);
-       $('<li class="list-group-item">' + player.name + '</li>').appendTo(".list-group")
+       $('<li class="list-group-item">' + player.name + " " + "("+ player.position +")" +'</li>').appendTo(".list-group")
+       var previousCount = Number(window.sessionStorage.getItem("joinedPlayersSize"))
+       window.sessionStorage.setItem("joinedPlayersSize", previousCount + 1)
+       $("#joinedPlayersSize").get(0).innerHTML = "Joined : " + (previousCount+1)
     }
     );
 

@@ -10,7 +10,6 @@ PUT         /persistLoginInfo                         controllers.LoginControlle
 
 PUT         /createGame                               controllers.CreateGameController.createGame
 POST        /modifyGame                               controllers.CreateGameController.modifyGame
-GET         /startGame/:game_id                       controllers.CreateGameController.startGame(game_id : Long)
 
 GET         /updatedJoinedPlayers/:game_id            controllers.JoinGameController.updatedJoinedPlayers(game_id : Long)
 
@@ -20,6 +19,9 @@ GET         /createGame/:game_id/joinedPlayers        controllers.CreateGameCont
 GET         /activeGames                              controllers.JoinGameController.getActiveGames
 GET         /joinGame                                 controllers.JoinGameController.gotoJoinGamePage
 PUT         /joinGame/:game_id                        controllers.JoinGameController.joinGame(game_id : Long)
+
+GET         /gamePlay/:game_id                        controllers.GamePlayController.startGamePlay(game_id : Long)
+GET         /gamePlay/gameStarted/:game_id            controllers.GamePlayController.hasGameStarted(game_id : Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                             controllers.Assets.at(path="/public", file)

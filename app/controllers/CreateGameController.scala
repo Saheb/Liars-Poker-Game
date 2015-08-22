@@ -56,8 +56,4 @@ object CreateGameController extends Controller{
     Ok("Game modified!")
   }
 
-  def startGame(game_id : Long) = Action {
-    Ok(views.html.gameplay())
-  }
-
 }

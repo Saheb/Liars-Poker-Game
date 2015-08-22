@@ -34,14 +34,6 @@ object JoinGameController extends Controller{
 
     // did create a new harcoded one, instead of creating implcits writer for a custom object
 
-    val player2pushJson : JsValue = Json.obj(
-      "player_id" -> JsNumber(player.player_id),
-      "name" -> JsString(player.name),
-      "email" -> JsString(player.email),
-      "game_id" -> JsNumber(game_id)
-    )
-    update2client.push(player2pushJson)
-
     inTransaction {
       val selectQuery = from(playerStatusTable)(ps => where(ps.player_id === player.player_id and ps.game_id === game_id) select(ps))
       if(selectQuery.isEmpty)
@@ -54,6 +46,16 @@ object JoinGameController extends Controller{
           // Also update game status!
           update(gameStatusTable)(g =>
             where(g.id === game_id) set(g.joined_players := g.joined_players.~ + 1))
+
+          val selectPlayerStatus = PlayerStatus.getPlayerSttusById(player.player_id, game_id)
+          val player2pushJson : JsValue = Json.obj(
+            "player_id" -> JsNumber(player.player_id),
+            "name" -> JsString(player.name),
+            "email" -> JsString(player.email),
+            "game_id" -> JsNumber(game_id),
+            "position" -> JsNumber(selectPlayerStatus.position)
+          )
+          update2client.push(player2pushJson)
           Ok("Joined")
         }
       else

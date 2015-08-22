@@ -10,7 +10,7 @@ object PlayerStatus{
 
   import Database._
 
-  def getPlayerSttusById(player_id : Long, game_id : Long) = {
+  def getPlayerStatusById(player_id : Long, game_id : Long) = {
     from(playerStatusTable)(ps => where(ps.game_id===game_id and ps.player_id===player_id) select(ps)).single
   }
 
@@ -25,6 +25,7 @@ object PlayerStatus{
   implicit object PlayerStatusWrites extends Writes[PlayerStatus]{
     def writes(p : PlayerStatus) = Json.obj(
       "player_id" -> Json.toJson(p.player_id),
+      "name" -> Json.toJson(p.name),
       "game_id" -> Json.toJson(p.game_id),
       "position" -> Json.toJson(p.position),
       "num_of_cards" -> Json.toJson(p.num_of_cards),
@@ -34,6 +35,7 @@ object PlayerStatus{
 
   implicit val playerStatusReads : Reads[PlayerStatus] = (
     (JsPath \ "player_id").read[Long] and
+      (JsPath \ "name").read[String] and
       (JsPath \ "game_id").read[Long] and
       (JsPath \ "position").read[Int] and
       (JsPath \ "num_of_cards").read[Int] and
@@ -43,6 +45,7 @@ object PlayerStatus{
 
 case class PlayerStatus(
                          player_id : Long,
+                         name : String,
                          game_id : Long,
                          position : Int,
                          num_of_cards : Int,

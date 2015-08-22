@@ -13,8 +13,4 @@ object Application extends Controller {
     Ok(views.html.home())
   }
 
-  def temp = Action {
-    Ok(views.html.gameplay())
-  }
-
 }

@@ -1,6 +1,6 @@
 package controllers
 
-import models.{PlayerStatus, Database, GameStatus}
+import models.{Player, PlayerStatus, Database, GameStatus}
 import play.api.db.DB
 import play.api.libs.iteratee.{Concurrent, Enumerator}
 import play.api.mvc._
@@ -25,7 +25,8 @@ object CreateGameController extends Controller{
     try {
       inTransaction {
         val selectGameStatus = Database.gameStatusTable.insert(gameStatus)
-        val playerStatus = Database.playerStatusTable.insert(new PlayerStatus(gameStatus.admin_player, selectGameStatus.game_id,1,2,"Admin" ))
+        val player = Player.getPlayerById(gameStatus.admin_player)
+        val playerStatus = Database.playerStatusTable.insert(new PlayerStatus(gameStatus.admin_player, player.name, selectGameStatus.game_id,1,2,"Admin" ))
         Ok(Json.toJson(selectGameStatus.game_id))
       }
     }
@@ -41,7 +42,7 @@ object CreateGameController extends Controller{
   def gotoCreateGamePage(game_id : Long) = Action{
     inTransaction {
       val game = GameStatus.findByGameId(game_id)
-      Ok(views.html.createGame(game.name,game_id : Long,PlayerStatus.getJoinedPlayerList(game_id).toList))
+      Ok(views.html.createGame(game.name,game_id,PlayerStatus.getJoinedPlayerList(game_id).toList))
     }
   }
 

@@ -40,14 +40,14 @@ object JoinGameController extends Controller{
         {
           val lastPlayer = from(playerStatusTable)(ps => where(ps.game_id === game_id) select(ps) orderBy(ps.position desc))
           if(lastPlayer.isEmpty)
-            playerStatusTable.insert(new PlayerStatus(player.player_id, game_id, 1, 2, "Joined"))
+            playerStatusTable.insert(new PlayerStatus(player.player_id,player.name, game_id, 1, 2, "Joined"))
           else
-            playerStatusTable.insert(new PlayerStatus(player.player_id, game_id, lastPlayer.head.position + 1, 2, "Joined"))
+            playerStatusTable.insert(new PlayerStatus(player.player_id,player.name, game_id, lastPlayer.head.position + 1, 2, "Joined"))
           // Also update game status!
           update(gameStatusTable)(g =>
             where(g.id === game_id) set(g.joined_players := g.joined_players.~ + 1))
 
-          val selectPlayerStatus = PlayerStatus.getPlayerSttusById(player.player_id, game_id)
+          val selectPlayerStatus = PlayerStatus.getPlayerStatusById(player.player_id, game_id)
           val player2pushJson : JsValue = Json.obj(
             "player_id" -> JsNumber(player.player_id),
             "name" -> JsString(player.name),

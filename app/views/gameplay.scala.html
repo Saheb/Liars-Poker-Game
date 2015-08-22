@@ -1,3 +1,4 @@
+@(game_id : Long)
 <html>
     <head>
         <title>Game Play</title>
@@ -8,6 +9,26 @@
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
+            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id +"/gameStatus")
+            ws.onopen = function()
+               {
+                  // Web Socket is connected, send data using send()
+                  var json = {"name" : "Saheb"}
+                  ws.send(JSON.stringify(json));
+                  console.log("Message is sent...");
+               };
+
+               ws.onmessage = function (evt)
+               {
+                  var gameStatus = JSON.parse(evt.data);
+                  alert(gameStatus);
+               };
+
+               ws.onclose = function()
+               {
+                  // websocket is closed.
+                  console.log("Connection is closed...");
+               };
         </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">

@@ -2,7 +2,7 @@ package controllers
 
 import models.{PlayerStatus, Database, GameStatus}
 import play.api.db.DB
-import play.api.libs.iteratee.{Enumerator}
+import play.api.libs.iteratee.{Concurrent, Enumerator}
 import play.api.mvc._
 import play.api.Play.current
 import org.squeryl.PrimitiveTypeMode._
@@ -15,6 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by saheb on 8/13/15.
  */
+
 object CreateGameController extends Controller{
 
   def createGame = Action(parse.json) { request =>
@@ -57,17 +58,6 @@ object CreateGameController extends Controller{
 
   def startGame(game_id : Long) = Action {
     Ok(views.html.gameplay())
-  }
-
-
-  def updatedJoinedPlayers(game_id : Long) = Action {
-    //val enum = Enumerator.generateM[String](Promise.timeout(Some(Random.nextString(5)),3 seconds))
-    //var (joined_players, channel) = Concurrent.broadcast[PlayerStatus]
-    inTransaction{
-      val playerEnum = Enumerator.enumerate(PlayerStatus.getJoinedPlayerList(game_id).toList)
-      def playerJsonEnumerator() : Enumerator[String] = playerEnum.map( p => p.toString)
-      Ok.chunked(playerJsonEnumerator()).as("text/event-stream")
-    }
   }
 
 }

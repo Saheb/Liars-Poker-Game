@@ -1,15 +1,20 @@
 package controllers
 
 import models._
-import play.api.libs.json.Json
+import play.api.libs.{EventSource}
+import play.api.libs.iteratee.{Enumeratee, Concurrent}
+import play.api.libs.json._
 import org.squeryl.PrimitiveTypeMode._
-import play.api.libs.functional.syntax._
 import play.api.mvc.{Action, Controller}
+import play.api.libs.concurrent.Execution.Implicits._
+import models.PlayerStatus._
 
 /**
  * Created by saheb on 8/15/15.
  */
 object JoinGameController extends Controller{
+
+  val (joined_players, update2client) = Concurrent.broadcast[JsValue]
 
   import Database._
 
@@ -26,6 +31,17 @@ object JoinGameController extends Controller{
   def joinGame(game_id : Long) = Action(parse.json){ request =>
     val playerJson = request.body
     val player = playerJson.as[Player]
+
+    // did create a new harcoded one, instead of creating implcits writer for a custom object
+
+    val player2pushJson : JsValue = Json.obj(
+      "player_id" -> JsNumber(player.player_id),
+      "name" -> JsString(player.name),
+      "email" -> JsString(player.email),
+      "game_id" -> JsNumber(game_id)
+    )
+    update2client.push(player2pushJson)
+
     inTransaction {
       val selectQuery = from(playerStatusTable)(ps => where(ps.player_id === player.player_id and ps.game_id === game_id) select(ps))
       if(selectQuery.isEmpty)
@@ -36,8 +52,8 @@ object JoinGameController extends Controller{
           else
             playerStatusTable.insert(new PlayerStatus(player.player_id, game_id, lastPlayer.head.position + 1, 2, "Joined"))
           // Also update game status!
-          update(gameStatusTable)(s =>
-            where(s.id === game_id) set(s.joined_players := s.joined_players.~ + 1))
+          update(gameStatusTable)(g =>
+            where(g.id === game_id) set(g.joined_players := g.joined_players.~ + 1))
           Ok("Joined")
         }
       else
@@ -46,8 +62,22 @@ object JoinGameController extends Controller{
           Ok("Update Player Status is yet to be implemented!")
         }
     }
-
   }
 
+  def filterJoinedPlayers(game_id : Long) : Enumeratee[JsValue, JsValue] = {
+    Enumeratee.filter[JsValue]{
+      ps : JsValue => (ps \ "game_id").as[Long] == game_id
+    }
+  }
+
+  def connDeathWatch(addr: String): Enumeratee[JsValue, JsValue] =
+    Enumeratee.onIterateeDone{ () => println(addr + " - SSE disconnected") }
+
+  def updatedJoinedPlayers(game_id : Long) = Action { req =>
+    Ok.feed(joined_players
+      &> filterJoinedPlayers(game_id)
+      &> connDeathWatch(req.remoteAddress)
+      &> EventSource()).as("text/event-stream")
+  }
   
 }

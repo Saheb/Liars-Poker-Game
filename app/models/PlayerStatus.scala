@@ -17,6 +17,7 @@ object PlayerStatus{
         on(ps.player_id === p.player_id)
     )
   }
+
   implicit object PlayerStatusWrites extends Writes[PlayerStatus]{
     def writes(p : PlayerStatus) = Json.obj(
       "player_id" -> Json.toJson(p.player_id),

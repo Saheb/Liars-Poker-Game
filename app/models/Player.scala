@@ -19,6 +19,9 @@ object Player {
     playerQ.toList
   }
 
+  def getPlayerById(player_id : Long) : Player = from(playerTable)(
+    player => where(player.player_id === player_id) select(player) ).single
+
 //  def insertPlayer(player : Player) : Player = inTransaction{
 //    val defensiveCopy = player.copy() // Why???
 //    playerTable.insert(defensiveCopy)

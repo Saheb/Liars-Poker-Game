@@ -90,9 +90,11 @@
         })
     }
 
-    var event = new EventSource("@routes.CreateGameController.updatedJoinedPlayers(game_id)");
+    var event = new EventSource("@routes.JoinGameController.updatedJoinedPlayers(game_id)");
     event.addEventListener('message', function( event ) {
        console.log(event.data);
+       var player = JSON.parse(event.data);
+       $('<li class="list-group-item">' + player.name + '</li>').appendTo(".list-group")
     }
     );
 

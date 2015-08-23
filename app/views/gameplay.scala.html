@@ -1,6 +1,9 @@
 @(game_id : Long)
 <html>
     <head>
+        <style>
+            #gameStatusModal .modal-dialog  {width:35%;}
+        </style>
         <title>Game Play</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
@@ -9,11 +12,11 @@
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
-            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id +"/gameStatus")
+            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/play")
             ws.onopen = function()
                {
                   // Web Socket is connected, send data using send()
-                  var json = {"name" : "Saheb"}
+                  var json = {"action" : "GameStatus"}
                   ws.send(JSON.stringify(json));
                   console.log("Message is sent...");
                };
@@ -21,6 +24,12 @@
                ws.onmessage = function (evt)
                {
                   var gameStatus = JSON.parse(evt.data);
+                  for(var i=0;i<gameStatus.length;i++)
+                  {
+                    var p = gameStatus[i]
+                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                  }
+                  $("#gameStatusModal").modal("show")
                   console.log(gameStatus);
                };
 
@@ -86,6 +95,25 @@
         </div>
     </nav>
 
+    <div class="modal fade" id="gameStatusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Game Status</h4>
+                </div>
+                <div class="panel-body">
+                    <table id="playerStatusTable" class="table">
+                        <th> Name </th>
+                        <th> Card Count </th>
+                        <th> Position </th>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-md-4">

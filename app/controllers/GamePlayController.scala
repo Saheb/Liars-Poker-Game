@@ -2,7 +2,7 @@ package controllers
 
 import models.Database
 import play.api.libs.iteratee.{Concurrent, Enumerator, Iteratee}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.mvc.{WebSocket, Action, Controller}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.concurrent.Execution.Implicits._
@@ -32,19 +32,28 @@ object GamePlayController extends Controller{
    }
   }
 
-  def gameStatus(game_id : Long) = WebSocket.using[JsValue] { request =>
+  def takeAction(game_id : Long) = WebSocket.using[JsValue] { request =>
+
     //Concurrent.broadcast returns (Enumerator, Concurrent.Channel)
     val (out,channel) = Concurrent.broadcast[JsValue]
 
-    //log the message to stdout and send response back to client
     val in = Iteratee.foreach[JsValue] {
-      msg => println(msg)
-        inTransaction{
-          val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
-          channel push(Json.toJson(playerStatusList))
-        }
-        //the Enumerator returned by Concurrent.broadcast subscribes to the channel and will
-        //receive the pushed messages
+         msg =>
+           {
+             println(msg \ "action")
+             val action = (msg \ "action")
+             action match {
+               case JsString("GameStatus") =>
+                 //log the message to stdout and send response back to client
+                 inTransaction{
+                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
+                   channel push(Json.toJson(playerStatusList))
+                 }
+               //the Enumerator returned by Concurrent.broadcast subscribes to the channel and will
+               //receive the pushed messages
+               case _ => println("This should not be printed....!" + action)
+             }
+           }
     }
     (in,out)
   }

@@ -25,11 +25,11 @@
                {
                   var gameStatus = JSON.parse(evt.data);
                   console.log(gameStatus);
-//                  for(var i=0;i<gameStatus.length;i++)
-//                  {
-//                    var p = gameStatus[i]
-//                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
-//                  }
+                  for(var i=0;i<gameStatus.length;i++)
+                  {
+                    var p = gameStatus[i]
+                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                  }
                   $("#gameStatusModal").modal("show")
                };
 
@@ -177,7 +177,8 @@
          });
 
          $("#okdeal").get(0).onclick = function(){
-            var json = {"action" : "Deal"}
+            var action = (window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
+            var json = {"action" : action , "player_id" : Number(window.sessionStorage.getItem("loginId"))}
             ws.send(JSON.stringify(json));
             console.log("Message is sent! JSON->" + JSON.stringify(json));
          }

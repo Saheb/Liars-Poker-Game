@@ -56,6 +56,7 @@ object GamePlayController extends Controller{
                    channel push(Json.toJson(playerStatusList))
                  }
                case JsString("Deal") =>
+                 //val player_id = msg \ "player"_id"
                  println("Dealing Cards....")
                  val deck = new Deck
                  deck.initialize
@@ -65,19 +66,23 @@ object GamePlayController extends Controller{
                    val playerCardList = Map.empty[Long, String]
                    for (p <- playerStatusList.toList)
                    {
-                     var cards = new StringBuilder(100)
+                     var cards = Seq.empty[String]
                      for(x <- 1 to p.num_of_cards)
                      {
-                       cards ++= deck.pop.toString
+                       cards = cards :+ deck.pop.toString
                      }
                      playerCardList(p.player_id) = cards.mkString(",")
                      println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
                      gamePlayTable.insert(new GamePlay(game_id, game.status,p.player_id,0,cards.mkString(","),"NA" ))
                    }
-                     val gamePlayList = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status) select(gp))
-                     channel push(Json.toJson(gamePlayList))
+                     val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player_id) select(gp))
+                     channel push(Json.toJson(gamePlay))
                  }
-
+               case JsString("GetCards") =>
+                 val player_id = (msg \ "player_id").asInstanceOf[Long]
+                 val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
+                 val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player_id) select(gp))
+                 channel push(Json.toJson(gamePlay))
 
                case _ => println("This should not be printed....!" + action)
              }

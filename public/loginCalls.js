@@ -220,7 +220,7 @@ $("#createGameBtn").get(0).onclick = function() {
             "joined_players": 1,
             "max_players": 5,
             "winner_player": -1,
-            "status": "Waiting"
+            "status": -1
         }
 
         var jqxhr = $.ajax(

@@ -14,11 +14,11 @@ class JoinGameSpec extends FunSuite{
       inTransaction {
         Database.create
         val player = Database.playerTable.insert(new Player(1,"Neel", "neelshah@gmail.com"))
-        val game = Database.gameStatusTable.insert(new GameStatus(1,"Neel's Game", 1, 6, -1, "Waiting"))
-        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id,game.id,1,2,"Admin"))
+        val game = Database.gameStatusTable.insert(new GameStatus(1,"Neel's Game",player.player_id,1, 6, -1, -1))
+        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id,player.name,game.id,1,2,"Admin"))
         val new_player = Database.playerTable.insert(new Player(2, "Saheb", "sm@gmail.com"))
         //new_player joins the game -> Neel's Game
-        val newPlayerStatus = Database.playerStatusTable insert (new PlayerStatus(new_player.player_id,game.id,2,2,"Joined"))
+        val newPlayerStatus = Database.playerStatusTable insert (new PlayerStatus(new_player.player_id,new_player.name,game.id,2,2,"Joined"))
         // we also need to update game status as 2 player have joined the game!
         //val newGameStatus = game.copy(joined_players = game.joined_players + 1)
 

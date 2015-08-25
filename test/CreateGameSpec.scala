@@ -13,8 +13,8 @@ class CreateGameSpec extends FunSuite{
       inTransaction {
         Database.create
         val player = Database.playerTable.insert(new Player(1,"Neel", "neelshah@gmail.com"))
-        val game = Database.gameStatusTable.insert(new GameStatus(1,"Neel's Game", 1, 6, -1, "Waiting"))
-        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id,game.id,1,2,"Admin"))
+        val game = Database.gameStatusTable.insert(new GameStatus(1,"Neel's Game",player.player_id, 1, 6, -1, -1))
+        val playerStatus = Database.playerStatusTable insert (new PlayerStatus(player.player_id,player.name,game.id,1,2,"Admin"))
         assert(game.id == 1)
         assert(playerStatus.game_id==game.id)
         assert(playerStatus.num_of_cards == 2)

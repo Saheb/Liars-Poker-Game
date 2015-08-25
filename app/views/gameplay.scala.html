@@ -24,13 +24,13 @@
                ws.onmessage = function (evt)
                {
                   var gameStatus = JSON.parse(evt.data);
-                  for(var i=0;i<gameStatus.length;i++)
-                  {
-                    var p = gameStatus[i]
-                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
-                  }
-                  $("#gameStatusModal").modal("show")
                   console.log(gameStatus);
+//                  for(var i=0;i<gameStatus.length;i++)
+//                  {
+//                    var p = gameStatus[i]
+//                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+//                  }
+                  $("#gameStatusModal").modal("show")
                };
 
                ws.onclose = function()
@@ -110,6 +110,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
+                    <button id="okdeal" type="button" class="btn btn-default" data-dismiss="modal">Okay, Deal!</button>
                 </div>
             </div>
         </div>
@@ -174,6 +175,18 @@
          $(".btn-group > .btn").click(function(){
             $(this).addClass("active").siblings().removeClass("active");
          });
+
+         $("#okdeal").get(0).onclick = function(){
+            var json = {"action" : "Deal"}
+            ws.send(JSON.stringify(json));
+            console.log("Message is sent! JSON->" + JSON.stringify(json));
+         }
+
+//           ws.onmessage = function (evt)
+//           {
+//                  var gameStatus = JSON.parse(evt.data);
+//                  console.log(gameStatus);
+//           };
     </script>
 </body>
 <html>

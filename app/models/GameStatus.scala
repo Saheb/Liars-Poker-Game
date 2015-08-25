@@ -16,7 +16,7 @@ object GameStatus {
   ).single
 
   def getGame : Query[GameStatus] = from(Database.gameStatusTable) {
-    game => where(game.status === "Waiting") select(game)
+    game => where(game.status === -1) select(game)
   }
 
   def getGameList : Iterable[GameStatus] = inTransaction {
@@ -40,7 +40,7 @@ object GameStatus {
       (JsPath \ "joined_players").read[Int] and
       (JsPath \ "max_players").read[Int] and
         (JsPath \ "winner_player").read[Long] and
-        (JsPath \ "status").read[String]
+        (JsPath \ "status").read[Int]
   )(GameStatus.apply _)
 }
 
@@ -52,7 +52,7 @@ case class GameStatus(
                        joined_players : Int,
                        max_players : Int,
                        winner_player : Long,
-                       status : String
+                       status : Int
                        ) extends KeyedEntity[Long]
 {
   def game_id : Long = id

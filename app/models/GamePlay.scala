@@ -9,6 +9,7 @@ object GamePlay {
   implicit object GamePlayWrites extends Writes[GamePlay] {
     def writes(game : GamePlay) = Json.obj(
       "game_id" -> Json.toJson(game.game_id),
+      "player_id" -> Json.toJson(game.player_id),
       "round_number" -> Json.toJson(game.round_number),
       "turn_number" -> Json.toJson(game.turn_number),
       "hand" -> Json.toJson(game.hand),

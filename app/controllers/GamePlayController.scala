@@ -1,7 +1,7 @@
 package controllers
 
-import models.{GamePlay, Database}
-import play.api.libs.iteratee.{Concurrent, Enumerator, Iteratee}
+import models.{Player, GamePlay, Database}
+import play.api.libs.iteratee.{Enumeratee, Concurrent, Enumerator, Iteratee}
 import play.api.libs.json._
 import play.api.mvc.{WebSocket, Action, Controller}
 import org.squeryl.PrimitiveTypeMode._
@@ -38,11 +38,13 @@ object GamePlayController extends Controller{
   def takeAction(game_id : Long) = WebSocket.using[JsValue] { request =>
 
     //Concurrent.broadcast returns (Enumerator, Concurrent.Channel)
+    println(request.id, request.remoteAddress)
     val (out,channel) = Concurrent.broadcast[JsValue]
-
+    println(out.toString, channel.toString)
     //the Enumerator returned by Concurrent.broadcast subscribes to the channel and will
     //receive the pushed messages
 
+    val gameFilter = Enumeratee.filter[JsValue](g => true)
     val in = Iteratee.foreach[JsValue] {
          msg =>
            {
@@ -56,7 +58,7 @@ object GamePlayController extends Controller{
                    channel push(Json.toJson(playerStatusList))
                  }
                case JsString("Deal") =>
-                 //val player_id = msg \ "player"_id"
+                 val player = (msg \ "player").as[Player]
                  println("Dealing Cards....")
                  val deck = new Deck
                  deck.initialize
@@ -75,20 +77,22 @@ object GamePlayController extends Controller{
                      println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
                      gamePlayTable.insert(new GamePlay(game_id, game.status,p.player_id,0,cards.mkString(","),"NA" ))
                    }
-                     val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player_id) select(gp))
+                     val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
                      channel push(Json.toJson(gamePlay))
                  }
                case JsString("GetCards") =>
-                 val player_id = (msg \ "player_id").asInstanceOf[Long]
-                 val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
-                 val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player_id) select(gp))
-                 channel push(Json.toJson(gamePlay))
+                 val player = (msg \ "player").as[Player]
+                 inTransaction{
+                   val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
+                   val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
+                   channel push(Json.toJson(gamePlay))
+                 }
 
                case _ => println("This should not be printed....!" + action)
              }
            }
     }
-    (in,out)
+    (in,out.through(gameFilter))
   }
 
   def dealCards(game_id : Long) = Action {

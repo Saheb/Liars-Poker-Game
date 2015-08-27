@@ -11,4 +11,4 @@ before_script:
 script: play-${PLAY_VERSION}/play test
 notifications:
   email:
-    - sahebmotiani@gmail.com
+    - saheb210692@gmail.com

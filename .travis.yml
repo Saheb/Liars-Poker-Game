@@ -2,9 +2,10 @@ language: scala
 scala:
   - 2.10.3
 jdk: oraclejdk7
+env:
+  - PLAY_VERSION=2.2.6
 notifications:
   email:
     - sahebmotiani@gmail.com
-
 script:
   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile

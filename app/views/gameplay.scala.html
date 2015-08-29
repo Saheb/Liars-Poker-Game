@@ -12,32 +12,34 @@
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
-            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/play")
-            ws.onopen = function()
-               {
-                  // Web Socket is connected, send data using send()
-                  var json = {"action" : "GameStatus"}
-                  ws.send(JSON.stringify(json));
-                  console.log("Message is sent...");
-               };
+            var player_id = Number(window.sessionStorage.getItem("loginId"))
+            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/" + player_id +  "/play")
+                ws.onopen = function()
+                {
+                    // Web Socket is connected, send data using send()
+                    var json = {"action" : "GameStatus"}
+                    ws.send(JSON.stringify(json));
+                    console.log("Message is sent...");
+                };
 
-               ws.onmessage = function (evt)
-               {
-                  var gameStatus = JSON.parse(evt.data);
-                  console.log(gameStatus);
-                  for(var i=0;i<gameStatus.length;i++)
-                  {
-                    var p = gameStatus[i]
-                    $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
-                  }
-                  $("#gameStatusModal").modal("show")
-               };
+                ws.onmessage = function (evt)
+                {
+                    var gameStatus = JSON.parse(evt.data);
+                    console.log(gameStatus);
+                    $('#playerStatusTable td').remove();
+                    for(var i=0;i<gameStatus.length;i++)
+                    {
+                        var p = gameStatus[i]
+                        $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                    }
+                    $("#gameStatusModal").modal("show")
+                };
 
-               ws.onclose = function()
-               {
-                  // websocket is closed.
-                  console.log("Connection is closed...");
-               };
+                ws.onclose = function()
+                {
+                    // websocket is closed.
+                    console.log("Connection is closed...");
+                };
         </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
@@ -177,7 +179,7 @@
          });
 
          $("#okdeal").get(0).onclick = function(){
-            var action = (window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
+            var action = "Bet";//(window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
             var player = {
                 "id" : Number(window.sessionStorage.getItem("loginId")),
                 "name" : window.sessionStorage.getItem("loginName"),
@@ -188,11 +190,6 @@
             console.log("Message is sent! JSON->" + JSON.stringify(json));
          }
 
-//           ws.onmessage = function (evt)
-//           {
-//                  var gameStatus = JSON.parse(evt.data);
-//                  console.log(gameStatus);
-//           };
     </script>
 </body>
 <html>

@@ -16,6 +16,8 @@
             window.sessionStorage.setItem("handType", "NA")
             window.sessionStorage.setItem("valueType", "NA")
             window.sessionStorage.setItem("suitType", "NA")
+            window.sessionStorage.setItem("turn_number", "NA")
+            window.sessionStorage.setItem("round_number", "NA")
 
             var player_id = Number(window.sessionStorage.getItem("loginId"))
             var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/" + player_id +  "/play")

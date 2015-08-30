@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Player, GamePlay, Database}
+import models.{GameHand, Player, GamePlay, Database}
 import play.api.libs.iteratee.Concurrent.Channel
 import play.api.libs.iteratee.{Enumeratee, Concurrent, Enumerator, Iteratee}
 import play.api.libs.json._
@@ -28,6 +28,14 @@ object GamePlayController extends Controller{
     Ok(views.html.gameplay(game_id))
   }
 
+  def continueGamePlay(game_id : Long) = Action {
+    inTransaction {
+      update(gameStatusTable)(g =>
+        where(g.game_id === game_id) set (g.status := g.status.~ + 1)) // This indicates current round number!
+    }
+    Ok("Updated the round number!")
+  }
+
   def hasGameStarted(game_id  :Long) = Action {
     inTransaction{
     val selectGameStatus = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
@@ -39,7 +47,6 @@ object GamePlayController extends Controller{
   }
 
   def dealCards(game_id : Long) = Action {
-    //val player = (msg \ "player").as[Player]
     println("Dealing Cards....")
     val deck = new Deck
     deck.initialize
@@ -56,7 +63,7 @@ object GamePlayController extends Controller{
         }
         playerCardList(p.player_id) = cards.mkString(",")
         println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
-        gamePlayTable.insert(new GamePlay(game_id, game.status,p.player_id,0,cards.mkString(","),"NA" ))
+        gameHandTable.insert(new GameHand(game_id, game.status,p.player_id,cards.mkString(",")))
       }
     }
     Ok("Cards are dealt")
@@ -67,8 +74,8 @@ object GamePlayController extends Controller{
     val player = playerJson.as[Player]
     inTransaction{
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
-      val gamePlay = from(gamePlayTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
-      Ok(Json.toJson(gamePlay))
+      val gameHand = from(gameHandTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
+      Ok(Json.toJson(gameHand))
     }
   }
 
@@ -91,9 +98,10 @@ object GamePlayController extends Controller{
              action match {
                case JsString("GameStatus") =>
                  //log the message to stdout and send response back to client
+                 val player = (msg \ "player").as[Player]
                  inTransaction{
                    val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
-                   val channels = socketMap.filter(p => p._1._1 == game_id)
+                   val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 == player.player_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList)))
                  }
 
@@ -101,10 +109,17 @@ object GamePlayController extends Controller{
                  inTransaction
                  {
                    // persist bet and then push to all channels, as done above in GameStatus case!
-
+                   val player = (msg \ "player").as[Player]
+                   val bet = (msg \ "bet").as[GamePlay]
+                   val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
+                   channels.foreach(f => f._2._2 push(Json.toJson(bet)))
+                   inTransaction{
+                     // val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
+                     // insert the bet into GamePlay
+                   }
                  }
 
-               case JsString("Challenge")=>
+               case JsString("Challenge") =>
 
                case _ => println("This should not be printed....!" + action)
              }

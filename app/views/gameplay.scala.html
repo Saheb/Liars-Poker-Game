@@ -12,27 +12,44 @@
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
+
+            window.sessionStorage.setItem("handType", "NA")
+            window.sessionStorage.setItem("valueType", "NA")
+            window.sessionStorage.setItem("suitType", "NA")
+
             var player_id = Number(window.sessionStorage.getItem("loginId"))
             var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/" + player_id +  "/play")
                 ws.onopen = function()
                 {
                     // Web Socket is connected, send data using send()
-                    var json = {"action" : "GameStatus"}
+                    var player = {
+                        "id" : Number(window.sessionStorage.getItem("loginId")),
+                        "name" : window.sessionStorage.getItem("loginName"),
+                        "email" : window.sessionStorage.getItem("loginEmail")
+                    }
+                    var json = {"action" : "GameStatus", "player" : player}
                     ws.send(JSON.stringify(json));
                     console.log("Message is sent...");
                 };
 
                 ws.onmessage = function (evt)
                 {
-                    var gameStatus = JSON.parse(evt.data);
-                    console.log(gameStatus);
-                    $('#playerStatusTable td').remove();
-                    for(var i=0;i<gameStatus.length;i++)
+                    var gameStatusOrBet = JSON.parse(evt.data);
+                    console.log(gameStatusOrBet);
+                    if(gameStatusOrBet.length > 1) // This is check for socket message is game status or a bet!!
                     {
-                        var p = gameStatus[i]
-                        $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                        $('#playerStatusTable td').remove();
+                        for(var i=0;i<gameStatusOrBet.length;i++)
+                        {
+                            var p = gameStatusOrBet[i]
+                            $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                        }
+                        $("#gameStatusModal").modal("show")
                     }
-                    $("#gameStatusModal").modal("show")
+                    else
+                    {
+                        $("#previousBet").get(0).innerHTML = "Previous Bet : " + gameStatusOrBet.bet
+                    }
                 };
 
                 ws.onclose = function()
@@ -120,7 +137,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <div class="btn btn-group-vertical">
+                <div id="handType" class="btn btn-group-vertical">
                     <button type="button" class="btn btn-default">Royal Flush</button>
                     <button type="button" class="btn btn-default">Striagh Flush</button>
                     <button type="button" class="btn btn-default">Four of a Kind</button>
@@ -133,7 +150,7 @@
                     <button type="button" class="btn btn-default">High Card</button>
                 </div>
                 <div class="btn btn-toolbar">
-                    <div class="btn btn-group-vertical">
+                    <div id="valueType" class="btn btn-group-vertical">
                         <button type="button" class="btn btn-default">A</button>
                         <button type="button" class="btn btn-default">K</button>
                         <button type="button" class="btn btn-default">Q</button>
@@ -151,19 +168,19 @@
                     <div class="btn btn-group-vertical">
                     </div>
                 </div>
-                <div class="btn-group">
+                <div id="suitType" class="btn-group">
                     <button type="button" class="btn btn-default">Spades</button>
                     <button type="button" class="btn btn-default">Diamonds</button>
                     <button type="button" class="btn btn-default">Clubs</button>
                     <button type="button" class="btn btn-default">Hearts</button>
                 </div>
                 <div class="btn btn-group-lg text-center">
-                    <button type="button" class="btn btn-success btn-lg">Bet</button>
-                    <button type="button" class="btn btn-danger btn-lg">Challenge</button>
+                    <button id="betBtn" type="button" class="btn btn-success btn-lg">Bet</button>
+                    <button id="challengeBtn" type="button" class="btn btn-danger btn-lg">Challenge</button>
                 </div>
             </div>
             <div class="col-md-5 col-md-offset-1">
-                <div class="alert alert-info text-center" role="alert"><b>Previous Bet : High Card Ace</b></div>
+                <b><div id="previousBet" class="alert alert-info text-center" role="alert">Previous Bet : HighCard_2</div><b/>
                 <canvas id="canvas" resize="true"></canvas>
             </div>
         </div>
@@ -179,15 +196,83 @@
          });
 
          $("#okdeal").get(0).onclick = function(){
-            var action = "Bet";//(window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
+            //var action = "GetCards";//(window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
+            var isAdmin = window.sessionStorage.getItem("isAdmin")==="true"
             var player = {
                 "id" : Number(window.sessionStorage.getItem("loginId")),
                 "name" : window.sessionStorage.getItem("loginName"),
                 "email" : window.sessionStorage.getItem("loginEmail")
             }
-            var json = {"action" : action , "player" : player }
+            if(isAdmin){
+                $.ajax({
+                url : '/gamePlay/' + @game_id + '/' + 'dealCards',
+                data : JSON.stringify(player),
+                type : 'GET',
+                success : function(response) {
+                    console.log("Dealt the cards!");
+                    console.log(response)
+                        $.ajax({
+                        url : '/gamePlay/' + @game_id + '/' + 'getCards',
+                        data : JSON.stringify(player),
+                        type : 'POST',
+                        contentType : 'application/json',
+                        success : function(response) {
+                            console.log("Received your cards!");
+                            console.log(response)
+                            }
+                        })
+                    }
+                })
+            }
+            else
+            {
+                $.ajax({
+                url : '/gamePlay/' + @game_id + '/' + 'getCards',
+                data : JSON.stringify(player),
+                type : 'POST',
+                contentType : 'application/json',
+                success : function(response) {
+                    console.log("Received your cards!");
+                    console.log(response)
+                    }
+                })
+            }
+
+            console.log("Message is sent! JSON->" + JSON.stringify(player));
+         }
+
+         $("#handType").get(0).onclick= function(btn){
+            window.sessionStorage.setItem("handType" ,btn.target.textContent)
+         }
+
+         $("#valueType").get(0).onclick= function(btn){
+            window.sessionStorage.setItem("valueType" ,btn.target.textContent)
+         }
+
+         $("#suitType").get(0).onclick= function(btn){
+            window.sessionStorage.setItem("suitType" ,btn.target.textContent)
+         }
+
+         $("#betBtn").get(0).onclick = function() {
+            // validate the bet by comparing with previous bet from SS.
+            var player = {
+                        "id" : Number(window.sessionStorage.getItem("loginId")),
+                        "name" : window.sessionStorage.getItem("loginName"),
+                        "email" : window.sessionStorage.getItem("loginEmail")
+                    }
+
+            var store = window.sessionStorage
+            var bet = {
+                "game_id" : @game_id,
+                "round_number" : 1,//window.sessionStorage.getItem("round_number"),
+                "turn_number" : 1,//window.sessionStorage.getItem("turn_number"),
+                "player_id" : player.id,
+                "bet" : store.getItem("handType") + "_" + store.getItem("valueType") + "_" + store.getItem("suitType")
+            }
+            var json = {"action" : "Bet", "player" : player, "bet" : bet}
             ws.send(JSON.stringify(json));
-            console.log("Message is sent! JSON->" + JSON.stringify(json));
+            $("#previousBet").get(0).innerHTML = " Previous Bet :" + bet.bet
+            console.log("Bet is sent...");
          }
 
     </script>

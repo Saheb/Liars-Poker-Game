@@ -24,7 +24,8 @@ GET         /gamePlay/:game_id                        controllers.GamePlayContro
 GET         /gamePlay/gameStarted/:game_id            controllers.GamePlayController.hasGameStarted(game_id : Long)
 
 GET          /gamePlay/:game_id/:player_id/play       controllers.GamePlayController.takeAction(game_id :Long, player_id : Long)
-#GET         /gamePlay/:game_id/deal                  controllers.GamePlayController.dealCards(game_id : Long)
+GET          /gamePlay/:game_id/dealCards             controllers.GamePlayController.dealCards(game_id : Long)
+POST         /gamePlay/:game_id/getCards              controllers.GamePlayController.getCards(game_id : Long)
 #PUT         /gamePlay/:game_id/                      controllers.GamePlayController.persistBet(game_id :Long)
 
 # Map static resources from the /public folder to the /assets URL path

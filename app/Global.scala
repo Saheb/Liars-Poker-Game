@@ -17,6 +17,5 @@ object Global extends GlobalSettings{
       inTransaction {
         //Database.create
       }
-
   }
 }

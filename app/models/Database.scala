@@ -14,6 +14,7 @@ object Database extends Schema{
   val playerStatusTable = table[PlayerStatus]("player_status")
   val gameStatusTable = table[GameStatus]("game_status")
   val roundResultTable = table[RoundResult]("round_result")
+  val gameHandTable = table[GameHand]("game_hand")
 
   on(playerTable) {
     p => declare{

@@ -39,7 +39,7 @@ class Deck(val numOfCards : Int = 52) {
   }
 }
 
-object test extends App{
+object Deck extends App{
   val deck = new Deck()
   deck.initialize
   for(i<- 0 until deck.numOfCards)

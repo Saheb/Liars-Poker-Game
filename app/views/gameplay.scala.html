@@ -141,7 +141,7 @@
             <div class="col-md-4">
                 <div id="handType" class="btn btn-group-vertical">
                     <button type="button" class="btn btn-default">Royal Flush</button>
-                    <button type="button" class="btn btn-default">Striagh Flush</button>
+                    <button type="button" class="btn btn-default">Straight Flush</button>
                     <button type="button" class="btn btn-default">Four of a Kind</button>
                     <button type="button" class="btn btn-default">Full House</button>
                     <button type="button" class="btn btn-default">Flush</button>
@@ -176,25 +176,31 @@
                     <button type="button" class="btn btn-default">Clubs</button>
                     <button type="button" class="btn btn-default">Hearts</button>
                 </div>
+
+            </div>
+            <div class="col-md-3">
                 <div class="btn btn-group-lg text-center">
-                    <button id="betBtn" type="button" class="btn btn-success btn-lg">Bet</button>
+                    <button id="betBtn" type="button" class="btn btn-info btn-lg">Bet</button>
                     <button id="challengeBtn" type="button" class="btn btn-danger btn-lg">Challenge</button>
                 </div>
+                <div id="cards">
+
+                </div>
             </div>
-            <div class="col-md-5 col-md-offset-1">
-                <b><div id="previousBet" class="alert alert-info text-center" role="alert">Previous Bet : HighCard_2</div><b/>
+            <div class="col-md-5">
+                <div id="previousBet" class="alert alert-info text-center" role="alert">Previous Bet : HighCard_2</div>
                 <canvas id="canvas" resize="true"></canvas>
             </div>
         </div>
     </div>
 
     <script>
-         $(".btn-group-vertical > .btn").click(function(){
-            $(this).addClass("active").siblings().removeClass("active");
+         $(".btn-group-vertical > .btn").click(function() {
+             $(this).addClass("active").siblings().removeClass("active");
          });
 
-         $(".btn-group > .btn").click(function(){
-            $(this).addClass("active").siblings().removeClass("active");
+         $(".btn-group > .btn").click(function() {
+             $(this).addClass("active").siblings().removeClass("active");
          });
 
          $("#okdeal").get(0).onclick = function(){
@@ -221,6 +227,14 @@
                         success : function(response) {
                             console.log("Received your cards!");
                             console.log(response)
+                            var cards = response[0].hand.split(",")
+                            for(var i=0;i<cards.length;i++)
+                                {
+                                    var srcString = "/assets/cards/images/" + cards[i] + ".png";
+                                    var img = $('<img id="dynamic" width="80" height="120" hspace="10">'); //Equivalent: $(document.createElement('img'))
+                                    img.attr('src', srcString);
+                                    img.appendTo('#cards');
+                                }
                             }
                         })
                     }
@@ -235,46 +249,57 @@
                 contentType : 'application/json',
                 success : function(response) {
                     console.log("Received your cards!");
-                    console.log(response)
+                    console.log(response);
+                     var cards = response[0].hand.split(",")
+                     for(var i=0;i<cards.length;i++)
+                        {
+                            var srcString = "/assets/cards/images/" + cards[i] + ".png";
+                            var img = $('<img id="dynamic" width="80" height="120" hspace="10">'); //Equivalent: $(document.createElement('img'))
+                            img.attr('src', srcString);
+                            img.appendTo('#cards');
+                        }
                     }
                 })
             }
-
             console.log("Message is sent! JSON->" + JSON.stringify(player));
          }
 
-         $("#handType").get(0).onclick= function(btn){
-            window.sessionStorage.setItem("handType" ,btn.target.textContent)
+
+         $("#handType").get(0).onclick = function(btn) {
+             window.sessionStorage.setItem("handType", btn.target.textContent)
          }
 
-         $("#valueType").get(0).onclick= function(btn){
-            window.sessionStorage.setItem("valueType" ,btn.target.textContent)
+         $("#valueType").get(0).onclick = function(btn) {
+             window.sessionStorage.setItem("valueType", btn.target.textContent)
          }
 
-         $("#suitType").get(0).onclick= function(btn){
-            window.sessionStorage.setItem("suitType" ,btn.target.textContent)
+         $("#suitType").get(0).onclick = function(btn) {
+             window.sessionStorage.setItem("suitType", btn.target.textContent)
          }
 
          $("#betBtn").get(0).onclick = function() {
-            // validate the bet by comparing with previous bet from SS.
-            var player = {
-                        "id" : Number(window.sessionStorage.getItem("loginId")),
-                        "name" : window.sessionStorage.getItem("loginName"),
-                        "email" : window.sessionStorage.getItem("loginEmail")
-                    }
-
-            var store = window.sessionStorage
-            var bet = {
-                "game_id" : @game_id,
-                "round_number" : 1,//window.sessionStorage.getItem("round_number"),
-                "turn_number" : 1,//window.sessionStorage.getItem("turn_number"),
-                "player_id" : player.id,
-                "bet" : store.getItem("handType") + "_" + store.getItem("valueType") + "_" + store.getItem("suitType")
-            }
-            var json = {"action" : "Bet", "player" : player, "bet" : bet}
-            ws.send(JSON.stringify(json));
-            $("#previousBet").get(0).innerHTML = " Previous Bet :" + bet.bet
-            console.log("Bet is sent...");
+             // validate the bet by comparing with previous bet from SS.
+             var player = {
+                 "id": Number(window.sessionStorage.getItem("loginId")),
+                 "name": window.sessionStorage.getItem("loginName"),
+                 "email": window.sessionStorage.getItem("loginEmail")
+             }
+             var store = window.sessionStorage
+             var bet = {
+                 "game_id": @game_id,
+                 "round_number": 1, //window.sessionStorage.getItem("round_number"),
+                 "turn_number": 1, //window.sessionStorage.getItem("turn_number"),
+                 "player_id": player.id,
+                 "bet": store.getItem("handType") + "_" + store.getItem("valueType") + "_" + store.getItem("suitType")
+             }
+             var json = {
+                 "action": "Bet",
+                 "player": player,
+                 "bet": bet
+             }
+             ws.send(JSON.stringify(json));
+             $("#previousBet").get(0).innerHTML = " Previous Bet :" + bet.bet
+             console.log("Bet is sent...");
          }
 
     </script>

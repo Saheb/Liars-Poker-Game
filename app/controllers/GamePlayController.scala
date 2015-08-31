@@ -1,5 +1,6 @@
 package controllers
 
+import util.Card
 import models.{GameHand, Player, GamePlay, Database}
 import play.api.libs.iteratee.Concurrent.Channel
 import play.api.libs.iteratee.{Enumeratee, Concurrent, Enumerator, Iteratee}
@@ -59,7 +60,8 @@ object GamePlayController extends Controller{
         var cards = Seq.empty[String]
         for(x <- 1 to p.num_of_cards)
         {
-          cards = cards :+ deck.pop.toString
+          val card = new Card(deck.pop)
+          cards = cards :+ (card.getValue.toString concat card.getSuit.toString)
         }
         playerCardList(p.player_id) = cards.mkString(",")
         println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))

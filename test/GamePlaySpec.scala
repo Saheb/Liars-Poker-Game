@@ -30,16 +30,16 @@ class GamePlaySpec extends FunSuite{
         //assert(selectGame.status.equals(0))
 
         //Dealing of cards happens.
-        val gamePlayRecord = Database.gamePlayTable.insert(new GamePlay(game.id, 0, player.player_id, 0, "23,42", "NA"))
-        val gamePlayRecord_2 = Database.gamePlayTable.insert(new GamePlay(game.id, 0, new_player.player_id, 0, "31,12", "NA"))
+        val gamePlayRecord = Database.gamePlayTable.insert(new GamePlay(game.id, 0, player.player_id, 0, "NA"))
+        val gamePlayRecord_2 = Database.gamePlayTable.insert(new GamePlay(game.id, 0, new_player.player_id, 0, "NA"))
 
         //Round #1 Turn #1
-        val player_round_1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, player.player_id, 1, "23,42", "High_8_NA_NA"))
-        val new_player_round1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, new_player.player_id, 1, "31,12", "High_K_NA_NA"))
+        val player_round_1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, player.player_id, 1,  "High_8_NA_NA"))
+        val new_player_round1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, new_player.player_id, 1, "High_K_NA_NA"))
 
         //Round #1 Turn #2
-        val player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, player.player_id, 2, "23,42", "High_A_NA_NA"))
-        val new_player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, new_player.player_id, 2, "23,42", "Pair_A_NA_NA"))
+        val player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, player.player_id, 2, "High_A_NA_NA"))
+        val new_player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, new_player.player_id, 2,"Pair_A_NA_NA"))
 
         // player challenge new_player
         // We check all cards to form Ace Pair, it doesn't then player wins. If it does new_player wins.

@@ -16,9 +16,9 @@ class Card(val id : Int) {
   def getSuit = suitMap.getOrElse(id/13,None)
 
   def getValue  = {
-    if(id%13==0)
-      valueMap.get(0)
-    if(id % 13 < 10)
+    if(id%13 == 0)
+      valueMap.get(0).get
+    else if(id % 13 < 10)
       (id%13 + 1).toString()
     else
       valueMap.getOrElse(id%13, None)

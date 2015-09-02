@@ -30,10 +30,10 @@ var card_score = {
     "2"     : 2
 };
 var suit_score = {
-    "s"   : 4,
-    "d" : 3,
-    "c"    : 2,
-    "h"   : 1
+    "Spades"   : 4,
+    "Diamonds" : 3,
+    "Clubs"    : 2,
+    "Hearts"   : 1
 };
 
 function compare(current_bet,last_bet)
@@ -100,13 +100,13 @@ function compare(current_bet,last_bet)
 
 function call()
 {
-    current = new Object();
+    var current = new Object();
     current.Hand = window.sessionStorage.getItem("handType")
     current.Card1 = window.sessionStorage.getItem("valueType")
     current.Card2 = window.sessionStorage.getItem("value2Type")
     current.Suit = window.sessionStorage.getItem("suitType")
     current.NumberOfCards = 5;
-    previous = new Object();
+    var previous = new Object();
     previous.Hand = $("#cu_handType").text();
     previous.Card1 = $("#cu_valueType").text();
     previous.Card2 = $("#cu_value2Type").text();

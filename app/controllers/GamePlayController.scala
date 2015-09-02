@@ -24,17 +24,17 @@ object GamePlayController extends Controller{
   def startGamePlay(game_id : Long) = Action {
     inTransaction {
       update(gameStatusTable)(g =>
-        where(g.game_id === game_id) set (g.status := 0)) // This indicates current round number!
+        where(g.game_id === game_id and g.status===(-1)) set (g.status := 0)) // This indicates current round number!
     }
     Ok(views.html.gameplay(game_id))
   }
 
-  def continueGamePlay(game_id : Long) = Action {
+  def continueGamePlay(game_id : Long) = {
     inTransaction {
       update(gameStatusTable)(g =>
-        where(g.game_id === game_id) set (g.status := g.status.~ + 1)) // This indicates current round number!
+        where(g.game_id === game_id) set (g.status := (g.status.~ + 1))) // This indicates current round number!
     }
-    Ok("Updated the round number!")
+    //Ok("Updated the round number!")
   }
 
   def hasGameStarted(game_id  :Long) = Action {
@@ -51,9 +51,12 @@ object GamePlayController extends Controller{
     println("Dealing Cards....")
     val deck = new Deck
     deck.initialize
+
     inTransaction{
       val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
+      continueGamePlay(game_id) // this will change round_number
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
+      println(s"Round_Number=${game.status} begins.....")
       val playerCardList = Map.empty[Long, String]
       for (p <- playerStatusList.toList)
       {
@@ -83,6 +86,8 @@ object GamePlayController extends Controller{
 
   def takeAction(game_id : Long, player_id : Long) = WebSocket.using[JsValue] { request =>
 
+    println(s"Game_Id = ${game_id}, Player_Id = ${player_id}")
+
     val (out,channel) = socketMap.get((game_id,player_id)).getOrElse(Concurrent.broadcast[JsValue])
 
     if(!socketMap.contains((game_id,player_id)))
@@ -110,14 +115,14 @@ object GamePlayController extends Controller{
                case JsString("Bet") =>
                  inTransaction
                  {
+                   println(msg \ "bet")
                    // persist bet and then push to all channels, as done above in GameStatus case!
                    val player = (msg \ "player").as[Player]
                    val bet = (msg \ "bet").as[GamePlay]
                    val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(bet)))
                    inTransaction{
-                     // val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
-                     // insert the bet into GamePlay
+                     //gamePlayTable.insert(new GamePlay(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
                  }
 

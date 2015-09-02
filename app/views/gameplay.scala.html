@@ -17,59 +17,14 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
         <script>
+            var GAME_ID = @game_id
             function checkLogin() {
              if(window.sessionStorage.length!=0)
                 document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
             }
-
-            window.sessionStorage.setItem("handType", "NA")
-            window.sessionStorage.setItem("valueType", "NA")
-            window.sessionStorage.setItem("value2Type", "NA")
-            window.sessionStorage.setItem("suitType", "NA")
-            window.sessionStorage.setItem("turn_number", "NA")
-            window.sessionStorage.setItem("round_number", "NA")
-
-            var player_id = Number(window.sessionStorage.getItem("loginId"))
-            var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ @game_id + "/" + player_id +  "/play")
-                ws.onopen = function()
-                {
-                    // Web Socket is connected, send data using send()
-                    var player = {
-                        "id" : Number(window.sessionStorage.getItem("loginId")),
-                        "name" : window.sessionStorage.getItem("loginName"),
-                        "email" : window.sessionStorage.getItem("loginEmail")
-                    }
-                    var json = {"action" : "GameStatus", "player" : player}
-                    ws.send(JSON.stringify(json));
-                    console.log("Message is sent...");
-                };
-
-                ws.onmessage = function (evt)
-                {
-                    var gameStatusOrBet = JSON.parse(evt.data);
-                    console.log(gameStatusOrBet);
-                    if(gameStatusOrBet.length > 1) // This is check for socket message is game status or a bet!!
-                    {
-                        $('#playerStatusTable td').remove();
-                        for(var i=0;i<gameStatusOrBet.length;i++)
-                        {
-                            var p = gameStatusOrBet[i]
-                            $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
-                        }
-                        $("#gameStatusModal").modal("show")
-                    }
-                    else
-                    {
-                        $("#previousBet").get(0).innerHTML = "Previous Bet : " + gameStatusOrBet.bet
-                    }
-                };
-
-                ws.onclose = function()
-                {
-                    // websocket is closed.
-                    console.log("Connection is closed...");
-                };
         </script>
+            <!-- Web sockets messages and communication -->
+        <script src="@routes.Assets.at("sockets.js")"></script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
 
@@ -221,128 +176,6 @@
         </div>
     </div>
 
-    <script>
-         $(".btn-group-vertical > .btn").click(function() {
-             $(this).addClass("active").siblings().removeClass("active");
-         });
-
-         $(".btn-group > .btn").click(function() {
-             $(this).addClass("active").siblings().removeClass("active");
-         });
-
-         $("#okdeal").get(0).onclick = function(){
-            //var action = "GetCards";//(window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
-            var isAdmin = window.sessionStorage.getItem("isAdmin")==="true"
-            var player = {
-                "id" : Number(window.sessionStorage.getItem("loginId")),
-                "name" : window.sessionStorage.getItem("loginName"),
-                "email" : window.sessionStorage.getItem("loginEmail")
-            }
-            if(isAdmin){
-                $.ajax({
-                url : '/gamePlay/' + @game_id + '/' + 'dealCards',
-                data : JSON.stringify(player),
-                type : 'GET',
-                success : function(response) {
-                    console.log("Dealt the cards!");
-                    console.log(response)
-                        $.ajax({
-                        url : '/gamePlay/' + @game_id + '/' + 'getCards',
-                        data : JSON.stringify(player),
-                        type : 'POST',
-                        contentType : 'application/json',
-                        success : function(response) {
-                            console.log("Received your cards!");
-                            console.log(response)
-                            var cards = response[0].hand.split(",")
-                            for(var i=0;i<cards.length;i++)
-                                {
-                                    var srcString = "/assets/cards/images/" + cards[i] + ".png";
-                                    var img = $('<img id="dynamic" class="card" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                                    img.attr('src', srcString);
-                                    img.appendTo('#cards');
-                                }
-                            }
-                        })
-                    }
-                })
-            }
-            else
-            {
-                $.ajax({
-                url : '/gamePlay/' + @game_id + '/' + 'getCards',
-                data : JSON.stringify(player),
-                type : 'POST',
-                contentType : 'application/json',
-                success : function(response) {
-                    console.log("Received your cards!");
-                    console.log(response);
-                     var cards = response[0].hand.split(",")
-                     for(var i=0;i<cards.length;i++)
-                        {
-                            var srcString = "/assets/cards/images/" + cards[i] + ".png";
-                            var img = $('<img id="dynamic" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                            img.attr('src', srcString);
-                            img.appendTo('#cards');
-                        }
-                    }
-                })
-            }
-            console.log("Message is sent! JSON->" + JSON.stringify(player));
-         }
-
-
-         $("#handType").get(0).onclick = function(btn) {
-             window.sessionStorage.setItem("handType", btn.target.textContent)
-         }
-
-         $("#valueType").get(0).onclick = function(btn) {
-             window.sessionStorage.setItem("valueType", btn.target.textContent)
-         }
-
-          $("#value2Type").get(0).onclick = function(btn) {
-             window.sessionStorage.setItem("value2Type", btn.target.textContent)
-         }
-
-         $("#suitType").get(0).onclick = function(btn) {
-             window.sessionStorage.setItem("suitType", btn.target.textContent)
-         }
-
-         $("#betBtn").get(0).onclick = function() {
-             // validate the bet by comparing with previous bet from SS.
-             if(call()){
-                        var player = {
-                         "id": Number(window.sessionStorage.getItem("loginId")),
-                         "name": window.sessionStorage.getItem("loginName"),
-                         "email": window.sessionStorage.getItem("loginEmail")
-                     }
-                     var store = window.sessionStorage
-                     var bet = {
-                         "game_id": @game_id,
-                         "round_number": 1, //window.sessionStorage.getItem("round_number"),
-                         "turn_number": 1, //window.sessionStorage.getItem("turn_number"),
-                         "player_id": player.id,
-                         "bet": store.getItem("handType") + "_" + store.getItem("valueType") + "_" + store.getItem("suitType")
-                     }
-                     var json = {
-                         "action": "Bet",
-                         "player": player,
-                         "bet": bet
-                     }
-                     ws.send(JSON.stringify(json));
-                     $("#cu_handType").text(store.getItem("handType"));
-                     $("#cu_valueType").text(store.getItem("valueType"));
-                     $("#cu_suitType").text(store.getItem("suitType"));
-                     $("#cu_value2Type").text(store.getItem("value2Type"));
-                     console.log("Bet is sent...");
-             }
-             else
-             {
-                alert("You can't bet lower than previous bet!");
-             }
-
-         }
-
-    </script>
+    <script src="@routes.Assets.at("gamePlayEvents.js")"></script>
 </body>
 <html>

@@ -1,7 +1,7 @@
 package controllers
 
 import util.Card
-import models.{GameHand, Player, GamePlay, Database}
+import models._
 import play.api.libs.iteratee.Concurrent.Channel
 import play.api.libs.iteratee.{Enumeratee, Concurrent, Enumerator, Iteratee}
 import play.api.libs.json._
@@ -113,8 +113,6 @@ object GamePlayController extends Controller{
                  }
 
                case JsString("Bet") =>
-                 inTransaction
-                 {
                    println(msg \ "bet")
                    // persist bet and then push to all channels, as done above in GameStatus case!
                    val player = (msg \ "player").as[Player]
@@ -124,9 +122,16 @@ object GamePlayController extends Controller{
                    inTransaction{
                      gamePlayTable.insert(new GamePlay(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
-                 }
 
                case JsString("Challenge") =>
+                 println(msg \ "roundResult")
+                 val roundResult = (msg \ "roundResult").as[RoundResult]
+                 inTransaction{
+                   val playerHandList = from(gameHandTable)(gh => where(gh.game_id === game_id) select(gh))
+                   val channels = socketMap.filter(p => (p._1._1 == game_id))
+                   channels.foreach(f => f._2._2 push(Json.toJson(playerHandList)))
+                   roundResultTable.insert(roundResult)
+                 }
 
                case _ => println("This should not be printed....!" + action)
              }

@@ -3,6 +3,7 @@
     <head>
         <style>
             #gameStatusModal .modal-dialog  {width:35%;}
+            #roundResultModal .modal-dialog  {height: 70%; width:50%;}
             #canvas-wrap { position:relative } /* Make this a positioned parent */
             /*#cards {margin: 0 auto; display:block;  position:absolute;}*/
             #previousBet { position:absolute; top:180px; left: 120px}
@@ -98,6 +99,25 @@
                 </div>
                 <div class="modal-footer">
                     <button id="okdeal" type="button" class="btn btn-default" data-dismiss="modal">Okay, Deal!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="roundResultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Round Result</h4>
+                </div>
+                <div class="panel-body">
+                    <table id="playerCardsTable" class="table">
+                        <th> Name </th>
+                        <th> Cards </th>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button id="ok" type="button" class="btn btn-default" data-dismiss="modal">Okay!</button>
                 </div>
             </div>
         </div>

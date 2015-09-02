@@ -30,16 +30,43 @@ ws.onmessage = function (evt)
     console.log(gameStatusOrBet);
     if(gameStatusOrBet.length > 1) // This is check for socket message is game status or a bet!!
     {
-        $('#playerStatusTable td').remove();
-        for(var i=0;i<gameStatusOrBet.length;i++)
+        if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response or GameStatus check!
         {
-            var p = gameStatusOrBet[i]
-            $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+            $('#playerCardsTable td').remove();
+            for(var i=0;i<gameStatusOrBet.length;i++)
+            {
+                var p = gameStatusOrBet[i]
+                var name = window.sessionStorage.getItem(p.player_id)
+                var cards = p.hand.split(",")
+                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">' ;//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
+                for(var c=0; c< cards.length;c++)
+                {
+                    var srcString = "/assets/cards/images/" + cards[c] + ".png";
+                    //var img = $('<img id="dynamic" class="card" width="40" height="60" hspace="5">'); //Equivalent: $(document.createElement('img'))
+                    //img.attr('src', srcString);
+                    trStr = trStr + '<img id="dynamic" class="card" width="70" height="100" hspace="5" src=' + srcString + '>'
+                }
+                trStr = trStr + '</td>';
+                $('#playerCardsTable tr:last').after(trStr);
+            }
+            $("#roundResultModal").modal("show")
         }
-        $("#gameStatusModal").modal("show")
+        else
+        {
+            $('#playerStatusTable td').remove();
+            for(var i=0;i<gameStatusOrBet.length;i++)
+            {
+                var p = gameStatusOrBet[i]
+                window.sessionStorage.setItem(p.player_id, p.name)
+                $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+            }
+            $("#gameStatusModal").modal("show")
+        }
     }
     else
     {
+        window.sessionStorage.setItem("previousBet", gameStatusOrBet.bet);
+        window.sessionStorage.setItem("previousBetPlayerId",gameStatusOrBet.player_id)
         var bet = gameStatusOrBet.bet.split("_")
         $("#cu_handType").text(bet[0]);
         $("#cu_valueType").text(bet[1]);

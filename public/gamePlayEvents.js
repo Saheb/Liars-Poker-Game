@@ -120,6 +120,10 @@ $("#betBtn").get(0).onclick = function() {
         $("#cu_valueType").text(store.getItem("valueType"));
         $("#cu_suitType").text(store.getItem("suitType"));
         $("#cu_value2Type").text(store.getItem("value2Type"));
+
+        store.setItem("previousBet", bet.bet);
+        store.setItem("previousBetPlayerId",bet.player_id)
+
         console.log("Bet is sent...");
         // update WSS
         window.sessionStorage.setItem("turn_number", Number(store.getItem("turn_number"))+1)
@@ -129,4 +133,29 @@ $("#betBtn").get(0).onclick = function() {
         alert("You can't bet lower than previous bet!");
     }
 
+}
+
+$("#challengeBtn").get(0).onclick = function(){
+    var player = {
+        "id": Number(window.sessionStorage.getItem("loginId")),
+        "name": window.sessionStorage.getItem("loginName"),
+        "email": window.sessionStorage.getItem("loginEmail")
+    }
+
+    var roundResult = {
+        game_id : GAME_ID,
+        round_number : Number(window.sessionStorage.getItem("round_number")),
+        player_challenge_id : player.id, // player id of the player who challenged the bet
+        player_bet_id : Number(window.sessionStorage.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
+        bet_challenged : window.sessionStorage.getItem("previousBet"),
+        result : "NA"
+    }
+
+    var json = {
+        "action": "Challenge",
+        "player": player,
+        "roundResult": roundResult
+    }
+    ws.send(JSON.stringify(json));
+    console.log("Challenge details are sent...");
 }

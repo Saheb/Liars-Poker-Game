@@ -33,6 +33,7 @@ ws.onmessage = function (evt)
         if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response or GameStatus check!
         {
             $('#playerCardsTable td').remove();
+            var allCards = "";
             for(var i=0;i<gameStatusOrBet.length;i++)
             {
                 var p = gameStatusOrBet[i]
@@ -41,6 +42,7 @@ ws.onmessage = function (evt)
                 var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">' ;//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
                 for(var c=0; c< cards.length;c++)
                 {
+                    allCards += (cards[c] + ",")
                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
                     //var img = $('<img id="dynamic" class="card" width="40" height="60" hspace="5">'); //Equivalent: $(document.createElement('img'))
                     //img.attr('src', srcString);
@@ -49,17 +51,29 @@ ws.onmessage = function (evt)
                 trStr = trStr + '</td>';
                 $('#playerCardsTable tr:last').after(trStr);
             }
+            //var challenger = store.getItem(store.getItem("socketMap")[Number(store.getItem("previousBetPlayerId"))] + 1)
+            if(challengeWon(allCards, store.getItem("previousBet")))
+            {
+                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + store.getItem("loginName") +" lost challenge against " +  store.getItem(store.getItem("previousBetPlayerId"))
+            }
+            else
+            {
+                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + store.getItem("loginName") +" won challenge against " +  store.getItem(store.getItem("previousBetPlayerId"))
+            }
             $("#roundResultModal").modal("show")
         }
         else
         {
             $('#playerStatusTable td').remove();
+            var positionMap = {}
             for(var i=0;i<gameStatusOrBet.length;i++)
             {
                 var p = gameStatusOrBet[i]
+                positionMap[p.id] = p.position
                 window.sessionStorage.setItem(p.player_id, p.name)
                 $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
             }
+            store.setItem("positionMap", JSON.stringify(positionMap))
             $("#gameStatusModal").modal("show")
         }
     }

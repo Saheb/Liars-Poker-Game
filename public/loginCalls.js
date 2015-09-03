@@ -198,9 +198,9 @@ document.getElementById('submitPin').onclick = function() {
                 data: JSON.stringify(player),
                 success: function(response) {
                     console.log(response)
-                    window.sessionStorage.setItem("loginId", response)
-                    window.sessionStorage.setItem("loginName", player.name)
-                    window.sessionStorage.setItem("loginEmail", player.email)
+                    store.setItem("loginId", response)
+                    store.setItem("loginName", player.name)
+                    store.setItem("loginEmail", player.email)
                 }
             })
 
@@ -216,7 +216,7 @@ $("#createGameBtn").get(0).onclick = function() {
         var game = {
             "id": 0,
             "name": $("#loginName").text() + "'s Game",
-            "admin_player": Number(window.sessionStorage.getItem("loginId")),
+            "admin_player": Number(store.getItem("loginId")),
             "joined_players": 1,
             "max_players": 5,
             "winner_player": -1,
@@ -234,7 +234,7 @@ $("#createGameBtn").get(0).onclick = function() {
                     location.href = "/createGame/" + response
                 }
             })
-        window.sessionStorage.setItem("isAdmin", true);
+        store.setItem("isAdmin", true);
     }
     else
         alert("You need to login to Join or Create a Game!")
@@ -254,7 +254,7 @@ $("#joinGameBtn").get(0).onclick = function() {
                 location.href = "/joinGame"
             }
         })
-        window.sessionStorage.setItem("isAdmin", false);
+        store.setItem("isAdmin", false);
     }
     else
         alert("You need to login to Join or Create a Game!")

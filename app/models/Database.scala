@@ -10,7 +10,7 @@ object Database extends Schema{
 
   val playerTable = table[Player]("player")
   val playerStats = table[PlayerStats]("player_stats")
-  val gamePlayTable = table[GamePlay]("game_play")
+  val gameBetTable = table[GameBet]("game_bet")
   val playerStatusTable = table[PlayerStatus]("player_status")
   val gameStatusTable = table[GameStatus]("game_status")
   val roundResultTable = table[RoundResult]("round_result")

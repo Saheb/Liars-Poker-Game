@@ -6,7 +6,7 @@ import org.squeryl.PrimitiveTypeMode._
 /**
  * Created by saheb on 8/8/15.
  */
-class GamePlaySpec extends FunSuite{
+class GameBetSpec extends FunSuite{
 
   test("Game Play starts adding records once Game Starts!") {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
@@ -30,16 +30,16 @@ class GamePlaySpec extends FunSuite{
         //assert(selectGame.status.equals(0))
 
         //Dealing of cards happens.
-        val gamePlayRecord = Database.gamePlayTable.insert(new GamePlay(game.id, 0, player.player_id, 0, "NA"))
-        val gamePlayRecord_2 = Database.gamePlayTable.insert(new GamePlay(game.id, 0, new_player.player_id, 0, "NA"))
+        val gameBetRecord = Database.gameBetTable.insert(new GameBet(game.id, 0, player.player_id, 0, "NA"))
+        val gameBetRecord_2 = Database.gameBetTable.insert(new GameBet(game.id, 0, new_player.player_id, 0, "NA"))
 
         //Round #1 Turn #1
-        val player_round_1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, player.player_id, 1,  "High_8_NA_NA"))
-        val new_player_round1 = Database.gamePlayTable.insert(new GamePlay(game.id, 1, new_player.player_id, 1, "High_K_NA_NA"))
+        val player_round_1 = Database.gameBetTable.insert(new GameBet(game.id, 1, player.player_id, 1,  "High_8_NA_NA"))
+        val new_player_round1 = Database.gameBetTable.insert(new GameBet(game.id, 1, new_player.player_id, 1, "High_K_NA_NA"))
 
         //Round #1 Turn #2
-        val player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, player.player_id, 2, "High_A_NA_NA"))
-        val new_player_round2 = Database.gamePlayTable.insert(new GamePlay(game.id, 2, new_player.player_id, 2,"Pair_A_NA_NA"))
+        val player_round2 = Database.gameBetTable.insert(new GameBet(game.id, 2, player.player_id, 2, "High_A_NA_NA"))
+        val new_player_round2 = Database.gameBetTable.insert(new GameBet(game.id, 2, new_player.player_id, 2,"Pair_A_NA_NA"))
 
         // player challenge new_player
         // We check all cards to form Ace Pair, it doesn't then player wins. If it does new_player wins.

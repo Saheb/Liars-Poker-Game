@@ -14,11 +14,13 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
         <script>
+            var GAME_ID = @game_id
+            var store = window.sessionStorage
             function checkLogin() {
-             if(window.sessionStorage.length!=0)
-                document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+             if(store.length!=0)
+                document.getElementById('loginName').innerText = store.getItem("loginName")
             }
-            window.sessionStorage.setItem("joinedPlayersSize", @joinedPlayers.size)
+            store.setItem("joinedPlayersSize", @joinedPlayers.size)
         </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
@@ -76,53 +78,19 @@
 
             <button id="startGameBtn" style="display: none;" type="button" class="btn btn-lg btn-success">Start Game</button>
         </div>
-    <script>
-    if(window.sessionStorage.getItem("isAdmin")==="true")
-        $("#startGameBtn").get(0).style.display = "block";
-    else
-     {
-        // will be doing polling every 30 seconds to know if game has started or not!
-        function gameStartedPolling () {
-            $.ajax({
-                url : '/gamePlay/gameStarted/' + @game_id,
-                type : 'GET',
-                contentType: "application/json",
-                success : function(response) {
-                    location.href = "/gamePlay/" + @game_id
-                    clearInterval()
-                    },
-                error : function(response){
-                    console.log("Game hasn't started yet");
-                    }
-                })
-        }
-        //gameStartedPolling()
-        setInterval(gameStartedPolling, 10000)
-     }
-
-    $("#startGameBtn").get(0).onclick = function() {
-        var xhr = $.ajax({
-                url : "/gamePlay/" + @game_id,
-                type : "GET",
-                dataType: "html",
-                success : function(response) {
-                    location.href = "/gamePlay/"+@game_id
-                }
-        })
-    }
-
-    var event = new EventSource("@routes.JoinGameController.updatedJoinedPlayers(game_id)");
-    event.addEventListener('message', function( event ) {
-       console.log(event.data);
-       var player = JSON.parse(event.data);
-       $('<li class="list-group-item">' + player.name + " " + "("+ player.position +")" +'</li>').appendTo(".list-group")
-       var previousCount = Number(window.sessionStorage.getItem("joinedPlayersSize"))
-       window.sessionStorage.setItem("joinedPlayersSize", previousCount + 1)
-       $("#joinedPlayersSize").get(0).innerHTML = "Joined : " + (previousCount+1)
-    }
-    );
-
-    </script>
+        <script src="@routes.Assets.at("createGameEvents.js")"></script>
+        <script>
+            var event = new EventSource("@routes.JoinGameController.updatedJoinedPlayers(game_id)");
+            event.addEventListener('message', function( event ) {
+               console.log(event.data);
+               var player = JSON.parse(event.data);
+               $('<li class="list-group-item">' + player.name + " " + "("+ player.position +")" +'</li>').appendTo(".list-group")
+               var previousCount = Number(store.getItem("joinedPlayersSize"))
+               store.setItem("joinedPlayersSize", previousCount + 1)
+               $("#joinedPlayersSize").get(0).innerHTML = "Joined : " + (previousCount+1)
+            }
+            );
+        </script>
 
     </body>
 </html>

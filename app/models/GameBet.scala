@@ -7,9 +7,9 @@ import play.api.libs.functional.syntax._
  * Created by saheb on 8/14/15.
  */
 
-object GamePlay {
-  implicit object GamePlayWrites extends Writes[GamePlay] {
-    def writes(game : GamePlay) = Json.obj(
+object GameBet {
+  implicit object GamePlayWrites extends Writes[GameBet] {
+    def writes(game : GameBet) = Json.obj(
       "game_id" -> Json.toJson(game.game_id),
       "player_id" -> Json.toJson(game.player_id),
       "round_number" -> Json.toJson(game.round_number),
@@ -18,16 +18,16 @@ object GamePlay {
     )
   }
 
-  implicit val GamePlayReads : Reads[GamePlay] = (
+  implicit val GameBetReads : Reads[GameBet] = (
     (JsPath \ "game_id").read[Long] and
       (JsPath \ "round_number" ).read[Int] and
       (JsPath \ "player_id").read[Long] and
       (JsPath \ "turn_number").read[Int] and
       (JsPath \ "bet").read[String]
-    )(GamePlay.apply _)
+    )(GameBet.apply _)
 }
 
-case class GamePlay(
+case class GameBet(
                      game_id : Long,
                      round_number : Int,
                      player_id : Long,

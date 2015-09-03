@@ -19,9 +19,10 @@
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
         <script>
             var GAME_ID = @game_id
+            var store = window.sessionStorage
             function checkLogin() {
-             if(window.sessionStorage.length!=0)
-                document.getElementById('loginName').innerText = window.sessionStorage.getItem("loginName")
+             if(store.length!=0)
+                document.getElementById('loginName').innerText = store.getItem("loginName")
             }
         </script>
             <!-- Web sockets messages and communication -->

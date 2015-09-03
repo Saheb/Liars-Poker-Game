@@ -69,8 +69,8 @@ $("#okdeal").get(0).onclick = function(){
                     img.appendTo('#cards');
                 }
                 // set round_number and turn_number in WSS
-                window.sessionStorage.setItem("round_number", response[0].round_number)
-                window.sessionStorage.setItem("turn_number", 1)
+                store.setItem("round_number", response[0].round_number)
+                store.setItem("turn_number", 1)
             }
         })
     }
@@ -79,34 +79,33 @@ $("#okdeal").get(0).onclick = function(){
 
 
 $("#handType").get(0).onclick = function(btn) {
-    window.sessionStorage.setItem("handType", btn.target.textContent)
+    store.setItem("handType", btn.target.textContent)
 }
 
 $("#valueType").get(0).onclick = function(btn) {
-    window.sessionStorage.setItem("valueType", btn.target.textContent)
+    store.setItem("valueType", btn.target.textContent)
 }
 
 $("#value2Type").get(0).onclick = function(btn) {
-    window.sessionStorage.setItem("value2Type", btn.target.textContent)
+    store.setItem("value2Type", btn.target.textContent)
 }
 
 $("#suitType").get(0).onclick = function(btn) {
-    window.sessionStorage.setItem("suitType", btn.target.textContent)
+    store.setItem("suitType", btn.target.textContent)
 }
 
 $("#betBtn").get(0).onclick = function() {
     // validate the bet by comparing with previous bet from SS.
     if(call()){
         var player = {
-            "id": Number(window.sessionStorage.getItem("loginId")),
-            "name": window.sessionStorage.getItem("loginName"),
-            "email": window.sessionStorage.getItem("loginEmail")
+            "id": Number(store.getItem("loginId")),
+            "name": store.getItem("loginName"),
+            "email": store.getItem("loginEmail")
         }
-        var store = window.sessionStorage
         var bet = {
             "game_id": GAME_ID,
-            "round_number": Number(window.sessionStorage.getItem("round_number")),
-            "turn_number": Number(window.sessionStorage.getItem("turn_number")),
+            "round_number": Number(store.getItem("round_number")),
+            "turn_number": Number(store.getItem("turn_number")),
             "player_id": player.id,
             "bet": store.getItem("handType") + "_" + store.getItem("valueType") + "_" + store.getItem("value2Type") + "_" + store.getItem("suitType")
         }
@@ -126,7 +125,7 @@ $("#betBtn").get(0).onclick = function() {
 
         console.log("Bet is sent...");
         // update WSS
-        window.sessionStorage.setItem("turn_number", Number(store.getItem("turn_number"))+1)
+        store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
     }
     else
     {
@@ -137,17 +136,17 @@ $("#betBtn").get(0).onclick = function() {
 
 $("#challengeBtn").get(0).onclick = function(){
     var player = {
-        "id": Number(window.sessionStorage.getItem("loginId")),
-        "name": window.sessionStorage.getItem("loginName"),
-        "email": window.sessionStorage.getItem("loginEmail")
+        "id": Number(store.getItem("loginId")),
+        "name": store.getItem("loginName"),
+        "email": store.getItem("loginEmail")
     }
 
     var roundResult = {
         game_id : GAME_ID,
-        round_number : Number(window.sessionStorage.getItem("round_number")),
+        round_number : Number(store.getItem("round_number")),
         player_challenge_id : player.id, // player id of the player who challenged the bet
-        player_bet_id : Number(window.sessionStorage.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
-        bet_challenged : window.sessionStorage.getItem("previousBet"),
+        player_bet_id : Number(store.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
+        bet_challenged : store.getItem("previousBet"),
         result : "NA"
     }
 

@@ -116,11 +116,11 @@ object GamePlayController extends Controller{
                    println(msg \ "bet")
                    // persist bet and then push to all channels, as done above in GameStatus case!
                    val player = (msg \ "player").as[Player]
-                   val bet = (msg \ "bet").as[GamePlay]
+                   val bet = (msg \ "bet").as[GameBet]
                    val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(bet)))
                    inTransaction{
-                     gamePlayTable.insert(new GamePlay(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
+                     gameBetTable.insert(new GameBet(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
 
                case JsString("Challenge") =>

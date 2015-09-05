@@ -86,17 +86,20 @@ ws.onmessage = function (evt)
             $('#playerStatusTable td').remove();
             var playerPositionMap = {}
             var positionPlayerMap = {}
+            var positionNameMap = {}
             var num_of_players = gameStatusOrBet.length
             for(var i=0;i<num_of_players;i++)
             {
                 var p = gameStatusOrBet[i]
                 playerPositionMap[p.player_id] = p.position
                 positionPlayerMap[p.position] = p.player_id
+                positionNameMap[p.position] = p.name
                 store.setItem(p.player_id, p.name)
                 $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
             }
             $("#gameStatusModal").modal("show")
-            //store.setItem("positionMap", JSON.stringify(playerPositionMap))
+            store.setItem("positionNameMap", JSON.stringify(positionNameMap))
+            store.setItem("num_of_players", num_of_players)
             var myPosition = playerPositionMap[Number(store.getItem("loginId"))]
             store.setItem("myPosition", myPosition)
             if(myPosition != 1)

@@ -81,19 +81,28 @@ ws.onmessage = function (evt)
                 ws.send(JSON.stringify(json))
             }
         }
-        else
+        else // Game Status!
         {
             $('#playerStatusTable td').remove();
-            var positionMap = {}
-            for(var i=0;i<gameStatusOrBet.length;i++)
+            var playerPositionMap = {}
+            var positionPlayerMap = {}
+            var num_of_players = gameStatusOrBet.length
+            for(var i=0;i<num_of_players;i++)
             {
                 var p = gameStatusOrBet[i]
-                positionMap[p.id] = p.position
+                playerPositionMap[p.player_id] = p.position
+                positionPlayerMap[p.position] = p.player_id
                 store.setItem(p.player_id, p.name)
                 $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
             }
             $("#gameStatusModal").modal("show")
-            store.setItem("positionMap", JSON.stringify(positionMap))
+            //store.setItem("positionMap", JSON.stringify(playerPositionMap))
+            var myPosition = playerPositionMap[Number(store.getItem("loginId"))]
+            store.setItem("myPosition", myPosition)
+            if(myPosition != 1)
+                store.setItem("leftPlayerId", positionPlayerMap[myPosition-1])
+            else
+                store.setItem("leftPlayerId", positionPlayerMap[num_of_players])
         }
     }
     else
@@ -107,6 +116,11 @@ ws.onmessage = function (evt)
             $("#cu_valueType").text(bet[1]);
             $("#cu_suitType").text(bet[3]);
             $("#cu_value2Type").text(bet[2]);
+            if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
+            {
+                $("#betBtn").prop('disabled', false)
+                $("#challengeBtn").prop('disabled', false)
+            }
         }
         else // round Result
         {

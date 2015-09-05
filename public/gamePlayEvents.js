@@ -71,6 +71,16 @@ function dealAndGetCards(){
                 // set round_number and turn_number in WSS
                 store.setItem("round_number", response[0].round_number)
                 store.setItem("turn_number", 1)
+                if(Number(store.getItem("myPosition"))==1)
+                {
+                    $("#betBtn").prop('disabled', false)
+                    $("#challengeBtn").prop('disabled', false)
+                }
+                else
+                {
+                    $("#betBtn").prop('disabled', true)
+                    $("#challengeBtn").prop('disabled', true)
+                }
             }
         })
     }
@@ -137,6 +147,8 @@ $("#betBtn").get(0).onclick = function() {
         console.log("Bet is sent...");
         // update WSS
         store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
+        $("#betBtn").prop('disabled', true)
+        $("#challengeBtn").prop('disabled', true)
     }
     else
     {

@@ -127,13 +127,31 @@ object GamePlayController extends Controller{
                  println(msg \ "roundResult")
                  val roundResult = (msg \ "roundResult").as[RoundResult]
                  inTransaction{
-                   val playerHandList = from(gameHandTable)(gh => where(gh.game_id === game_id) select(gh))
+                   val playerHandList = from(gameHandTable)(gh => where(gh.game_id === game_id and gh.round_number === roundResult.round_number) select(gh))
                    val channels = socketMap.filter(p => (p._1._1 == game_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(roundResult)))
                    channels.foreach(f => f._2._2 push(Json.toJson(playerHandList)))
                    roundResultTable.insert(roundResult)
                  }
 
+               case JsString("RoundResult") =>
+                 println(msg \ "roundResult")
+                 val roundResult = (msg \ "roundResult").as[RoundResult]
+                 inTransaction {
+                   update(roundResultTable)(r =>
+                     where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
+                       set (r.result := roundResult.result))
+                   continueGamePlay(game_id)
+
+                   if (roundResult.result.equals("WON")) {
+                     update(playerStatusTable)(p =>
+                       where(p.player_id === roundResult.player_bet_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                   }
+                   else {
+                     update(playerStatusTable)(p =>
+                       where(p.player_id === roundResult.player_challenge_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                   }
+                 }
                case _ => println("This should not be printed....!" + action)
              }
            }

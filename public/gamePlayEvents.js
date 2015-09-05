@@ -10,13 +10,13 @@ $(".btn-group > .btn").click(function() {
     $(this).addClass("active").siblings().removeClass("active");
 });
 
-$("#okdeal").get(0).onclick = function(){
-    //var action = "GetCards";//(window.sessionStorage.getItem("isAdmin")==="true")?"Deal":"GetCards";
-    var isAdmin = window.sessionStorage.getItem("isAdmin")==="true"
+function dealAndGetCards(){
+    //var action = "GetCards";//(store.getItem("isAdmin")==="true")?"Deal":"GetCards";
+    var isAdmin = store.getItem("isAdmin")==="true"
     var player = {
-        "id" : Number(window.sessionStorage.getItem("loginId")),
-        "name" : window.sessionStorage.getItem("loginName"),
-        "email" : window.sessionStorage.getItem("loginEmail")
+        "id" : Number(store.getItem("loginId")),
+        "name" : store.getItem("loginName"),
+        "email" : store.getItem("loginEmail")
     }
     if(isAdmin){
         $.ajax({
@@ -43,8 +43,8 @@ $("#okdeal").get(0).onclick = function(){
                             img.appendTo('#cards');
                         }
                         // set round_number and turn_number in WSS
-                        window.sessionStorage.setItem("round_number", response[0].round_number)
-                        window.sessionStorage.setItem("turn_number", 1)
+                        store.setItem("round_number", response[0].round_number)
+                        store.setItem("turn_number", 1)
                     }
                 })
             }
@@ -76,7 +76,18 @@ $("#okdeal").get(0).onclick = function(){
     }
     console.log("Message is sent! JSON->" + JSON.stringify(player));
 }
-
+function getGameStatus(){
+    var xhr = $.ajax({
+        url : "/gamePlay/" + GAME_ID,
+        type : "GET",
+        dataType: "html",
+        success : function(response) {
+            location.href = "/gamePlay/"+GAME_ID
+        }
+    })
+}
+$("#okdeal").get(0).onclick = dealAndGetCards
+$("#ok").get(0).onclick = getGameStatus
 
 $("#handType").get(0).onclick = function(btn) {
     store.setItem("handType", btn.target.textContent)

@@ -75,6 +75,7 @@ function dealAndGetCards(){
                 {
                     $("#betBtn").prop('disabled', false)
                     $("#challengeBtn").prop('disabled', false)
+                    paper.project.activeLayer._namedChildren[store.getItem("loginName")][0].fillColor = 'red'
                 }
                 else
                 {
@@ -149,6 +150,17 @@ $("#betBtn").get(0).onclick = function() {
         store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
         $("#betBtn").prop('disabled', true)
         $("#challengeBtn").prop('disabled', true)
+        paper.project.activeLayer._namedChildren[store.getItem("loginName")][0].fillColor = 'yellow'
+        var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
+        var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
+        var betterPosition = playerPositionMap[Number(store.getItem("loginId"))]
+        var currentPosition = betterPosition + 1
+        var currentBetterName = "";
+        if(currentPosition <= Number(store.getItem("num_of_players")))
+            currentBetterName = store.getItem(positionPlayerMap[currentPosition])
+        else
+            currentBetterName = store.getItem(positionPlayerMap[1])
+        paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
     }
     else
     {

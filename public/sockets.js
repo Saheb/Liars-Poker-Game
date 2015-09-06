@@ -99,6 +99,8 @@ ws.onmessage = function (evt)
             }
             $("#gameStatusModal").modal("show")
             store.setItem("positionNameMap", JSON.stringify(positionNameMap))
+            store.setItem("playerPositionMap", JSON.stringify(playerPositionMap))
+            store.setItem("positionPlayerMap", JSON.stringify(positionPlayerMap))
             store.setItem("num_of_players", num_of_players)
             var myPosition = playerPositionMap[Number(store.getItem("loginId"))]
             store.setItem("myPosition", myPosition)
@@ -106,6 +108,9 @@ ws.onmessage = function (evt)
                 store.setItem("leftPlayerId", positionPlayerMap[myPosition-1])
             else
                 store.setItem("leftPlayerId", positionPlayerMap[num_of_players])
+
+            var currentBetterName = store.getItem(positionPlayerMap[1])
+            paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
         }
     }
     else
@@ -124,6 +129,18 @@ ws.onmessage = function (evt)
                 $("#betBtn").prop('disabled', false)
                 $("#challengeBtn").prop('disabled', false)
             }
+            var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
+            var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
+            var betterPosition = playerPositionMap[gameStatusOrBet.player_id]
+            var previousBetterName = store.getItem(positionPlayerMap[betterPosition])
+            var currentPosition = betterPosition + 1
+            var currentBetterName = "";
+            if(currentPosition <= Number(store.getItem("num_of_players")))
+                currentBetterName = store.getItem(positionPlayerMap[currentPosition])
+            else
+                currentBetterName = store.getItem(positionPlayerMap[1])
+            paper.project.activeLayer._namedChildren[previousBetterName][0].fillColor = 'yellow'
+            paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
         }
         else // round Result
         {

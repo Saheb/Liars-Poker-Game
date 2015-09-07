@@ -108,9 +108,22 @@ ws.onmessage = function (evt)
                 store.setItem("leftPlayerId", positionPlayerMap[myPosition-1])
             else
                 store.setItem("leftPlayerId", positionPlayerMap[num_of_players])
-
-            var currentBetterName = store.getItem(positionPlayerMap[1])
-            paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
+            var paper_url = "/assets/tableCanvas.js";
+            //$.ajax({
+            //    url : paper_url,
+            //    dataType : "application/paperscript",
+            //    success : function(response) {
+            //        console.log("tableCanvas.js is now loaded");
+            //        //paper.PaperScript.load(); // <-- The fix!
+            //    }
+            //});
+            //$("#canvas").load(paper_url);
+            //var script =  document.createElement("script");
+            //script.type = "text/paperscript";
+            //script.canvas = "canvas";
+            //script.src = "/assets/tableCanvas.js"
+            //document.getElementsByTagName("head")[0].appendChild(script);
+            paper.view.draw()
         }
     }
     else

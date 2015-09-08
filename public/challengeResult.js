@@ -73,7 +73,7 @@ function challengeWon(cards, bet)  {
     {
         if(cards.search(valueType) >= 0)
         {
-            var value = card_score.get(valueType)
+            var value = card_score[valueType]
             var left = 0; var right = 0;
             for(var i=value;i<=14;i++)
             {

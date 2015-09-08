@@ -123,7 +123,8 @@ ws.onmessage = function (evt)
             //script.canvas = "canvas";
             //script.src = "/assets/tableCanvas.js"
             //document.getElementsByTagName("head")[0].appendChild(script);
-            paper.view.draw()
+            //paper.view.draw()
+            globals.loadTable();
         }
     }
     else

@@ -44,8 +44,8 @@ ws.onmessage = function (evt)
                 {
                     allCards += (cards[c] + ",")
                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
-                    //var img = $('<img id="dynamic" class="card" width="40" height="60" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                    //img.attr('src', srcString);
+                    var img = $('<img id="dynamic" class="card" width="40" height="60" hspace="5">'); //Equivalent: $(document.createElement('img'))
+                    img.attr('src', srcString);
                     trStr = trStr + '<img id="dynamic" class="card" width="70" height="100" hspace="5" src=' + srcString + '>'
                 }
                 trStr = trStr + '</td>';

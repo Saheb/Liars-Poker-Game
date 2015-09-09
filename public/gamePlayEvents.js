@@ -34,14 +34,19 @@ function dealAndGetCards(){
                     success : function(response) {
                         console.log("Received your cards!");
                         console.log(response)
+                        deck.mount($("#container")[0]);
+                        deck.sort(); deck.shuffle(); deck.shuffle();
+                        setTimeout(function(){
+                            deck.unmount();
+                            for(var i=0;i<cards.length;i++)
+                            {
+                                var srcString = "/assets/cards/images/" + cards[i] + ".png";
+                                var img = $('<img id="dynamic" width="80" height="120" hspace="5" vspace="5">'); //Equivalent: $(document.createElement('img'))
+                                img.attr('src', srcString);
+                                img.appendTo('#cards');
+                            }
+                        }, 2600);
                         var cards = response[0].hand.split(",")
-                        for(var i=0;i<cards.length;i++)
-                        {
-                            var srcString = "/assets/cards/images/" + cards[i] + ".png";
-                            var img = $('<img id="dynamic" class="card" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                            img.attr('src', srcString);
-                            img.appendTo('#cards');
-                        }
                         // set round_number and turn_number in WSS
                         store.setItem("round_number", response[0].round_number)
                         store.setItem("turn_number", 1)
@@ -60,14 +65,20 @@ function dealAndGetCards(){
             success : function(response) {
                 console.log("Received your cards!");
                 console.log(response);
+                deck.mount($("#container")[0]);
+                deck.sort(); deck.shuffle(); deck.shuffle();
+                setTimeout(function(){
+                    deck.unmount();
+                    for(var i=0;i<cards.length;i++)
+                    {
+                        var srcString = "/assets/cards/images/" + cards[i] + ".png";
+                        var img = $('<img id="dynamic" width="80" height="120" hspace="5" vspace="5">'); //Equivalent: $(document.createElement('img'))
+                        img.attr('src', srcString);
+                        img.appendTo('#cards');
+                    }
+                }, 2600);
                 var cards = response[0].hand.split(",")
-                for(var i=0;i<cards.length;i++)
-                {
-                    var srcString = "/assets/cards/images/" + cards[i] + ".png";
-                    var img = $('<img id="dynamic" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                    img.attr('src', srcString);
-                    img.appendTo('#cards');
-                }
+
                 // set round_number and turn_number in WSS
                 store.setItem("round_number", response[0].round_number)
                 store.setItem("turn_number", 1)

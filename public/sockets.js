@@ -33,6 +33,9 @@ ws.onmessage = function (evt)
         if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response or GameStatus check!
         {
             $('#playerCardsTable td').remove();
+            //TODO : Animation before showing final cards!
+            //deck.mount($('#container2')[0]);
+            //deck.poker();
             var allCards = "";
             for(var i=0;i<gameStatusOrBet.length;i++)
             {
@@ -44,9 +47,9 @@ ws.onmessage = function (evt)
                 {
                     allCards += (cards[c] + ",")
                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
-                    var img = $('<img id="dynamic" class="card" width="40" height="60" hspace="5">'); //Equivalent: $(document.createElement('img'))
-                    img.attr('src', srcString);
-                    trStr = trStr + '<img id="dynamic" class="card" width="70" height="100" hspace="5" src=' + srcString + '>'
+                    //var img = $('<img id="dynamic" class="card" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
+                    //img.attr('src', srcString);
+                    trStr = trStr + '<img id="dynamic" width="70" height="100" hspace="5" src=' + srcString + '>'
                 }
                 trStr = trStr + '</td>';
                 $('#playerCardsTable tr:last').after(trStr);

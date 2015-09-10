@@ -7,7 +7,7 @@ store.setItem("valueType", "NA")
 store.setItem("value2Type", "NA")
 store.setItem("suitType", "NA")
 store.setItem("turn_number", "NA")
-store.setItem("round_number", "NA")
+//store.setItem("round_number", "0")
 
 var player_id = Number(store.getItem("loginId"))
 var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")

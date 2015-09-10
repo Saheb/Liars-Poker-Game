@@ -23,6 +23,14 @@ object GameStatus {
     getGame.toList
   }
 
+  def getLiveGame : Query[GameStatus] = from(Database.gameStatusTable){
+    game => where(game.status === 100 ) select(game)
+  }
+
+  def getLiveGamesList : Iterable[GameStatus] = inTransaction {
+    getLiveGame.toList
+  }
+
   implicit object GameStatusWrites extends Writes[GameStatus] {
     def writes(game : GameStatus) = Json.obj(
       "name" -> Json.toJson(game.name),

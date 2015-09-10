@@ -247,7 +247,7 @@ $("#joinGameBtn").get(0).onclick = function() {
     {
         var jqxhr = $.ajax({
             type: "GET",
-            url: "/activeGames",
+            url: "/joinGame",
             dataType: "html",
             success: function(response) {
                 console.log(response)
@@ -258,4 +258,17 @@ $("#joinGameBtn").get(0).onclick = function() {
     }
     else
         alert("You need to login to Join or Create a Game!")
+}
+
+$("#watchGameBtn").get(0).onclick = function() {
+    //var isLoggedIn = $("#loginName").text() != "Login"
+        var jqxhr = $.ajax({
+            type: "GET",
+            url: "/watchGame",
+            dataType: "html",
+            success: function(response) {
+                console.log(response)
+                location.href = "/watchGame"
+            }
+        })
 }

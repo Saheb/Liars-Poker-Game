@@ -1,4 +1,4 @@
-@(activeGames : List[GameStatus])
+@(liveGames : List[GameStatus])
 <!DOCTYPE html>
 
 <html>
@@ -9,10 +9,10 @@
         padding-bottom: 30px;
         }
         /*.col-xs-3.custom_border {*/
-            /*border-radius: 10px;*/
-            /*border-style : solid;*/
-            /*border-width : 3px;*/
-            /**/
+        /*border-radius: 10px;*/
+        /*border-style : solid;*/
+        /*border-width : 3px;*/
+        /**/
         /*}*/
         </style>
         <script>
@@ -22,7 +22,7 @@
                 document.getElementById('loginName').innerText = store.getItem("loginName")
             }
         </script>
-        <title>Joining Game</title>
+        <title>Watching Game</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
             <!-- Bootstrap core CSS -->
@@ -60,26 +60,26 @@
 
         <div class="container">
             <h2>
-                Active Games
+                Live Games
             </h2>
 
             <div class="row container-fluid">
-            @for(game <- activeGames){
+            @for(game <- liveGames){
                 <div class="col-xs-3 custom_border" >
                     <h3>@game.name</h3>
                     <p id="@game.game_id"> </p>
-                    <p name="@game.game_id"><a class="btn btn-success" href="#" role="button" onclick="joinBtnClicked(this)">Join &raquo;</a></p>
+                    <p name="@game.game_id"><a class="btn btn-success" href="#" role="button" onclick="watchBtnClicked(this)">Watch &raquo;</a></p>
                 </div>
 
                 <script>
-                    var remaining_players = @game.max_players - @game.joined_players
+                    //var remaining_players = @game.max_players - @game.joined_players
                     var game_id = @game.game_id
-                    document.getElementById(game_id).innerText = remaining_players + " seats left"
+                    document.getElementById(game_id).innerText = "Round " + @game.status + " in play"
                 </script>
             }
-                
+
             </div>
         </div>
     </body>
-    <script src="@routes.Assets.at("joinGameEvents.js")"></script>
+    <script src="@routes.Assets.at("watchGameEvents.js")"></script>
 </html>

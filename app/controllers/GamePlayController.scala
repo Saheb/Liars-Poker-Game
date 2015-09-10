@@ -47,31 +47,42 @@ object GamePlayController extends Controller{
    }
   }
 
-  def dealCards(game_id : Long) = Action {
-    println("Dealing Cards....")
-    val deck = new Deck
-    deck.initialize
+  def dealCards(game_id : Long, round_number : Int) = Action {
 
     inTransaction{
-      val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
-      continueGamePlay(game_id) // this will change round_number
+      val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps))
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
-      println(s"Round_Number=${game.status} begins.....")
-      val playerCardList = Map.empty[Long, String]
-      for (p <- playerStatusList.toList)
-      {
-        var cards = Seq.empty[String]
-        for(x <- 1 to p.num_of_cards)
+      val gameHand = from(gameHandTable)(g => where(g.game_id===game_id and g.round_number === round_number) select(g))
+      val cardsNotDealt = (gameHand.toList.size == 0 )
+      if(cardsNotDealt)
         {
-          val card = new Card(deck.pop)
-          cards = cards :+ (card.getValue.toString concat card.getSuit.toString)
+          println("Dealing Cards....")
+          val deck = new Deck
+          deck.initialize
+          continueGamePlay(game_id) // this will change round_number
+          println(s"Round_Number=${game.status} begins.....")
+          val playerCardList = Map.empty[Long, String]
+          for (p <- playerStatusList.toList)
+          {
+            var cards = Seq.empty[String]
+            for(x <- 1 to p.num_of_cards)
+            {
+              val card = new Card(deck.pop)
+              cards = cards :+ (card.getValue.toString concat card.getSuit.toString)
+            }
+            playerCardList(p.player_id) = cards.mkString(",")
+            println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
+            gameHandTable.insert(new GameHand(game_id, round_number ,p.player_id,cards.mkString(",")))
+          }
+          Ok("Cards are dealt")
         }
-        playerCardList(p.player_id) = cards.mkString(",")
-        println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
-        gameHandTable.insert(new GameHand(game_id, game.status,p.player_id,cards.mkString(",")))
-      }
+      else
+        {
+          Ok("Cards are already dealt")
+        }
+
     }
-    Ok("Cards are dealt")
+
   }
 
   def getCards(game_id : Long) = Action(parse.json) { req=>
@@ -107,7 +118,7 @@ object GamePlayController extends Controller{
                  //log the message to stdout and send response back to client
                  val player = (msg \ "player").as[Player]
                  inTransaction{
-                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps))
+                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps))
                    val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 == player.player_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList)))
                  }
@@ -141,15 +152,29 @@ object GamePlayController extends Controller{
                    update(roundResultTable)(r =>
                      where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
                        set (r.result := roundResult.result))
-                   continueGamePlay(game_id)
+                   //continueGamePlay(game_id)
 
                    if (roundResult.result.equals("WON")) {
                      update(playerStatusTable)(p =>
-                       where(p.player_id === roundResult.player_bet_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                       where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                     val lostPlayer = from(playerStatusTable)(p=>
+                       where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) select(p)).single
+                     if(lostPlayer.num_of_cards > 5)
+                       {
+                         update(playerStatusTable)(p =>
+                           where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.status := "Out"))
+                       }
                    }
                    else {
                      update(playerStatusTable)(p =>
-                       where(p.player_id === roundResult.player_challenge_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                       where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
+                     val lostPlayer = from(playerStatusTable)(p=>
+                       where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) select(p)).single
+                     if(lostPlayer.num_of_cards > 5)
+                     {
+                       update(playerStatusTable)(p =>
+                         where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.status := "Out"))
+                     }
                    }
                  }
                case _ => println("This should not be printed....!" + action)

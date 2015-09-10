@@ -2,7 +2,7 @@
  * Created by saheb on 9/3/15.
  */
 
-function joinClicked(btn){
+function joinBtnClicked(btn){
     console.log(btn)
     var player = {
         id : Number(store.getItem("loginId")),

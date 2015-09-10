@@ -12,7 +12,12 @@ $(".btn-group > .btn").click(function() {
 
 function dealAndGetCards(){
     //var action = "GetCards";//(store.getItem("isAdmin")==="true")?"Deal":"GetCards";
-    var isAdmin = store.getItem("isAdmin")==="true"
+    // TODO: Whoever clicks okdeal first, dealing of card will happen.
+    var nextRoundNumber = 1;
+    if(typeof store.getItem("round_number") != 'undefined')
+        nextRoundNumber = Number(store.getItem("round_number")) + 1;
+
+    var isAdmin = true; //store.getItem("isAdmin")==="true"
     var player = {
         "id" : Number(store.getItem("loginId")),
         "name" : store.getItem("loginName"),
@@ -20,7 +25,7 @@ function dealAndGetCards(){
     }
     if(isAdmin){
         $.ajax({
-            url : '/gamePlay/' + GAME_ID + '/' + 'dealCards',
+            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
             data : JSON.stringify(player),
             type : 'GET',
             success : function(response) {
@@ -58,7 +63,7 @@ function dealAndGetCards(){
     else
     {
         $.ajax({
-            url : '/gamePlay/' + GAME_ID + '/' + 'getCards',
+            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'getCards',
             data : JSON.stringify(player),
             type : 'POST',
             contentType : 'application/json',

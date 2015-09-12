@@ -27,11 +27,6 @@ object LoginController extends Controller{
     logger.info("Inserting record to database")
     try {
       inTransaction {
-//        val inserted = player.save
-//        inserted match {
-//          case Some(p) => Ok("Saved")
-//          case None => BadRequest("Record alerady exists!")
-//        }
         val selectQuery = from(Database.playerTable) (p => where(p.email === player.email) select(p))
         if(selectQuery.isEmpty) {
           val insertedPlayer = Database.playerTable.insert(player)

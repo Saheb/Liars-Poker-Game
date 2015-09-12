@@ -21,21 +21,11 @@ object CreateGameController extends Controller{
   def createGame = Action(parse.json) { request =>
     val gameJson = request.body
     val gameStatus = gameJson.as[GameStatus]
-    val conn = DB.getConnection()
-    try {
-      inTransaction {
-        val selectGameStatus = Database.gameStatusTable.insert(gameStatus)
-        val player = Player.getPlayerById(gameStatus.admin_player)
-        val playerStatus = Database.playerStatusTable.insert(new PlayerStatus(gameStatus.admin_player, player.name, selectGameStatus.game_id,1,2,"Admin" ))
-        Ok(Json.toJson(selectGameStatus.game_id))
-      }
-    }
-
-    catch {
-      case e : IllegalArgumentException => BadRequest("Player Not Found")
-    }
-    finally {
-      conn.close()
+    inTransaction {
+      val selectGameStatus = Database.gameStatusTable.insert(gameStatus)
+      val player = Player.getPlayerById(gameStatus.admin_player)
+      val playerStatus = Database.playerStatusTable.insert(new PlayerStatus(gameStatus.admin_player, player.name, selectGameStatus.game_id,1,2,"Admin" ))
+      Ok(Json.toJson(selectGameStatus.game_id))
     }
   }
 

@@ -1,13 +1,11 @@
 package controllers
 
-import play.api._
-import play.api.mvc._
+import play.api.mvc.{Action, Controller}
 
+/**
+ * Created by saheb on 9/12/15.
+ */
 object Application extends Controller {
-
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
 
   def home = Action {
     Ok(views.html.home())

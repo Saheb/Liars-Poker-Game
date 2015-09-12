@@ -202,9 +202,4 @@ object GamePlayController extends Controller{
     }
     (in,out)
   }
-
-
-  def persistBet(game_id : Long) = Action {
-    Ok
-  }
 }

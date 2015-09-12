@@ -15,21 +15,20 @@ function dealAndGetCards(){
     // TODO: Whoever clicks okdeal first, dealing of card will happen.
     var nextRoundNumber = 1;
     if(typeof store.getItem("round_number") != 'undefined')
-        nextRoundNumber = Number(store.getItem("round_number")) + 1;
+        nextRoundNumber = Number(store.getItem("round_number"));
 
-    var isAdmin = true; //store.getItem("isAdmin")==="true"
+    var isPlaying = (store.getItem('myPosition') != 'undefined')
     var player = {
         "id" : Number(store.getItem("loginId")),
         "name" : store.getItem("loginName"),
         "email" : store.getItem("loginEmail")
     }
-    if(isAdmin){
+    if(isPlaying){
         $.ajax({
             url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
             data : JSON.stringify(player),
             type : 'GET',
             success : function(response) {
-                console.log("Dealt the cards!");
                 console.log(response)
                 $.ajax({
                     url : '/gamePlay/' + GAME_ID + '/' + 'getCards',
@@ -60,47 +59,55 @@ function dealAndGetCards(){
             }
         })
     }
-    else
+    else // Watching the game!
     {
+        // Reforming the layout!
+        $('#betPanel').remove();
+        $('#cards').remove();
+        $('#challengeBtn').remove();
+        $('#allHandsTable').fadeIn(1000);
         $.ajax({
-            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'getCards',
+            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
             data : JSON.stringify(player),
-            type : 'POST',
-            contentType : 'application/json',
+            type : 'GET',
             success : function(response) {
-                console.log("Received your cards!");
-                console.log(response);
-                deck.mount($("#container")[0]);
-                deck.sort(); deck.shuffle(); deck.shuffle();
-                setTimeout(function(){
-                    deck.unmount();
-                    for(var i=0;i<cards.length;i++)
-                    {
-                        var srcString = "/assets/cards/images/" + cards[i] + ".png";
-                        var img = $('<img id="dynamic" width="80" height="120" hspace="5" vspace="5">'); //Equivalent: $(document.createElement('img'))
-                        img.attr('src', srcString);
-                        img.appendTo('#cards');
+                console.log(response)
+                $.ajax({
+                    url : '/gamePlay/' + GAME_ID + '/getAllHands',
+                    data : JSON.stringify(player),
+                    type : 'GET',
+                    contentType : 'application/json',
+                    success : function(response) {
+                        console.log("Received all hands!");
+                        console.log(response);
+                        $('#allHandsTable td').remove();
+                        //deck.mount($("#allHands")[0]);
+                        //deck.sort(); deck.shuffle(); deck.shuffle();
+                        setTimeout(function(){
+                            ///deck.unmount();
+                            // show all hands with player names in a div with id "allHands"
+                            for(var i=0;i<response.length;i++)
+                            {
+                                var p = response[i]
+                                var name = store.getItem(p.player_id)
+                                var cards = p.hand.split(",")
+                                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">' ;//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
+                                for(var c=0; c< cards.length;c++)
+                                {
+                                    var srcString = "/assets/cards/images/" + cards[c] + ".png";
+                                    trStr = trStr + '<img id="dynamic" width="70" height="100" hspace="5" src=' + srcString + '>'
+                                }
+                                trStr = trStr + '</td>';
+                                $('#allHandsTable tr:last').after(trStr);
+                            }
+                        }, 0);
+                        store.setItem("round_number", response[0].round_number)
                     }
-                }, 2600);
-                var cards = response[0].hand.split(",")
-
-                // set round_number and turn_number in WSS
-                store.setItem("round_number", response[0].round_number)
-                store.setItem("turn_number", 1)
-                if(Number(store.getItem("myPosition"))==1)
-                {
-                    $("#betBtn").prop('disabled', false)
-                    $("#challengeBtn").prop('disabled', false)
-                    paper.project.activeLayer._namedChildren[store.getItem("loginName")][0].fillColor = 'red'
-                }
-                else
-                {
-                    $("#betBtn").prop('disabled', true)
-                    $("#challengeBtn").prop('disabled', true)
-                }
+                })
             }
         })
     }
+
     console.log("Message is sent! JSON->" + JSON.stringify(player));
 }
 function getGameStatus(){

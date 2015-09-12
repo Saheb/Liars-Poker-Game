@@ -24,7 +24,7 @@ object GamePlayController extends Controller{
   def startGamePlay(game_id : Long) = Action {
     inTransaction {
       update(gameStatusTable)(g =>
-        where(g.game_id === game_id and g.status===(-1)) set (g.status := 0)) // This indicates current round number!
+        where(g.game_id === game_id and g.status===(-1)) set (g.status := 1)) // This indicates current round number!
     }
     Ok(views.html.gameplay(game_id))
   }
@@ -51,16 +51,15 @@ object GamePlayController extends Controller{
 
     inTransaction{
       val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps))
-      val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
-      val gameHand = from(gameHandTable)(g => where(g.game_id===game_id and g.round_number === round_number) select(g))
+      val currentRound = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
+      val gameHand = from(gameHandTable)(g => where(g.game_id===game_id and g.round_number === currentRound.status) select(g))
       val cardsNotDealt = (gameHand.toList.size == 0 )
       if(cardsNotDealt)
         {
           println("Dealing Cards....")
           val deck = new Deck
           deck.initialize
-          continueGamePlay(game_id) // this will change round_number
-          println(s"Round_Number=${game.status} begins.....")
+          println(s"Round_Number=${currentRound.status} begins.....")
           val playerCardList = Map.empty[Long, String]
           for (p <- playerStatusList.toList)
           {
@@ -72,7 +71,7 @@ object GamePlayController extends Controller{
             }
             playerCardList(p.player_id) = cards.mkString(",")
             println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
-            gameHandTable.insert(new GameHand(game_id, round_number ,p.player_id,cards.mkString(",")))
+            gameHandTable.insert(new GameHand(game_id, currentRound.status,p.player_id,cards.mkString(",")))
           }
           Ok("Cards are dealt")
         }
@@ -92,6 +91,17 @@ object GamePlayController extends Controller{
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
       val gameHand = from(gameHandTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
       Ok(Json.toJson(gameHand))
+    }
+  }
+
+  def getAllHands(game_id : Long) = Action { req=>
+    //val playerJson = req.body
+    //val player = playerJson.as[Player]
+    //TODO : verify if the player is acually out of the game or not!
+    inTransaction{
+      val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
+      val allHands = from(gameHandTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status) select(gp))
+      Ok(Json.toJson(allHands))
     }
   }
 
@@ -152,7 +162,7 @@ object GamePlayController extends Controller{
                    update(roundResultTable)(r =>
                      where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
                        set (r.result := roundResult.result))
-                   //continueGamePlay(game_id)
+                   continueGamePlay(game_id) // this will change round_number
 
                    if (roundResult.result.equals("WON")) {
                      update(playerStatusTable)(p =>

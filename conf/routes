@@ -3,33 +3,35 @@
 # ~~~~
 
 # Home page
-GET         /                                         controllers.Application.index
-GET         /home                                     controllers.Application.home
+GET         /                                                 controllers.Application.index
+GET         /home                                             controllers.Application.home
 
-PUT         /persistLoginInfo                         controllers.LoginController.persistLoginInfo
+PUT         /persistLoginInfo                                 controllers.LoginController.persistLoginInfo
 
-PUT         /createGame                               controllers.CreateGameController.createGame
-POST        /modifyGame                               controllers.CreateGameController.modifyGame
+PUT         /createGame                                       controllers.CreateGameController.createGame
+POST        /modifyGame                                       controllers.CreateGameController.modifyGame
 
-GET         /updatedJoinedPlayers/:game_id            controllers.JoinGameController.updatedJoinedPlayers(game_id : Long)
+GET         /updatedJoinedPlayers/:game_id                    controllers.JoinGameController.updatedJoinedPlayers(game_id : Long)
 
-GET         /createGame/:game_id                      controllers.CreateGameController.gotoCreateGamePage(game_id : Long)
-GET         /createGame/:game_id/joinedPlayers        controllers.CreateGameController.getJoinedPlayerList(game_id : Long )
+GET         /createGame/:game_id                              controllers.CreateGameController.gotoCreateGamePage(game_id : Long)
+GET         /createGame/:game_id/joinedPlayers                controllers.CreateGameController.getJoinedPlayerList(game_id : Long )
 
-#GET         /activeGames                              controllers.JoinGameController.getActiveGames
-GET         /joinGame                                 controllers.JoinGameController.gotoJoinGamePage
-PUT         /joinGame/:game_id                        controllers.JoinGameController.joinGame(game_id : Long)
+#GET         /activeGames                                     controllers.JoinGameController.getActiveGames
+GET         /joinGame                                         controllers.JoinGameController.gotoJoinGamePage
+PUT         /joinGame/:game_id                                controllers.JoinGameController.joinGame(game_id : Long)
 
-#GET         /liveGames                                controllers.WatchGameController.getLiveGames
-GET         /watchGame                                controllers.WatchGameController.gotoWatchGamePage
+#GET         /liveGames                                       controllers.WatchGameController.getLiveGames
+GET         /watchGame                                        controllers.WatchGameController.gotoWatchGamePage
 
-GET         /gamePlay/:game_id                        controllers.GamePlayController.startGamePlay(game_id : Long)
-GET         /gamePlay/gameStarted/:game_id            controllers.GamePlayController.hasGameStarted(game_id : Long)
+GET         /gamePlay/:game_id/getAllHands                    controllers.GamePlayController.getAllHands(game_id : Long)
+GET         /gamePlay/:game_id                                controllers.GamePlayController.startGamePlay(game_id : Long)
+GET         /gamePlay/gameStarted/:game_id                    controllers.GamePlayController.hasGameStarted(game_id : Long)
 
-GET          /gamePlay/:game_id/:player_id/play       controllers.GamePlayController.takeAction(game_id :Long, player_id : Long)
-GET          /gamePlay/:game_id/:round_number/dealCards             controllers.GamePlayController.dealCards(game_id : Long, round_number : Int)
-POST         /gamePlay/:game_id/getCards              controllers.GamePlayController.getCards(game_id : Long)
-#PUT         /gamePlay/:game_id/                      controllers.GamePlayController.persistBet(game_id :Long)
+GET         /gamePlay/:game_id/:player_id/play                controllers.GamePlayController.takeAction(game_id :Long, player_id : Long)
+GET         /gamePlay/:game_id/:round_number/dealCards        controllers.GamePlayController.dealCards(game_id : Long, round_number : Int)
+POST        /gamePlay/:game_id/getCards                       controllers.GamePlayController.getCards(game_id : Long)
+
+#PUT         /gamePlay/:game_id/                              controllers.GamePlayController.persistBet(game_id :Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                             controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                     controllers.Assets.at(path="/public", file)

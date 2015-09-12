@@ -100,7 +100,7 @@ ws.onmessage = function (evt)
                 store.setItem(p.player_id, p.name)
                 $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
             }
-            $("#gameStatusModal").modal("show")
+
             store.setItem("positionNameMap", JSON.stringify(positionNameMap))
             store.setItem("playerPositionMap", JSON.stringify(playerPositionMap))
             store.setItem("positionPlayerMap", JSON.stringify(positionPlayerMap))
@@ -111,23 +111,27 @@ ws.onmessage = function (evt)
                 store.setItem("leftPlayerId", positionPlayerMap[myPosition-1])
             else
                 store.setItem("leftPlayerId", positionPlayerMap[num_of_players])
-            var paper_url = "/assets/tableCanvas.js";
-            //$.ajax({
-            //    url : paper_url,
-            //    dataType : "application/paperscript",
-            //    success : function(response) {
-            //        console.log("tableCanvas.js is now loaded");
-            //        //paper.PaperScript.load(); // <-- The fix!
-            //    }
-            //});
-            //$("#canvas").load(paper_url);
-            //var script =  document.createElement("script");
-            //script.type = "text/paperscript";
-            //script.canvas = "canvas";
-            //script.src = "/assets/tableCanvas.js"
-            //document.getElementsByTagName("head")[0].appendChild(script);
-            //paper.view.draw()
-            globals.loadTable();
+            if(typeof myPosition == 'undefined')
+            {
+                $('#okdeal').text("Okay! Let me watch")
+                globals.watchTable();
+            }
+            else
+            {
+                globals.loadTable();
+                if(myPosition == 1)
+                {
+                    $("#betBtn").prop('disabled', false)
+                    $("#challengeBtn").prop('disabled', false)
+                }
+                else
+                {
+                    $("#betBtn").prop('disabled', true)
+                    $("#challengeBtn").prop('disabled', true)
+                }
+
+            }
+            $("#gameStatusModal").modal("show");
         }
     }
     else

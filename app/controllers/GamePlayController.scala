@@ -1,5 +1,6 @@
 package controllers
 
+import play.api.Logger
 import util.Card
 import models._
 import play.api.libs.iteratee.Concurrent.Channel
@@ -56,10 +57,10 @@ object GamePlayController extends Controller{
       val cardsNotDealt = (gameHand.toList.size == 0 )
       if(cardsNotDealt)
         {
-          println("Dealing Cards....")
+          Logger.info("Dealing Cards....");
           val deck = new Deck
           deck.initialize
-          println(s"Round_Number=${currentRound.status} begins.....")
+          Logger.info(s"Round_Number=${currentRound.status} begins.....")
           val playerCardList = Map.empty[Long, String]
           for (p <- playerStatusList.toList)
           {
@@ -70,7 +71,7 @@ object GamePlayController extends Controller{
               cards = cards :+ (card.getValue.toString concat card.getSuit.toString)
             }
             playerCardList(p.player_id) = cards.mkString(",")
-            println("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
+            Logger.info("inserting hand for player" + p.player_id + " hand= " + playerCardList(p.player_id))
             gameHandTable.insert(new GameHand(game_id, currentRound.status,p.player_id,cards.mkString(",")))
           }
           Ok("Cards are dealt")
@@ -107,7 +108,7 @@ object GamePlayController extends Controller{
 
   def takeAction(game_id : Long, player_id : Long) = WebSocket.using[JsValue] { request =>
 
-    println(s"Creating socket for Game_Id = ${game_id}, Player_Id = ${player_id}")
+    Logger.info(s"Creating socket for Game_Id = ${game_id}, Player_Id = ${player_id}")
 
     val (out,channel) = socketMap.get((game_id,player_id)).getOrElse(Concurrent.broadcast[JsValue])
 
@@ -121,8 +122,8 @@ object GamePlayController extends Controller{
     val in = Iteratee.foreach[JsValue] {
          msg =>
            {
-             println(msg \ "action")
              val action = (msg \ "action")
+             Logger.info(action.toString());
              action match {
                case JsString("GameStatus") =>
                  //log the message to stdout and send response back to client
@@ -134,7 +135,7 @@ object GamePlayController extends Controller{
                  }
 
                case JsString("Bet") =>
-                   println(msg \ "bet")
+                   Logger.info(msg \ "bet" toString())
                    // persist bet and then push to all channels, as done above in GameStatus case!
                    val player = (msg \ "player").as[Player]
                    val bet = (msg \ "bet").as[GameBet]
@@ -145,8 +146,8 @@ object GamePlayController extends Controller{
                    }
 
                case JsString("Challenge") =>
-                 println(msg \ "roundResult")
                  val roundResult = (msg \ "roundResult").as[RoundResult]
+                 Logger.info(roundResult toString)
                  inTransaction{
                    val playerHandList = from(gameHandTable)(gh => where(gh.game_id === game_id and gh.round_number === roundResult.round_number) select(gh))
                    val channels = socketMap.filter(p => (p._1._1 == game_id))
@@ -156,12 +157,12 @@ object GamePlayController extends Controller{
                  }
 
                case JsString("RoundResult") =>
-                 println(msg \ "roundResult")
                  val roundResult = (msg \ "roundResult").as[RoundResult]
-                 println(s"Closing all sockets after round ${roundResult.round_number} for gameId ${game_id}");
-                 println("Socket Map Size Before=" + socketMap.size);
+                 Logger.info(roundResult toString)
+                 Logger.info(s"Closing all sockets after round ${roundResult.round_number} for gameId ${game_id}");
+                 Logger.info("Socket Map Size Before=" + socketMap.size);
                  socketMap.retain((k,v) => (k._1 != game_id));
-                 println("Socket Map Size After=" + socketMap.size);
+                 Logger.info("Socket Map Size After=" + socketMap.size);
                  inTransaction {
                    update(roundResultTable)(r =>
                      where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
@@ -192,10 +193,10 @@ object GamePlayController extends Controller{
                    }
                  }
                case JsString("Close") =>
-                 println(s"Removing socket for ${game_id} and ${player_id}");
+                 Logger.info(s"Removing socket for ${game_id} and ${player_id}");
                  socketMap.remove((game_id,player_id));
 
-               case _ => println("This should not be printed....!" + action)
+               case _ => Logger.info("This should not be printed....!" + action)
              }
            }
     }

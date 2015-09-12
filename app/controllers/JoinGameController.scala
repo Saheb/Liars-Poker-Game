@@ -1,6 +1,7 @@
 package controllers
 
 import models._
+import play.Logger
 import play.api.libs.{EventSource}
 import play.api.libs.iteratee.{Enumeratee, Concurrent}
 import play.api.libs.json._
@@ -73,7 +74,7 @@ object JoinGameController extends Controller{
   }
 
   def connDeathWatch(addr: String): Enumeratee[JsValue, JsValue] =
-    Enumeratee.onIterateeDone{ () => println(addr + " - SSE disconnected") }
+    Enumeratee.onIterateeDone{ () => Logger.info(addr + " - SSE disconnected") }
 
   def updatedJoinedPlayers(game_id : Long) = Action { req =>
     Ok.feed(joined_players

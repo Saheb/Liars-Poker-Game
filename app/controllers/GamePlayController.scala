@@ -107,7 +107,7 @@ object GamePlayController extends Controller{
 
   def takeAction(game_id : Long, player_id : Long) = WebSocket.using[JsValue] { request =>
 
-    println(s"Game_Id = ${game_id}, Player_Id = ${player_id}")
+    println(s"Creating socket for Game_Id = ${game_id}, Player_Id = ${player_id}")
 
     val (out,channel) = socketMap.get((game_id,player_id)).getOrElse(Concurrent.broadcast[JsValue])
 
@@ -158,6 +158,10 @@ object GamePlayController extends Controller{
                case JsString("RoundResult") =>
                  println(msg \ "roundResult")
                  val roundResult = (msg \ "roundResult").as[RoundResult]
+                 println(s"Closing all sockets after round ${roundResult.round_number} for gameId ${game_id}");
+                 println("Socket Map Size Before=" + socketMap.size);
+                 socketMap.retain((k,v) => (k._1 != game_id));
+                 println("Socket Map Size After=" + socketMap.size);
                  inTransaction {
                    update(roundResultTable)(r =>
                      where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
@@ -187,6 +191,10 @@ object GamePlayController extends Controller{
                      }
                    }
                  }
+               case JsString("Close") =>
+                 println(s"Removing socket for ${game_id} and ${player_id}");
+                 socketMap.remove((game_id,player_id));
+
                case _ => println("This should not be printed....!" + action)
              }
            }

@@ -82,6 +82,12 @@ ws.onmessage = function (evt)
                     "roundResult": roundResult
                 }
                 ws.send(JSON.stringify(json))
+                //var json = {
+                //    "action": "Close"
+                //}
+                //ws.send(JSON.stringify(json));
+                //ws.close();
+                //console.log("Closing Connection!");
             }
         }
         else // Game Status!
@@ -165,7 +171,13 @@ ws.onmessage = function (evt)
         }
         else // round Result
         {
-            store.setItem("player_challenge_id", gameStatusOrBet.player_challenge_id)
+            store.setItem("player_challenge_id", gameStatusOrBet.player_challenge_id);
+            var json = {
+                "action": "Close"
+            }
+            //ws.send(JSON.stringify(json));
+            //ws.close();
+            //console.log("Closing Connection!");
         }
     }
 };

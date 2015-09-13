@@ -106,6 +106,16 @@ object GamePlayController extends Controller{
     }
   }
 
+  def getFinalStandings(game_id : Long) = Action { req =>
+    inTransaction{
+      val winnerPlayer = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps)).single
+      update(playerStatusTable)(p =>
+        where(p.player_id === winnerPlayer.player_id and p.game_id === game_id) set(p.position := 1))
+      val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps) orderBy(ps.position))
+      Ok(Json.toJson(playerStatusList))
+    }
+  }
+
   def takeAction(game_id : Long, player_id : Long) = WebSocket.using[JsValue] { request =>
 
     Logger.info(s"Creating socket for Game_Id = ${game_id}, Player_Id = ${player_id}")
@@ -129,7 +139,7 @@ object GamePlayController extends Controller{
                  //log the message to stdout and send response back to client
                  val player = (msg \ "player").as[Player]
                  inTransaction{
-                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps))
+                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps) orderBy(ps.position))
                    val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 == player.player_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList)))
                  }
@@ -169,6 +179,8 @@ object GamePlayController extends Controller{
                        set (r.result := roundResult.result))
                    continueGamePlay(game_id) // this will change round_number
 
+                   val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps))
+
                    if (roundResult.result.equals("WON")) {
                      update(playerStatusTable)(p =>
                        where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.num_of_cards := p.num_of_cards.~ + 1))
@@ -178,6 +190,10 @@ object GamePlayController extends Controller{
                        {
                          update(playerStatusTable)(p =>
                            where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.status := "Out"))
+
+                         // Updating Final Standing
+                         update(playerStatusTable)(p =>
+                           where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.position := playerStatusList.toList.size))
                        }
                    }
                    else {
@@ -189,9 +205,14 @@ object GamePlayController extends Controller{
                      {
                        update(playerStatusTable)(p =>
                          where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.status := "Out"))
+
+                       // Updating Final Standing
+                       update(playerStatusTable)(p =>
+                         where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.position := playerStatusList.toList.size))
                      }
                    }
                  }
+
                case JsString("Close") =>
                  Logger.info(s"Removing socket for ${game_id} and ${player_id}");
                  socketMap.remove((game_id,player_id));

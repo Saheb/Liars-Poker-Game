@@ -55,6 +55,8 @@ ws.onmessage = function (evt)
                 $('#playerCardsTable tr:last').after(trStr);
             }
 
+            console.log(allCards);
+            console.log(store.getItem("previousBet"));
             var result = ""
             if(challengeWon(allCards, store.getItem("previousBet")))
             {
@@ -66,6 +68,8 @@ ws.onmessage = function (evt)
                 $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + " : " + store.getItem(store.getItem("player_challenge_id")) +" won challenge against " +  store.getItem(store.getItem("previousBetPlayerId"))
                 result = "WON"
             }
+            console.log(result);
+            $('#betString').text("Bet challenged was : " + store.getItem("previousBet"));
             $("#roundResultModal").modal("show")
             if(store.getItem("player_challenge_id") == store.getItem("loginId"))
             {
@@ -149,8 +153,8 @@ ws.onmessage = function (evt)
             var bet = gameStatusOrBet.bet.split("_")
             $("#cu_handType").text(bet[0]);
             $("#cu_valueType").text(bet[1]);
-            $("#cu_suitType").text(bet[3]);
             $("#cu_value2Type").text(bet[2]);
+            $("#cu_suitType").text(bet[3]);
             if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
             {
                 $("#betBtn").prop('disabled', false)
@@ -169,15 +173,34 @@ ws.onmessage = function (evt)
             paper.project.activeLayer._namedChildren[previousBetterName][0].fillColor = 'yellow'
             paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
         }
-        else // round Result
+        else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// round Result
         {
             store.setItem("player_challenge_id", gameStatusOrBet.player_challenge_id);
-            var json = {
-                "action": "Close"
-            }
+            //var json = {
+            //    "action": "Close"
+            //}
             //ws.send(JSON.stringify(json));
             //ws.close();
             //console.log("Closing Connection!");
+        }
+        else // Game Result!
+        {
+            $('#finalStandTable td').remove();
+            $.ajax({
+                type : "GET",
+                url : "/gamePlay/"+GAME_ID + "/finalStandings",
+                contentType : "application/json",
+                success : function(response) {
+                    console.log(response);
+                    $('#winner').text(gameStatusOrBet[0].name + " has won the Game!");
+                    for(var i=0;i<response.length;i++)
+                    {
+                        $('#finalStandTable tr:last').after('<tr> <td>' + response[i].name + '</td> <td>' + response[i].position + '</td></tr>');
+                    }
+                    $("#gameResultModal").modal("show");
+                }
+            });
+
         }
     }
 };

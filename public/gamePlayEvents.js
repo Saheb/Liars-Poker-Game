@@ -29,15 +29,15 @@ function dealAndGetCards(){
             data : JSON.stringify(player),
             type : 'GET',
             success : function(response) {
-                console.log(response)
+                console.dir(response)
                 $.ajax({
                     url : '/gamePlay/' + GAME_ID + '/' + 'getCards',
                     data : JSON.stringify(player),
                     type : 'POST',
                     contentType : 'application/json',
                     success : function(response) {
-                        console.log("Received your cards!");
-                        console.log(response)
+                        console.dir("Received your cards!");
+                        console.dir(response)
                         deck.mount($("#container")[0]);
                         deck.sort(); deck.shuffle(); deck.shuffle();
                         setTimeout(function(){
@@ -71,15 +71,15 @@ function dealAndGetCards(){
             data : JSON.stringify(player),
             type : 'GET',
             success : function(response) {
-                console.log(response)
+                console.dir(response)
                 $.ajax({
                     url : '/gamePlay/' + GAME_ID + '/getAllHands',
                     data : JSON.stringify(player),
                     type : 'GET',
                     contentType : 'application/json',
                     success : function(response) {
-                        console.log("Received all hands!");
-                        console.log(response);
+                        console.dir("Received all hands!");
+                        console.dir(response);
                         $('#allHandsTable td').remove();
                         //deck.mount($("#allHands")[0]);
                         //deck.sort(); deck.shuffle(); deck.shuffle();
@@ -108,7 +108,7 @@ function dealAndGetCards(){
         })
     }
 
-    console.log("Message is sent! JSON->" + JSON.stringify(player));
+    console.dir("Message is sent! JSON->" + JSON.stringify(player));
 }
 function getGameStatus(){
     var xhr = $.ajax({
@@ -168,7 +168,7 @@ $("#betBtn").get(0).onclick = function() {
         store.setItem("previousBet", bet.bet);
         store.setItem("previousBetPlayerId",bet.player_id)
 
-        console.log("Bet is sent...");
+        console.dir("Bet is sent...");
         // update WSS
         store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
         $("#betBtn").prop('disabled', true)
@@ -214,5 +214,9 @@ $("#challengeBtn").get(0).onclick = function(){
         "roundResult": roundResult
     }
     ws.send(JSON.stringify(json));
-    console.log("Challenge details are sent...");
+    console.dir("Challenge details are sent...");
+}
+
+$("#playAgain").get(0).onclick = function(){
+    location.href = "/"
 }

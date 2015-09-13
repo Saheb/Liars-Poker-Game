@@ -31,8 +31,8 @@ function challengeWon(cards, bet)  {
     var betArr = bet.split("_")
     var handType = betArr[0]
     var valueType = betArr[1].toLowerCase()
-    var suitType = betArr[2]
-    var value2Type = betArr[3].toLowerCase()
+    var value2Type = betArr[2].toLowerCase()
+    var suitType = betArr[3]
 
     if(handType == "High Card")
     {

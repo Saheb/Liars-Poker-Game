@@ -29,6 +29,7 @@ GET         /gamePlay/gameStarted/:game_id                    controllers.GamePl
 GET         /gamePlay/:game_id/:player_id/play                controllers.GamePlayController.takeAction(game_id :Long, player_id : Long)
 GET         /gamePlay/:game_id/:round_number/dealCards        controllers.GamePlayController.dealCards(game_id : Long, round_number : Int)
 POST        /gamePlay/:game_id/getCards                       controllers.GamePlayController.getCards(game_id : Long)
+GET         /gamePlay/:game_id/finalStandings                 controllers.GamePlayController.getFinalStandings(game_id : Long)
 
 #PUT         /gamePlay/:game_id/                              controllers.GamePlayController.persistBet(game_id :Long)
 

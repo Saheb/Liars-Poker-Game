@@ -115,7 +115,9 @@ function call()
 
     if(compare(current,previous))
     {
-        console.log(current.toString() + " > " + previous.toString() + "Current Bet is Accepted");
+        console.log(previous);
+        console.log(current);
+        console.log("Current Bet is Accepted");
         return true;
     }
     else

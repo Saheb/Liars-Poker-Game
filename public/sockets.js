@@ -49,7 +49,7 @@ ws.onmessage = function (evt)
                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
                     //var img = $('<img id="dynamic" class="card" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
                     //img.attr('src', srcString);
-                    trStr = trStr + '<img id="dynamic" width="70" height="100" hspace="5" src=' + srcString + '>'
+                    trStr = trStr + '<img id="'+ cards[c] +'" width="70" height="100" style="opacity:0.3" hspace="5" src=' + srcString + '>'
                 }
                 trStr = trStr + '</td>';
                 $('#playerCardsTable tr:last').after(trStr);
@@ -69,7 +69,8 @@ ws.onmessage = function (evt)
                 result = "WON"
             }
             console.log(result);
-            $('#betString').text("Bet challenged was : " + store.getItem("previousBet"));
+            var betString = store.getItem('previousBet').replace(/_/g, ' ').replace(/NA/g, ' ')
+            $('#betString').text("Bet challenged was : " + betString);
             $("#roundResultModal").modal("show")
             if(store.getItem("player_challenge_id") == store.getItem("loginId"))
             {

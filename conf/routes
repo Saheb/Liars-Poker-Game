@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET         /home                                             controllers.Application.home
 GET         /                                                 controllers.Application.home
 
 PUT         /persistLoginInfo                                 controllers.LoginController.persistLoginInfo

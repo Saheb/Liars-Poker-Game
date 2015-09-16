@@ -19,7 +19,7 @@
         <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
 
         <script>
-            ''''''
+            var store = window.sessionStorage
             function checkLogin() {
                 if(store.length!=0)
                     document.getElementById('loginName').innerText = store.getItem("loginName")

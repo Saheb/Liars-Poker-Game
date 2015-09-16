@@ -14,7 +14,7 @@ else
             contentType: "application/json",
             success : function(response) {
                 location.href = "/gamePlay/" + GAME_ID
-                clearInterval()
+                clearInterval();
             },
             error : function(response){
                 console.log("Game hasn't started yet");
@@ -22,7 +22,7 @@ else
         })
     }
     //gameStartedPolling()
-    setInterval(gameStartedPolling, 10000)
+    setInterval(gameStartedPolling, 5000)
 }
 
 $("#startGameBtn").get(0).onclick = function() {

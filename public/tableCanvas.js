@@ -20,33 +20,34 @@
         var po = new Point(view.center.x,view.center.y + 175);
         var vec = po - view.center;
         var validPositions = Object.keys(positionNameMap);
-        for (var i = myPosition; i < validPositions.length + 1; i++)
+        var myIndex = validPositions.indexOf(myPosition.toString());
+        for (var i = myIndex ; i < validPositions.length; i++)
         {
             var temp = new Point(vec.x + view.center.x, vec.y+ view.center.y)
             players[i] = new Path.Circle(temp, 25);
             players[i].fillColor = 'yellow';
             players[i].style = circleStyle;
-            var name = positionNameMap[i];
+            var name = positionNameMap[validPositions[i]];
             players[i].name = name;
             text = new PointText(new Point(temp.x-(3*name.length),temp.y+40));
             text.content = name;
             vec.angle += angle;
         }
 
-        for (var i = 1; i < myPosition; i++)
+        for (var i = 0; i < myIndex; i++)
         {
             var temp = new Point(vec.x + view.center.x, vec.y+ view.center.y)
             players[i] = new Path.Circle(temp, 25);
             players[i].fillColor = 'yellow';
             players[i].style = circleStyle;
-            var name = positionNameMap[i];
+            var name = positionNameMap[validPositions[i]];
             players[i].name = name;
             text = new PointText(new Point(temp.x-(3*name.length),temp.y+40));
             text.content = name;
             vec.angle += angle;
         }
 
-        var currentBetterName = positionNameMap[1]
+        var currentBetterName = positionNameMap[validPositions[0]]
         project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
     }
 
@@ -65,21 +66,21 @@
         path.fillColor = 'green'
         var po = new Point(view.center.x,view.center.y + 175);
         var vec = po - view.center;
-
-        for (var i = 1; i < num_of_players + 1; i++)
+        var validPositions = Object.keys(positionNameMap);
+        for (var i = 0; i < validPositions.length; i++)
         {
             var temp = new Point(vec.x + view.center.x, vec.y+ view.center.y)
             players[i] = new Path.Circle(temp, 25);
             players[i].fillColor = 'yellow';
             players[i].style = circleStyle;
-            var name = positionNameMap[i];
+            var name = positionNameMap[validPositions[i]];
             players[i].name = name;
             text = new PointText(new Point(temp.x-(3*name.length),temp.y+40));
             text.content = name;
             vec.angle += angle;
         }
 
-        var currentBetterName = positionNameMap[1]
+        var currentBetterName = positionNameMap[validPositions[0]]
         project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
     }
 

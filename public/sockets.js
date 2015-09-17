@@ -118,10 +118,7 @@ ws.onmessage = function (evt)
             store.setItem("num_of_players", num_of_players)
             var myPosition = playerPositionMap[Number(store.getItem("loginId"))]
             store.setItem("myPosition", myPosition)
-            if(myPosition != 1)
-                store.setItem("leftPlayerId", positionPlayerMap[myPosition-1])
-            else
-                store.setItem("leftPlayerId", positionPlayerMap[num_of_players])
+
             if(typeof myPosition == 'undefined')
             {
                 $('#okdeal').text("Okay! Let me watch")
@@ -129,8 +126,14 @@ ws.onmessage = function (evt)
             }
             else
             {
+                var validPositions = Object.keys(positionPlayerMap);
+                var myIndex = validPositions.indexOf(myPosition.toString())
+                if(myIndex != 0)
+                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[myIndex-1]])
+                else
+                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[num_of_players-1]])
                 globals.loadTable();
-                if(myPosition == 1)
+                if(myPosition == validPositions[0])
                 {
                     $("#betBtn").prop('disabled', false)
                     $("#challengeBtn").prop('disabled', false)
@@ -140,7 +143,6 @@ ws.onmessage = function (evt)
                     $("#betBtn").prop('disabled', true)
                     $("#challengeBtn").prop('disabled', true)
                 }
-
             }
             $("#gameStatusModal").modal("show");
         }
@@ -163,14 +165,17 @@ ws.onmessage = function (evt)
             }
             var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
             var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
+
             var betterPosition = playerPositionMap[gameStatusOrBet.player_id]
             var previousBetterName = store.getItem(positionPlayerMap[betterPosition])
-            var currentPosition = betterPosition + 1
+            var validPositions = Object.keys(positionPlayerMap);
+            var betterIndex = validPositions.indexOf(betterPosition.toString())
+            var currentPosition = betterIndex + 1
             var currentBetterName = "";
-            if(currentPosition <= Number(store.getItem("num_of_players")))
-                currentBetterName = store.getItem(positionPlayerMap[currentPosition])
+            if(currentPosition < Number(store.getItem("num_of_players")))
+                currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
             else
-                currentBetterName = store.getItem(positionPlayerMap[1])
+                currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
             paper.project.activeLayer._namedChildren[previousBetterName][0].fillColor = 'yellow'
             paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
         }

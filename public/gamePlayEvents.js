@@ -177,12 +177,14 @@ $("#betBtn").get(0).onclick = function() {
         var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
         var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
         var betterPosition = playerPositionMap[Number(store.getItem("loginId"))]
-        var currentPosition = betterPosition + 1
+        var validPositions = Object.keys(positionPlayerMap);
+        var betterIndex = validPositions.indexOf(betterPosition.toString())
+        var currentPosition = betterIndex + 1
         var currentBetterName = "";
-        if(currentPosition <= Number(store.getItem("num_of_players")))
-            currentBetterName = store.getItem(positionPlayerMap[currentPosition])
+        if(currentPosition < Number(store.getItem("num_of_players")))
+            currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
         else
-            currentBetterName = store.getItem(positionPlayerMap[1])
+            currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
         paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
     }
     else

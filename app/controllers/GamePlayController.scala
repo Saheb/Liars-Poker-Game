@@ -108,6 +108,7 @@ object GamePlayController extends Controller{
 
   def getFinalStandings(game_id : Long) = Action { req =>
     inTransaction{
+      Logger.info("Getting final standing for game " + game_id)
       val winnerPlayer = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps)).single
       update(playerStatusTable)(p =>
         where(p.player_id === winnerPlayer.player_id and p.game_id === game_id) set(p.position := 1))
@@ -170,10 +171,11 @@ object GamePlayController extends Controller{
                  val roundResult = (msg \ "roundResult").as[RoundResult]
                  Logger.info(roundResult toString)
                  Logger.info(s"Closing all sockets after round ${roundResult.round_number} for gameId ${game_id}");
-                 Logger.info("Socket Map Size Before=" + socketMap.size);
-                 socketMap.retain((k,v) => (k._1 != game_id));
-                 Logger.info("Socket Map Size After=" + socketMap.size);
                  inTransaction {
+                   Logger.info("Socket Map Size Before=" + socketMap.size)
+                   socketMap.retain((k,v) => (k._1 != game_id))
+                   Logger.info("Socket Map Size After=" + socketMap.size)
+
                    update(roundResultTable)(r =>
                      where(r.game_id === roundResult.game_id and r.round_number === roundResult.round_number)
                        set (r.result := roundResult.result))
@@ -188,12 +190,16 @@ object GamePlayController extends Controller{
                        where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) select(p)).single
                      if(lostPlayer.num_of_cards > 5)
                        {
-                         update(playerStatusTable)(p =>
-                           where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.status := "Out"))
-
+                         //TODO : Find out why order of below two statements matter!
                          // Updating Final Standing
                          update(playerStatusTable)(p =>
                            where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.position := playerStatusList.toList.size))
+
+                         update(playerStatusTable)(p =>
+                           where(p.player_id === roundResult.player_bet_id and p.game_id === game_id) set(p.status := "Out"))
+
+                         update(gameStatusTable)(g=>
+                           where(g.game_id === game_id) set(g.winner_player := roundResult.player_challenge_id))
                        }
                    }
                    else {
@@ -203,12 +209,15 @@ object GamePlayController extends Controller{
                        where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) select(p)).single
                      if(lostPlayer.num_of_cards > 5)
                      {
-                       update(playerStatusTable)(p =>
-                         where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.status := "Out"))
-
                        // Updating Final Standing
                        update(playerStatusTable)(p =>
                          where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.position := playerStatusList.toList.size))
+
+                       update(playerStatusTable)(p =>
+                         where(p.player_id === roundResult.player_challenge_id and p.game_id === game_id) set(p.status := "Out"))
+
+                       update(gameStatusTable)(g=>
+                       where(g.game_id === game_id) set(g.winner_player := roundResult.player_bet_id))
                      }
                    }
                  }

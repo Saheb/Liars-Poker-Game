@@ -7,7 +7,8 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   "org.squeryl" %% "squeryl" % "0.9.5-6",
-  "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+  "org.scalatest" % "scalatest_2.10" % "2.0" % "test",
+  "mysql" % "mysql-connector-java" % "5.1.27"
 )
 
 play.Project.playScalaSettings

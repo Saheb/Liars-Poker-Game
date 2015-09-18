@@ -45,7 +45,6 @@ startApp()
 //attachSignin(document.getElementById('google-login-btn'));
 
 function attachSignin(element) {
-    console.log(element.id);
     auth2.attachClickHandler(element, {},
         function(googleUser) {
             document.getElementById('loginName').innerText =

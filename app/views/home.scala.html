@@ -19,6 +19,14 @@
         <link href="@routes.Assets.at("stylesheets/starter-template.css")" rel="stylesheet">
 
         <script>
+            if(typeof(Storage) !== "undefined") {
+                    // Code for localStorage/sessionStorage.
+                    console.log("Your browser has Storage! Game will work!");
+                } else {
+                    // Sorry! No Web Storage support..
+                    console.log("Your browser doesn't have Web Storage! Game will not work!");
+                    alert("Your browser doesn't have Web Storage! Game will not work!");
+            }
             var store = window.sessionStorage
             function checkLogin() {
                 if(store.length!=0)

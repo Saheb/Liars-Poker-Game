@@ -10,7 +10,15 @@ store.setItem("turn_number", "NA")
 //store.setItem("round_number", "0")
 
 var player_id = Number(store.getItem("loginId"))
-var ws = new WebSocket("ws://localhost:9000/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
+var loc = window.location, new_uri;
+if (loc.protocol === "https:") {
+    new_uri = "wss:";
+} else {
+    new_uri = "ws:";
+}
+new_uri += "//" + loc.host;
+//new_uri += loc.pathname;
+var ws = new WebSocket(new_uri + "/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
 ws.onopen = function()
 {
     // Web Socket is connected, send data using send()

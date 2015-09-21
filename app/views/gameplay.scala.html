@@ -15,6 +15,14 @@
             width: 100%;
             height: 25%;
             }
+            #chatWindow{
+            height : 90%;
+            margin-bottom: -4px;
+            }
+            #chatMessages{
+                max-height: 90%;
+                overflow-y: scroll;
+            }
         </style>
         <title>Game Play</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
@@ -131,7 +139,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-4" id="betPanel">
                 <div id="handType" class="btn btn-group-vertical">
@@ -186,11 +194,11 @@
                     <button type="button" class="btn btn-default">Clubs</button>
                     <button type="button" class="btn btn-default">Hearts</button>
                 </div>
-                <div class="btn btn-group-lg" >
+                <div class="btn btn-group-lg col-md-offset-1">
                     <button id="betBtn" type="button" class="btn btn-primary btn-lg">&nbsp&nbsp&nbsp Bet &nbsp&nbsp&nbsp</button>
                 </div>
             </div>
-            <div id="canvas-wrap" class="col-md-6">
+            <div id="canvas-wrap" class="col-md-5">
                 <div id="previousBet">
                     <h3>
                         <span id="cu_handType" class="label label-warning">High Card</span>
@@ -209,12 +217,25 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div id="chatWindow" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Chat Window</h1>
+                    </div>
+                    <div id='chatMessages' class="panel-body">
+
+                    </div>
+                </div>
+                <input id='chatBox' class="form-control input-lg" type="text" placeholder="Say Hello!">
+            </div>
+
             <div id="allHands" class="col-md-6">
                 <table id="allHandsTable" class="table" style="display:none">
                     <th> Name </th>
                     <th> Cards </th>
                 </table>
             </div>
+
         </div>
     </div>
 

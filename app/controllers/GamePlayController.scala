@@ -156,6 +156,12 @@ object GamePlayController extends Controller{
                      gameBetTable.insert(new GameBet(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
 
+               case JsString("Chat") =>
+                 Logger.info(msg \ "message" toString())
+                 val player = (msg \ "player").as[Player]
+                 val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
+                 channels.foreach(f => f._2._2 push(Json.toJson(msg)))
+
                case JsString("Challenge") =>
                  val roundResult = (msg \ "roundResult").as[RoundResult]
                  Logger.info(roundResult toString)

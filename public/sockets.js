@@ -197,6 +197,13 @@ ws.onmessage = function (evt)
             //ws.close();
             //console.log("Closing Connection!");
         }
+        else if(gameStatusOrBet.hasOwnProperty(('action')))
+        {
+            console.log(gameStatusOrBet.message)
+            console.log(gameStatusOrBet.player.name)
+            $('#chatMessages').append('<b>' + gameStatusOrBet.player.name + '</b><br/>');
+            $('#chatMessages').append(gameStatusOrBet.message + '<br/>');
+        }
         else // Game Result!
         {
             $('#finalStandTable td').remove();
@@ -214,7 +221,6 @@ ws.onmessage = function (evt)
                     $("#gameResultModal").modal("show");
                 }
             });
-
         }
     }
 };

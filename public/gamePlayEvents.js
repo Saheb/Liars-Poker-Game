@@ -222,3 +222,27 @@ $("#challengeBtn").get(0).onclick = function(){
 $("#playAgain").get(0).onclick = function(){
     location.href = "/"
 }
+
+$("#chatBox").keyup(function(event){
+    if(event.keyCode == 13){
+        var message = event.target.value;
+        if(message != "")
+        {
+            var player = {
+                "id": Number(store.getItem("loginId")),
+                "name": store.getItem("loginName"),
+                "email": store.getItem("loginEmail")
+            }
+
+            var json = {
+                "action": "Chat",
+                "player": player,
+                "message": message
+            }
+            ws.send(JSON.stringify(json));
+            $('#chatMessages').append('<b>me</b><br/>');
+            $('#chatMessages').append(message + '<br/>');
+            event.target.value = ""
+        }
+    }
+});

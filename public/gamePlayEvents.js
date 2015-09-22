@@ -173,7 +173,6 @@ $("#betBtn").get(0).onclick = function() {
         store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
         $("#betBtn").prop('disabled', true)
         $("#challengeBtn").prop('disabled', true)
-        paper.project.activeLayer._namedChildren[store.getItem("loginName")][0].fillColor = 'yellow'
         var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
         var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
         var betterPosition = playerPositionMap[Number(store.getItem("loginId"))]
@@ -185,7 +184,8 @@ $("#betBtn").get(0).onclick = function() {
             currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
         else
             currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
-        paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
+
+        $('#previousBetter').text(player.name)
     }
     else
     {

@@ -4,10 +4,11 @@
         <style>
             #gameStatusModal .modal-dialog  {width:35%;}
             #roundResultModal .modal-dialog  {height: 70%; width:50%;}
-            #canvas-wrap { position:relative; } /* Make this a positioned parent */
+            #canvas-wrap { position:relative; }
             /*#cards {margin: 0 auto; display:block;  position:absolute;}*/
-            #previousBet { position:absolute; top:180px; left: 120px}
-            #challengeBtn { position:absolute; top:250px; left: 180px}
+            #previousBetter{ position:absolute; top:160px; left: 180px; text-align: center;}
+            #previousBet { position:absolute; top:190px; left: 120px}
+            #challengeBtn { position:absolute; top:260px; left: 180px}
             #cards {
             border-radius: 25px;
             border: 2px solid #000000;
@@ -50,8 +51,6 @@
         <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
 
-        <script type="text/javascript" src="@routes.Assets.at("javascripts/paper-full.min.js")"></script>
-        <script type="text/paperscript" canvas="canvas" src="@routes.Assets.at("tableCanvas.js")"></script>
         <script src="@routes.Assets.at("sockets.js")"></script>
     </head>
 <body onLoad="checkLogin()">
@@ -199,7 +198,12 @@
                 </div>
             </div>
             <div id="canvas-wrap" class="col-md-5">
-                <div id="previousBet">
+                <div>
+                    <h3>
+                        <p id="previousBetter"></p>
+                    </h3>
+                </div>
+                <div id="previousbet">
                     <h3>
                         <span id="cu_handType" class="label label-warning">High Card</span>
                         <span id="cu_valueType" class="label label-warning">2</span>
@@ -208,7 +212,7 @@
                     </h3>
                 </div>
                 <div id="canvas-div">
-                    <canvas id="canvas" resize="true"></canvas>
+                    <canvas id="htmlCanvas" width="450" height="450" style="display : block ;"></canvas>
                     <button id="challengeBtn" type="button" class="btn btn-danger btn-lg">Challenge</button>
                 </div>
                 <div id="cards">
@@ -240,6 +244,7 @@
     </div>
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/example.css")">
+    <script src="@routes.Assets.at("html5Canvas.js")"></script>
     <script src="@routes.Assets.at("challengeResult.js")"></script>
     <script src="@routes.Assets.at("gamePlayEvents.js")"></script>
     <script src="@routes.Assets.at("javascripts/deck.min.js")"></script>

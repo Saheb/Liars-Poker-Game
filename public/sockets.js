@@ -130,7 +130,7 @@ ws.onmessage = function (evt)
             if(typeof myPosition == 'undefined')
             {
                 $('#okdeal').text("Okay! Let me watch")
-                globals.watchTable();
+                drawTable();
             }
             else
             {
@@ -140,7 +140,7 @@ ws.onmessage = function (evt)
                     store.setItem("leftPlayerId", positionPlayerMap[validPositions[myIndex-1]])
                 else
                     store.setItem("leftPlayerId", positionPlayerMap[validPositions[num_of_players-1]])
-                globals.loadTable();
+                drawTable();
                 if(myPosition == validPositions[0])
                 {
                     $("#betBtn").prop('disabled', false)
@@ -184,8 +184,7 @@ ws.onmessage = function (evt)
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
             else
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
-            paper.project.activeLayer._namedChildren[previousBetterName][0].fillColor = 'yellow'
-            paper.project.activeLayer._namedChildren[currentBetterName][0].fillColor = 'red'
+            $('#previousBetter').text(previousBetterName)
         }
         else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// round Result
         {

@@ -2,13 +2,16 @@
 <html>
     <head>
         <style>
+            html, body {
+            height: 100%; /*Fixes the height to 100% of the viewport*/
+            }
+            body {
+                padding-top: 50px; /*50px for the height of the navbar + 37px for the offset*/
+            }
             #gameStatusModal .modal-dialog  {width:35%;}
             #roundResultModal .modal-dialog  {height: 70%; width:50%;}
-            #canvas-wrap { position:relative; }
             /*#cards {margin: 0 auto; display:block;  position:absolute;}*/
-            #previousBetter{ position:absolute; top:160px; left: 180px; text-align: center;}
-            #previousBet { position:absolute; top:190px; left: 120px}
-            #challengeBtn { position:absolute; top:260px; left: 180px}
+            #previousBetter{ text-align: center;}
             #cards {
             border-radius: 25px;
             border: 2px solid #000000;
@@ -138,7 +141,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid scrollable">
         <div class="row">
             <div class="col-md-4" id="betPanel">
                 <div id="handType" class="btn btn-group-vertical">
@@ -193,27 +196,21 @@
                     <button type="button" class="btn btn-default">Clubs</button>
                     <button type="button" class="btn btn-default">Hearts</button>
                 </div>
-                <div class="btn btn-group-lg col-md-offset-1">
-                    <button id="betBtn" type="button" class="btn btn-primary btn-lg">&nbsp&nbsp&nbsp Bet &nbsp&nbsp&nbsp</button>
-                </div>
             </div>
             <div id="canvas-wrap" class="col-md-5">
-                <div>
-                    <h3>
-                        <p id="previousBetter"></p>
-                    </h3>
-                </div>
                 <div id="previousbet">
                     <h3>
+                        <p id="previousBetter"></p>
+                        <button id="betBtn" type="button" class="btn btn-primary btn-lg">&nbsp&nbsp&nbsp Bet &nbsp&nbsp&nbsp</button>
                         <span id="cu_handType" class="label label-warning">High Card</span>
                         <span id="cu_valueType" class="label label-warning">2</span>
                         <span id="cu_value2Type" class="label label-warning">NA</span>
                         <span id="cu_suitType" class="label label-warning">NA</span>
+                        <button id="challengeBtn" type="button" class="btn btn-danger btn-lg">Challenge</button>
                     </h3>
                 </div>
                 <div id="canvas-div">
-                    <canvas id="htmlCanvas" width="450" height="450" style="display : block ;"></canvas>
-                    <button id="challengeBtn" type="button" class="btn btn-danger btn-lg">Challenge</button>
+                    <canvas id="htmlCanvas" width="450" height="400" style="display : block ;"></canvas>
                 </div>
                 <div id="cards">
                     <div id="container">

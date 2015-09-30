@@ -6,7 +6,7 @@ var canvas = document.getElementById("htmlCanvas");
 var ctx = canvas.getContext("2d");
 
 var radius = canvas.height / 2;
-radius = radius * 0.95
+radius = radius * 0.85
 
 function drawTable() {
     ctx.arc(canvas.width/2, canvas.height/2, radius, 0 , 2*Math.PI);
@@ -99,7 +99,7 @@ function watchPlayers(ctx, radius){
 }
 
 
-function drawDirection(){
+function drawDirection(ctx, radius){
     var now = new Date();
     var hour = now.getHours();
     var minute = now.getMinutes();

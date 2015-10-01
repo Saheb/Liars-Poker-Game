@@ -39,7 +39,7 @@ function dealAndGetCards(){
                         console.dir("Received your cards!");
                         console.dir(response)
                         deck.mount($("#container")[0]);
-                        deck.sort(); deck.shuffle(); deck.shuffle();
+                        deck.intro(); deck.flip(); deck.shuffle(); deck.shuffle();
                         setTimeout(function(){
                             deck.unmount();
                             for(var i=0;i<cards.length;i++)
@@ -49,7 +49,7 @@ function dealAndGetCards(){
                                 img.attr('src', srcString);
                                 img.appendTo('#cards');
                             }
-                        }, 2600);
+                        }, 3300);
                         var cards = response[0].hand.split(",")
                         // set round_number and turn_number in WSS
                         store.setItem("round_number", response[0].round_number)

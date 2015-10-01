@@ -18,7 +18,9 @@ if (loc.protocol === "https:") {
 }
 new_uri += "//" + loc.host;
 //new_uri += loc.pathname;
-var ws = new WebSocket(new_uri + "/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
+var ws = new ReconnectingWebSocket(new_uri + "/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
+ws.debug = true;
+
 ws.onopen = function()
 {
     // Web Socket is connected, send data using send()

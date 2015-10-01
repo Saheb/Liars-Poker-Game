@@ -97,18 +97,17 @@
                     <div class="panel-body">
                         <div>
                             <div id="login-btns" style=""  align="center">
-                                <a href="#"><img id="fb-login-btn" src="http://techulus.com/buttons/fb.png" /></a><br/>
-                                <a href="#"><img id="twitter-login-btn" src="http://techulus.com/buttons/tw.png" /></a><br/>
-                                <a href="#"><img id="google-login-btn" src="http://techulus.com/buttons/gplus.png" /></a><br/>
+                                <a href="#"><img id="fb-login-btn" src="@routes.Assets.at("images/fb.png")" /></a><br/>
+                                <a href="#"><img id="twitter-login-btn" src="@routes.Assets.at("images/twitter.png")" /></a><br/>
+                                <a href="#"><img id="google-login-btn" src="@routes.Assets.at("images/gplus.png")" /></a><br/>
                             </div>
                             <form>
                                 <input style="display: none;" id="pin" name="textinput" type="text" placeholder="Enter Twitter Pin" class="form-control input-md">
                             </form>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="submitPin" type="button" class="btn btn-primary">Login</button>
+                        <div class="modal-footer">
+                            <button id="submitPin"  style="display: none;" type="button" class="btn btn-primary">Login</button>
+                        </div>
                     </div>
                 </div>
             </div>

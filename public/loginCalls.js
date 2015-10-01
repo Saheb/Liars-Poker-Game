@@ -145,6 +145,7 @@ document.getElementById('twitter-login-btn').onclick = function() {
     // the below is equivalent to document.getElementById
     $("#login-btns").get(0).style.display = "none";
     $("#pin").get(0).style.display = "inline-block";
+    $("#submitPin").get(0).style.display = "inline-block";
     // gets a request token
     cb.__call(
         "oauth_requestToken",

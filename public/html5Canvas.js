@@ -6,26 +6,31 @@ var canvas = document.getElementById("htmlCanvas");
 var ctx = canvas.getContext("2d");
 
 var radius = canvas.height / 2;
-radius = radius * 0.85
+radius = radius * 0.85;
+
+var directionPoll;
 
 function drawTable() {
+    ctx.restore();
+    clearInterval(directionPoll);
+    ctx.clearRect(0,0,canvas.width, canvas.height);
     ctx.arc(canvas.width/2, canvas.height/2, radius, 0 , 2*Math.PI);
     ctx.fillStyle = "green";
     ctx.fill();
     if(store.getItem("myPosition") != 'undefined')
     {
-        drawPlayers(ctx,radius);
+        drawPlayers();
         //drawDirection(ctx,radius)
-        setInterval(drawDirection, 1000,ctx,radius);
+        directionPoll = setInterval(drawDirection, 1000,ctx,radius);
     }
     else
     {
-        watchPlayers(ctx,radius);
-        setInterval(drawDirection, 1000,ctx,radius);
+        watchPlayers();
+        directionPoll = setInterval(drawDirection, 1000,ctx,radius);
     }
 }
 
-function drawPlayers(ctx, radius) {
+function drawPlayers() {
     var num;
     var positionNameMap = JSON.parse(store.getItem("positionNameMap"));
     var validPositions = Object.keys(positionNameMap);
@@ -35,6 +40,7 @@ function drawPlayers(ctx, radius) {
     ctx.fillStyle = 'red';
     ctx.textBaseline="middle";
     ctx.textAlign="center";
+    ctx.save();
     ctx.translate(canvas.width/2, canvas.height/2);
     var num_of_players = Number(store.getItem("num_of_players"));
     var angle = (2*Math.PI)/num_of_players;
@@ -70,7 +76,7 @@ function drawPlayers(ctx, radius) {
     }
 }
 
-function watchPlayers(ctx, radius){
+function watchPlayers(){
     var positionNameMap = JSON.parse(store.getItem("positionNameMap"));
     var validPositions = Object.keys(positionNameMap);
     ctx.font = radius*0.07 + "px arial";
@@ -115,7 +121,7 @@ function drawDirection(ctx, radius){
     //drawHand(ctx, minute, radius*0.8, radius*0.07);
     // second
     second=(second*Math.PI/30);
-    drawHand(ctx, second, radius*0.6, radius*0.02);
+    drawHand(ctx, second, radius*0.6, radius*0.01);
 }
 
 function drawHand(ctx, pos, length, width) {

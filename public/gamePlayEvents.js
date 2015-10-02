@@ -186,6 +186,7 @@ $("#betBtn").get(0).onclick = function() {
             currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
 
         $('#previousBetter').text(player.name)
+        drawTable();
     }
     else
     {

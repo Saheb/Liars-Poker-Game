@@ -168,6 +168,9 @@ ws.onmessage = function (evt)
             $("#cu_valueType").text(bet[1]);
             $("#cu_value2Type").text(bet[2]);
             $("#cu_suitType").text(bet[3]);
+
+            drawTable();
+
             if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
             {
                 $("#betBtn").prop('disabled', false)

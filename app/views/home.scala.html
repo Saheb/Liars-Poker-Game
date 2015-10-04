@@ -30,7 +30,16 @@
             var store = window.sessionStorage
             function checkLogin() {
                 if(store.length!=0)
-                    document.getElementById('loginName').innerText = store.getItem("loginName")
+                    {
+                        document.getElementById('loginName').innerHTML = store.getItem("loginName")
+                        $("#login-btns").get(0).style.display = "none";
+                        $("#logoutBtn").get(0).style.display = "inline-block";
+                        $('#myModalLabel').get(0).innerHTML = "Profile";
+                        $("#profileInfo").get(0).style.display = "inline-block";
+                        $('#profileName').get(0).innerHTML = store.getItem("loginName");
+                        $('#profileEmail').get(0).innerHTML = store.getItem("loginEmail");
+                        $('#profileAccount').get(0).innerHTML = store.getItem("loginBy");
+                    }
             }
         </script>
 
@@ -101,12 +110,34 @@
                                 <a href="#"><img id="twitter-login-btn" src="@routes.Assets.at("images/twitter.png")" /></a><br/>
                                 <a href="#"><img id="google-login-btn" src="@routes.Assets.at("images/gplus.png")" /></a><br/>
                             </div>
+                            <form class="form-horizontal" id="profileInfo" style="display: none;">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Name</label>
+                                    <div class="col-md-10 control-label">
+                                        <p id="profileName" class="form-control-static"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Email</label>
+                                    <div class="col-md-10 control-label">
+                                        <p id="profileEmail" class="form-control-static"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Account</label>
+                                    <div class="col-md-10 control-label">
+                                        <p id="profileAccount" class="form-control-static"></p>
+                                    </div>
+                                </div>
+                            </form>
+
                             <form>
                                 <input style="display: none;" id="pin" name="textinput" type="text" placeholder="Enter Twitter Pin" class="form-control input-md">
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button id="submitPin"  style="display: none;" type="button" class="btn btn-primary">Login</button>
+                            <button id="logoutBtn"  style="display: none;" type="button" class="btn btn-primary">Logout</button>
                         </div>
                     </div>
                 </div>

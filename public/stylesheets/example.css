@@ -3,7 +3,6 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
 }
 /*html,*/
 /*body {*/
@@ -24,8 +23,7 @@
 /*}*/
 #container {
   position: absolute;
-  margin-top: 200px;
-  margin-left : -100px;
+  margin-left : -20%;
   top: calc(50% + 1.5rem);
   left: 50%;
   -webkit-transform: translate3d(-50%, -50%, 0);

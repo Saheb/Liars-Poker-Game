@@ -24,7 +24,7 @@
             var store = window.sessionStorage
             function checkLogin() {
              if(store.length!=0)
-                document.getElementById('loginName').innerText = store.getItem("loginName")
+                document.getElementById('loginName').innerHTML = store.getItem("loginName")
             }
         </script>
             <!-- Web sockets messages and communication -->

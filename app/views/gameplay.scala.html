@@ -6,12 +6,18 @@
             #roundResultModal .modal-dialog  {height: 70%; width:50%;}
             /*#cards {margin: 0 auto; display:block;  position:absolute;}*/
             #previousBetter{ text-align: center;}
+            #htmlCanvas {
+                width : 90%;
+                height : 60%;
+            }
             #cards {
             border-radius: 25px;
             border: 2px solid #000000;
             padding: 10px;
             width: 100%;
-            height: 25%;
+            }
+            #cards > img {
+                height : inherit;
             }
             #chatWindow{
             height : 80%;
@@ -27,6 +33,9 @@
             #challengeBtn {
                 width : 100%;
             }
+            #rulesModal{
+                padding : 20px;
+            }
         </style>
         <title>Game Play</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
@@ -36,7 +45,7 @@
             var store = window.sessionStorage
             function checkLogin() {
              if(store.length!=0)
-                document.getElementById('loginName').innerText = store.getItem("loginName")
+                document.getElementById('loginName').innerHTML = store.getItem("loginName")
             }
         </script>
             <!-- Web sockets messages and communication -->
@@ -64,12 +73,51 @@
                 <a class="navbar-brand" href="#">Liar's Poker Game</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#rules">Rules</a></li>
+                    <li><a  data-target="#rulesModal" data-toggle="modal">Rules</a></li>
                     <li><a id="loginName" data-target="#loginModal" data-toggle="modal">Login</a></li>
             </ul>
         </div>
     </nav>
-
+    <div class="modal fade" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Rules of Liars Poker Game!</h4>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <ol>
+                            <li> Each player has 2-7 cards in their hand</li>
+                            <li> With the knowledge of cards in their hand and other player's bets each player makes a bet</li>
+                            <li> Bets are nothing but poker hands </li>
+                            <ol>
+                                <li>Royal Flush (Highest)</li>
+                                <li>Straight Flush</li>
+                                <li>Four of a Kind</li>
+                                <li>Full House</li>
+                                <li>Flush</li>
+                                <li>Trio</li>
+                                <li>Straight</li>
+                                <li>Double Pair</li>
+                                <li>Pair</li>
+                                <li>High Card (Lowest)</li>
+                            </ol>
+                            <li> Bet should be higher than the previous bet and you can't pass your chance</li>
+                            <li> Bet is challenged only by the next betting player if he thinks the bet won't materialize</li>
+                            <li> Bet would materialize or not would be concluded from cards in all player's hands.</li>
+                            <li> If challenger wins, then Better's cards increase by 1.</li>
+                            <li> If challenger loses, then Challenger's cards increase by 1.</li>
+                            <li> Player is out of the game if their card count is more than Game's max card cound. 5 or 7.</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Okay!</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="gameStatusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -211,10 +259,10 @@
                 </div>
                 <div class="col-md-4">
                 </div>
-                <div id="canvas-div">
+                <div id="canvas-div" class="col-md-12">
                     <canvas id="htmlCanvas" width="450" height="400" style="display : block ;"></canvas>
                 </div>
-                <div id="cards">
+                <div id="cards" class="col-md-12">
                     <div id="container">
 
                     </div>

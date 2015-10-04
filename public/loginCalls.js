@@ -42,12 +42,18 @@ var startApp = function() {
 
 startApp()
 
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('User signed out.');
+    });
+}
 //attachSignin(document.getElementById('google-login-btn'));
 
 function attachSignin(element) {
     auth2.attachClickHandler(element, {},
         function(googleUser) {
-            document.getElementById('loginName').innerText =
+            document.getElementById('loginName').innerHTML =
                 googleUser.getBasicProfile().getName();
 
             var player = {
@@ -66,10 +72,18 @@ function attachSignin(element) {
                     window.sessionStorage.setItem("loginId", response)
                     window.sessionStorage.setItem("loginName", player.name)
                     window.sessionStorage.setItem("loginEmail", player.email)
+                    window.sessionStorage.setItem("loginBy", "Google");
+                    $('#profileName').get(0).innerHTML = store.getItem("loginName");
+                    $('#profileEmail').get(0).innerHTML = store.getItem("loginEmail");
+                    $('#profileAccount').get(0).innerHTML = store.getItem("loginBy");
                 }
             })
 
             $('#loginModal').modal('hide');
+            $("#login-btns").get(0).style.display = "none";
+            $('#myModalLabel').get(0).innerHTML = "Profile";
+            $("#profileInfo").get(0).style.display = "inline-block";
+            $("#logoutBtn").get(0).style.display = "inline-block";
         },
         function(error) {
             alert(JSON.stringify(error, undefined, 2));
@@ -86,7 +100,7 @@ document.getElementById('fb-login-btn').onclick = function()
                 fields: ['id', 'email', 'name']
             }, function(response) {
                 console.log(response);
-                document.getElementById('loginName').innerText = response.name
+                document.getElementById('loginName').innerHTML = response.name
 
                 var player = {
                     id: 0,
@@ -104,10 +118,18 @@ document.getElementById('fb-login-btn').onclick = function()
                         window.sessionStorage.setItem("loginId", response)
                         window.sessionStorage.setItem("loginName", player.name)
                         window.sessionStorage.setItem("loginEmail", player.email)
+                        window.sessionStorage.setItem("loginBy", "Facebook");
+                        $('#profileName').get(0).innerHTML = store.getItem("loginName");
+                        $('#profileEmail').get(0).innerHTML = store.getItem("loginEmail");
+                        $('#profileAccount').get(0).innerHTML = store.getItem("loginBy");
                     }
                 })
 
                 $('#loginModal').modal('hide');
+                $("#login-btns").get(0).style.display = "none";
+                $('#myModalLabel').get(0).innerHTML = "Profile";
+                $("#profileInfo").get(0).style.display = "inline-block";
+                $("#logoutBtn").get(0).style.display = "inline-block";
             });
         });
     }
@@ -120,7 +142,12 @@ document.getElementById('fb-login-btn').onclick = function()
         {
             FB.login(function(response) {
                 console.info('FB.login response', response);
-                fbCallback()
+                if(response.authResponse == null)
+                {
+                    console.log("Not logged in!");
+                }
+                else
+                    fbCallback();
             }, {
                 scope: 'email'
             });
@@ -181,7 +208,7 @@ document.getElementById('submitPin').onclick = function() {
             // if you need to persist the login after page reload,
             // consider storing the token in a cookie or HTML5 local storage
 
-            document.getElementById('loginName').innerText = reply.screen_name
+            document.getElementById('loginName').innerHTML = reply.screen_name
             console.log(reply.screen_name)
             console.log(reply.user_id)
 
@@ -201,10 +228,18 @@ document.getElementById('submitPin').onclick = function() {
                     store.setItem("loginId", response)
                     store.setItem("loginName", player.name)
                     store.setItem("loginEmail", player.email)
+                    store.setItem("loginBy", "Twitter");
+                    $('#profileName').get(0).innerHTML = store.getItem("loginName");
+                    $('#profileEmail').get(0).innerHTML = store.getItem("loginEmail");
+                    $('#profileAccount').get(0).innerHTML = store.getItem("loginBy");
                 }
             })
 
             $('#loginModal').modal('hide');
+            $("#logoutBtn").get(0).style.display = "inline-block";
+            $('#myModalLabel').get(0).innerHTML = "Profile";
+            $("#profileInfo").get(0).style.display = "inline-block";
+            $("#submitPin").get(0).style.display = "none";
         }
     );
 }
@@ -271,4 +306,31 @@ $("#watchGameBtn").get(0).onclick = function() {
                 location.href = "/watchGame"
             }
         })
+}
+
+$("#logoutBtn").get(0).onclick = function() {
+    var loginBy = store.getItem("loginBy");
+    store.removeItem("loginId");
+    store.removeItem("loginName");
+    store.removeItem("loginEmail");
+    store.removeItem("loginBy");
+    switch(loginBy){
+        case "Google":
+            signOut();
+            console.log("Logged out your google account!");
+            break;
+        case "Facebook":
+            FB.logout();
+            console.log("Logged out your facebook account!");
+            break;
+        case "Twitter":
+            console.log("Logged out your twitter account!");
+    }
+
+    $('#loginModal').modal('hide');
+    $("#logoutBtn").get(0).style.display = "none";
+    $("#login-btns").get(0).style.display = "inline-block";
+    $("#profileInfo").get(0).style.display = "none";
+    $('#myModalLabel').get(0).innerHTML = "Please Login";
+    document.getElementById('loginName').innerHTML = "Login";
 }

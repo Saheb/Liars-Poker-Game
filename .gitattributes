@@ -2,5 +2,5 @@ public/fonts/* linguist-vendored
 public/images/* linguist-vendored
 public/stylesheets/* linguist-vendored
 public/javascripts/* linguist-vendored
-
+*.rb linguist-language=Scala
 

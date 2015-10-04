@@ -124,7 +124,50 @@ $("#okdeal").get(0).onclick = dealAndGetCards
 $("#ok").get(0).onclick = getGameStatus
 
 $("#handType").get(0).onclick = function(btn) {
-    store.setItem("handType", btn.target.textContent)
+    var handType = btn.target.textContent;
+    store.setItem("handType", handType);
+    switch(handType) {
+        case "High Card":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Pair" :
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Double Pair":
+            $("#value2Type > button").prop('disabled', false);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Straight":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Trio":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Flush" :
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', false);
+            break;
+        case "Full House":
+            $("#value2Type > button").prop('disabled', false);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Four of a Kind":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', true);
+            break;
+        case "Straight Flush":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', false);
+            break;
+        case "Royal Flush":
+            $("#value2Type > button").prop('disabled', true);
+            $("#suitType > button").prop('disabled', false);
+            break;
+    }
 }
 
 $("#valueType").get(0).onclick = function(btn) {
@@ -142,6 +185,64 @@ $("#suitType").get(0).onclick = function(btn) {
 $("#betBtn").get(0).onclick = function() {
     // validate the bet by comparing with previous bet from SS.
     if(call()){
+        var handType = store.getItem("handType");
+        switch(handType) {
+            case "High Card":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").removeClass('active');
+                store.setItem('value2Type', "NA");
+                store.setItem('suitType', "NA");
+                break;
+            case "Pair" :
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").removeClass('active');
+                store.setItem('value2Type', "NA");
+                store.setItem('suitType', "NA");
+                break;
+            case "Double Pair":
+                $("#value2Type > button").prop('disabled', false);
+                $("#suitType > button").removeClass('active');
+                store.setItem('suitType', "NA");
+                break;
+            case "Straight":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").removeClass('active');
+                store.setItem('value2Type', "NA");
+                store.setItem('suitType', "NA");
+                break;
+            case "Trio":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").removeClass('active');
+                store.setItem('value2Type', "NA");
+                store.setItem('suitType', "NA");
+                break;
+            case "Flush" :
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").prop('disabled', false);
+                store.setItem('value2Type', "NA");
+                break;
+            case "Full House":
+                $("#value2Type > button").prop('disabled', false);
+                $("#suitType > button").removeClass('active');
+                store.setItem('suitType', "NA");
+                break;
+            case "Four of a Kind":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").removeClass('active');
+                store.setItem('value2Type', "NA");
+                store.setItem('suitType', "NA");
+                break;
+            case "Straight Flush":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").prop('disabled', false);
+                store.setItem('value2Type', "NA");
+                break;
+            case "Royal Flush":
+                $("#value2Type > button").removeClass('active');
+                $("#suitType > button").prop('disabled', false);
+                store.setItem('value2Type', "NA")
+                break;
+        }
         var player = {
             "id": Number(store.getItem("loginId")),
             "name": store.getItem("loginName"),

@@ -65,6 +65,7 @@ function dealAndGetCards(){
         $('#betPanel').remove();
         $('#cards').remove();
         $('#challengeBtn').remove();
+        $('#betBtn').remove();
         $('#allHandsTable').fadeIn(1000);
         $.ajax({
             url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',

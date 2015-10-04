@@ -47,6 +47,7 @@ function drawPlayers() {
     var playerDist = canvas.height/2 - 2*radius*0.1;
     var y = canvas.height/2 - 2*radius*0.1;
     var x = 0;
+
     for(num = myIndex; num < validPositions.length; num++){
         ctx.beginPath();
         ctx.fillStyle = 'red';
@@ -56,7 +57,7 @@ function drawPlayers() {
         ctx.fillStyle = 'black';
         var name = positionNameMap[validPositions[num]];
         ctx.fillText(name,x,y+radius*0.15);
-        x = playerDist * Math.sin(angle);
+        x = playerDist * Math.sin(-1*angle);
         y = playerDist * Math.cos(angle);
         angle += angle;
     }
@@ -70,7 +71,7 @@ function drawPlayers() {
         ctx.fillStyle = 'black';
         var name = positionNameMap[validPositions[num]];
         ctx.fillText(name,x,y+radius*0.15);
-        x = playerDist * Math.sin(angle);
+        x = playerDist * Math.sin(-1*angle);
         y = playerDist * Math.cos(angle);
         angle += angle;
     }
@@ -83,6 +84,7 @@ function watchPlayers(){
     ctx.fillStyle = 'red';
     ctx.textBaseline="middle";
     ctx.textAlign="center";
+    ctx.save();
     ctx.translate(canvas.width/2, canvas.height/2);
     var num_of_players = Number(store.getItem("num_of_players"));
     var angle = (2*Math.PI)/num_of_players;

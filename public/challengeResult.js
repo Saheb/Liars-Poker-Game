@@ -24,6 +24,9 @@ var suit_map = {
     "Hearts"   : "h"
 };
 
+
+var cardArray = ["0","0","2", "3", "4", "5", "6", "7", "8", "9", "10","J","Q","K","A"];
+
 var bet = store.getItem("previousBet")
 
 function isFlush(cards, suitType){
@@ -39,33 +42,37 @@ function isStraight(cards,valueType){
     var regex = '[id^=' + valueType + ']'
     $(regex).css('opacity', '1.0')
 
-    if(cards.search(valueType) >= 0)
+    var value = card_score[valueType.toUpperCase()]
+    var left = 0; var right = 0;
+    for(var i=value;i<14;i++)
     {
-        var value = card_score[valueType]
-        var left = 0; var right = 0;
-        for(var i=value;i<=14;i++)
+        var actualCard = cardArray[i+1].toLowerCase();
+        if(cards.search(actualCard)  != -1)
         {
-            if(cards.search(i+1)  != -1)
-            {
-                var regex = '[id^=' + eval(i+1) + ']'
-                $(regex).css('opacity', '1.0')
-                right+=1
-            }
-            else
-                break;
+            var regex = '[id^=' + actualCard + ']'
+            $(regex).css('opacity', '1.0')
+            right+=1
         }
-        for(var i=value;i>=2;i--)
+        else
+            break;
+    }
+    for(var i=value;i>2;i--)
+    {
+        var actualCard = cardArray[i-1].toLowerCase();
+        if(cards.search(actualCard) != -1)
         {
-            if(cards.search(i-1) != -1)
-            {
-                var regex = '[id^=' + eval(i-1) + ']'
-                $(regex).css('opacity', '1.0')
-                left+=1
-            }
-            else
-                break;
+            var regex = '[id^=' + actualCard + ']'
+            $(regex).css('opacity', '1.0')
+            left+=1
         }
-        if(right + left >= 4)
+        else
+            break;
+    }
+    if(right + left >= 4)
+    {
+        if(cards.search(valueType) < 0)
+            return false;
+        else
             return true;
     }
     else

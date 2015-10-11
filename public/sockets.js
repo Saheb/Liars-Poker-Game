@@ -28,10 +28,17 @@ ws.onopen = function()
         "id" : Number(store.getItem("loginId")),
         "name" : store.getItem("loginName"),
         "email" : store.getItem("loginEmail")
+    };
+    var json = {"action" : "GameStatus", "player" : player};
+    if($('#cards img').length == 0)
+    {
+        ws.send(JSON.stringify(json));
+        console.log("Message is sent...");
     }
-    var json = {"action" : "GameStatus", "player" : player}
-    ws.send(JSON.stringify(json));
-    console.log("Message is sent...");
+    else
+    {
+     console.log("Reconnected to the server!");
+    }
 };
 
 ws.onmessage = function (evt)
@@ -205,8 +212,17 @@ ws.onmessage = function (evt)
         {
             console.log(gameStatusOrBet.message)
             console.log(gameStatusOrBet.player.name)
-            $('#chatMessages').append('<b>' + gameStatusOrBet.player.name + '</b><br/>');
-            $('#chatMessages').append(gameStatusOrBet.message + '<br/>');
+
+            //if(gameStatusOrBet.action == "Ready")
+            //{
+            //    $('#chatMessages').append('<b>' + gameStatusOrBet.player.name);
+            //    $('#chatMessages').append(' has joined!' + '<br/>');
+            //}
+            //else
+            //{
+                $('#chatMessages').append('<b>' + gameStatusOrBet.player.name + '</b><br/>');
+                $('#chatMessages').append(gameStatusOrBet.message + '<br/>');
+            //}
         }
         else // Game Result!
         {

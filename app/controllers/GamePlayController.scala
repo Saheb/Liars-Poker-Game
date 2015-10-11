@@ -156,6 +156,12 @@ object GamePlayController extends Controller{
                      gameBetTable.insert(new GameBet(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
 
+               case JsString("Ready")=>
+                 Logger.info(msg toString())
+                 val player = (msg \ "player").as[Player]
+                 val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
+                 channels.foreach(f => f._2._2 push(Json.toJson(msg)))
+
                case JsString("Chat") =>
                  Logger.info(msg \ "message" toString())
                  val player = (msg \ "player").as[Player]
@@ -230,7 +236,7 @@ object GamePlayController extends Controller{
 
                case JsString("Close") =>
                  Logger.info(s"Removing socket for ${game_id} and ${player_id}");
-                 socketMap.remove((game_id,player_id));
+                 //socketMap.remove((game_id,player_id));
 
                case _ => Logger.info("This should not be printed....!" + action)
              }

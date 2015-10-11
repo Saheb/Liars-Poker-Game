@@ -24,6 +24,13 @@ function dealAndGetCards(){
         "email" : store.getItem("loginEmail")
     }
     if(isPlaying){
+
+        var json = {
+            "action": "Ready",
+            "player": player
+        }
+        ws.send(JSON.stringify(json)); // sending that player is ready for next round!
+
         $.ajax({
             url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
             data : JSON.stringify(player),
@@ -67,6 +74,7 @@ function dealAndGetCards(){
         $('#challengeBtn').remove();
         $('#betBtn').remove();
         $('#allHandsTable').fadeIn(1000);
+
         $.ajax({
             url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
             data : JSON.stringify(player),

@@ -270,6 +270,8 @@ $("#betBtn").get(0).onclick = function() {
             "bet": bet
         }
         ws.send(JSON.stringify(json));
+        $(".notifyjs-container").remove();
+        $.notify("Your bet was " + bet.bet,{globalPosition : 'top center'})
         $("#cu_handType").text(store.getItem("handType"));
         $("#cu_valueType").text(store.getItem("valueType"));
         $("#cu_suitType").text(store.getItem("suitType"));
@@ -312,6 +314,7 @@ $("#challengeBtn").get(0).onclick = function(){
         return 0;
     }
 
+    $(".notifyjs-container").remove();
 
     var player = {
         "id": Number(store.getItem("loginId")),

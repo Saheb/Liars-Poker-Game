@@ -33,6 +33,7 @@
             <!-- Placed at the end of the document so the pages load faster -->
         <script src="@routes.Assets.at("javascripts/jquery-1.11.3.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/notify.min.js")"></script>
     </head>
     <body onload="checkLogin()">
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -123,6 +124,7 @@
             event.addEventListener('message', function( event ) {
                console.log(event.data);
                var player = JSON.parse(event.data);
+               $.notify(player.name + " joined the game",{globalPosition : 'top center',className : 'info'});
                $('<li class="list-group-item">' + player.name + " " + "("+ player.position +")" +'</li>').appendTo(".list-group")
                var previousCount = Number(store.getItem("joinedPlayersSize"))
                store.setItem("joinedPlayersSize", previousCount + 1)

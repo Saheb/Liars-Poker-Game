@@ -46,9 +46,9 @@ ws.onmessage = function (evt)
 {
     var gameStatusOrBet = JSON.parse(evt.data);
     console.log(gameStatusOrBet);
-    if(gameStatusOrBet.length > 1) // This is check for socket message is game status or a bet!!
+    if(gameStatusOrBet.length > 1) // Game Status + Challenge Response!!
     {
-        if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response or GameStatus check!
+        if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response!
         {
             $('#playerCardsTable td').remove();
             //TODO : Animation before showing final cards!
@@ -166,9 +166,9 @@ ws.onmessage = function (evt)
             $("#gameStatusModal").modal("show");
         }
     }
-    else
+    else // Bet + Round Result + Ready + Chat + Game Result
     {
-        if(gameStatusOrBet.hasOwnProperty("bet"))// Check for bet or roundResult
+        if(gameStatusOrBet.hasOwnProperty("bet"))// Bet
         {
             store.setItem("previousBet", gameStatusOrBet.bet);
             store.setItem("previousBetPlayerId",gameStatusOrBet.player_id)
@@ -196,20 +196,18 @@ ws.onmessage = function (evt)
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
             $('#previousBetter').text(previousBetterName)
 
-
-
             if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
             {
                 $("#betBtn").prop('disabled', false)
                 $("#challengeBtn").prop('disabled', false)
-                $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error'})
+                $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error', autoHide : false})
             }
             else
             {
                 $.notify("New Bet Arrived from " + previousBetterName,{globalPosition : 'top center'})
             }
         }
-        else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// round Result
+        else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// Round Result
         {
             store.setItem("player_challenge_id", gameStatusOrBet.player_challenge_id);
             //var json = {
@@ -219,7 +217,7 @@ ws.onmessage = function (evt)
             //ws.close();
             //console.log("Closing Connection!");
         }
-        else if(gameStatusOrBet.hasOwnProperty(('action')))
+        else if(gameStatusOrBet.hasOwnProperty(('action'))) // Chat or Ready
         {
             console.log(gameStatusOrBet.message)
             console.log(gameStatusOrBet.player.name)

@@ -310,10 +310,7 @@ $("#watchGameBtn").get(0).onclick = function() {
 
 $("#logoutBtn").get(0).onclick = function() {
     var loginBy = store.getItem("loginBy");
-    store.removeItem("loginId");
-    store.removeItem("loginName");
-    store.removeItem("loginEmail");
-    store.removeItem("loginBy");
+    store.clear();
     switch(loginBy){
         case "Google":
             signOut();

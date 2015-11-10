@@ -306,6 +306,13 @@ $("#betBtn").get(0).onclick = function() {
 }
 
 $("#challengeBtn").get(0).onclick = function(){
+    if(store.getItem("previousBet")=="Hand_Card 1_Card 2_Suit")
+    {
+        alert("You can't challenge at first turn of the round, Bet now and wait for your next turn!");
+        return 0;
+    }
+
+
     var player = {
         "id": Number(store.getItem("loginId")),
         "name": store.getItem("loginName"),

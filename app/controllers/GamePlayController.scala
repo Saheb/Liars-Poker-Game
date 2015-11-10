@@ -44,7 +44,7 @@ object GamePlayController extends Controller{
     if(selectGameStatus.status != -1)
       Ok(views.html.gameplay(game_id))
     else
-      InternalServerError("Not started yet!!!")
+      Ok("Game has not started yet!!!")
    }
   }
 

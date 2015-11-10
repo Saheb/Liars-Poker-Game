@@ -20,6 +20,7 @@ new_uri += "//" + loc.host;
 //new_uri += loc.pathname;
 var ws = new ReconnectingWebSocket(new_uri + "/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
 ws.debug = true;
+$.notify.defaults({ className: "info" });
 
 ws.onopen = function()
 {
@@ -111,6 +112,7 @@ ws.onmessage = function (evt)
                 //ws.close();
                 //console.log("Closing Connection!");
             }
+            store.setItem("previousBet", "Hand_Card 1_Card 2_Suit");
         }
         else // Game Status!
         {
@@ -178,11 +180,7 @@ ws.onmessage = function (evt)
 
             drawTable();
 
-            if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
-            {
-                $("#betBtn").prop('disabled', false)
-                $("#challengeBtn").prop('disabled', false)
-            }
+
             var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
             var positionPlayerMap = JSON.parse(store.getItem("positionPlayerMap"))
 
@@ -197,6 +195,19 @@ ws.onmessage = function (evt)
             else
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
             $('#previousBetter').text(previousBetterName)
+
+
+
+            if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
+            {
+                $("#betBtn").prop('disabled', false)
+                $("#challengeBtn").prop('disabled', false)
+                $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error'})
+            }
+            else
+            {
+                $.notify("New Bet Arrived from " + previousBetterName,{globalPosition : 'top center'})
+            }
         }
         else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// round Result
         {
@@ -212,17 +223,16 @@ ws.onmessage = function (evt)
         {
             console.log(gameStatusOrBet.message)
             console.log(gameStatusOrBet.player.name)
-
-            //if(gameStatusOrBet.action == "Ready")
-            //{
-            //    $('#chatMessages').append('<b>' + gameStatusOrBet.player.name);
-            //    $('#chatMessages').append(' has joined!' + '<br/>');
-            //}
-            //else
-            //{
+            if(gameStatusOrBet.action == "Ready")
+            {
+                $('#chatMessages').append('<b>' + gameStatusOrBet.player.name);
+                $('#chatMessages').append(' has joined!' + '<br/>');
+            }
+            else
+            {
                 $('#chatMessages').append('<b>' + gameStatusOrBet.player.name + '</b><br/>');
                 $('#chatMessages').append(gameStatusOrBet.message + '<br/>');
-            //}
+            }
         }
         else // Game Result!
         {

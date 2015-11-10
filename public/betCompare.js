@@ -113,7 +113,7 @@ function call()
     previous.Suit =  $("#cu_suitType").text();
     previous.NumberOfCards = 5;
 
-    if(compare(current,previous))
+    if(previous.Hand == "Hand" || compare(current,previous))
     {
         console.log(previous);
         console.log(current);

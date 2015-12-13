@@ -1,4 +1,6 @@
-# Liar's Poker Game - An online multiplayer card game.
+# Liar's Poker Game ![Build Status](https://travis-ci.org/Saheb/Liars-Poker-Game.svg)
+
+### An online multiplayer card game written in Scala using Play2 Framework
 
 ###What is Liar's Poker Game?
 

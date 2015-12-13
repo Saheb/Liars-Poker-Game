@@ -200,7 +200,10 @@ ws.onmessage = function (evt)
             {
                 $("#betBtn").prop('disabled', false)
                 $("#challengeBtn").prop('disabled', false)
-                $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error', autoHide : false})
+                $.notify("New Bet Arrived from " + previousBetterName,{globalPosition : 'top center', autoHideDelay: 2000})
+                setTimeout(function(){
+                    $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error', autoHide : false})
+                }, 2000);
             }
             else
             {

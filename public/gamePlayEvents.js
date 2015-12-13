@@ -271,7 +271,7 @@ $("#betBtn").get(0).onclick = function() {
         }
         ws.send(JSON.stringify(json));
         $(".notifyjs-container").remove();
-        $.notify("Your bet was " + bet.bet,{globalPosition : 'top center'})
+        $.notify("Your bet was " + bet.bet.replace(/_/g," ").replace(/NA/g,""),{globalPosition : 'top center'})
         $("#cu_handType").text(store.getItem("handType"));
         $("#cu_valueType").text(store.getItem("valueType"));
         $("#cu_suitType").text(store.getItem("suitType"));

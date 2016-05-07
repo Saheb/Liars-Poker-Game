@@ -8,7 +8,7 @@ Its a card game me and my friends used to play in college. Each player bets with
 
 ###Aren't there games similar to this one?
 
-Yes, this game is also known as Commune. Similar games are Liar's Dice where bets are permutations of dice outcomes.
+Sure, but not one decent version on the web. This game is also known as Commune which I didn't know until I found a Wikipedia page for the same. Similar games are Liar's Dice where bets are permutations of dice outcomes.
 
 ###What are the technologies involved in creating this game?
 

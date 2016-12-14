@@ -1,7 +1,7 @@
 package models
 
+import models.SquerylEntryPoint._
 import org.squeryl.Schema
-import org.squeryl.PrimitiveTypeMode._
 
 /**
  * Created by saheb on 8/4/15.

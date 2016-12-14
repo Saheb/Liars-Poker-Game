@@ -1,14 +1,13 @@
 package controllers
 
+import models.SquerylEntryPoint._
 import models._
 import play.Logger
-import play.api.libs.{EventSource}
-import play.api.libs.iteratee.{Enumeratee, Concurrent}
-import play.api.libs.json._
-import org.squeryl.PrimitiveTypeMode._
-import play.api.mvc.{Action, Controller}
+import play.api.libs.EventSource
 import play.api.libs.concurrent.Execution.Implicits._
-import models.PlayerStatus._
+import play.api.libs.iteratee.{Concurrent, Enumeratee}
+import play.api.libs.json._
+import play.api.mvc.{Action, Controller}
 
 /**
  * Created by saheb on 8/15/15.

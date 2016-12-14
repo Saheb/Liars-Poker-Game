@@ -2,21 +2,18 @@ package controllers
 
 import java.util.concurrent.ExecutionException
 
-import models.{Database, Player}
+import models.Database
+import models.SquerylEntryPoint._
 import org.h2.jdbc.JdbcSQLException
+import play.api.Logger
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.mvc._
-import play.api.Play.current
-import models.Player._
-import org.squeryl.PrimitiveTypeMode._
-import play.api.Logger
 /**
  * Created by saheb on 8/12/15.
  */
 object LoginController extends Controller{
-
-  import Database._
 
   val logger = Logger(this.getClass)
 

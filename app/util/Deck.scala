@@ -5,8 +5,8 @@ package util
  */
 package main.scala
 
-import scala.util.Random
 import scala.collection.immutable.ListSet
+import scala.util.Random
 
 // default size 52.
 // cards from 0 to 51

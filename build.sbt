@@ -11,5 +11,5 @@ libraryDependencies += cache
 libraryDependencies += ws
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 
-libraryDependencies += "org.squeryl" % "squeryl_2.10.0" % "0.9.5-6"
+libraryDependencies += "org.squeryl" % "squeryl_2.11" % "0.9.7"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.27"

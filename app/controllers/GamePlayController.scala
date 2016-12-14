@@ -1,15 +1,16 @@
 package controllers
 
-import play.api.Logger
-import util.Card
-import models._
-import play.api.libs.iteratee.Concurrent.Channel
-import play.api.libs.iteratee.{Enumeratee, Concurrent, Enumerator, Iteratee}
-import play.api.libs.json._
-import play.api.mvc.{WebSocket, Action, Controller}
-import org.squeryl.PrimitiveTypeMode._
-import play.api.libs.concurrent.Execution.Implicits._
 import _root_.util.main.scala.Deck
+import models.SquerylEntryPoint._
+import models._
+import play.api.Logger
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.iteratee.Concurrent.Channel
+import play.api.libs.iteratee.{Concurrent, Enumerator, Iteratee}
+import util.Card
+import play.api.libs.json._
+import play.api.mvc.{Action, Controller, WebSocket}
+
 import scala.collection.mutable.Map
 
 /**

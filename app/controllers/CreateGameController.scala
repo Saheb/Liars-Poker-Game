@@ -1,22 +1,15 @@
 package controllers
 
-import models.{Player, PlayerStatus, Database, GameStatus}
-import play.api.db.DB
-import play.api.libs.iteratee.{Concurrent, Enumerator}
+import models.Database
+import models.SquerylEntryPoint._
+import play.api.libs.json.Json
 import play.api.mvc._
-import play.api.Play.current
-import org.squeryl.PrimitiveTypeMode._
-import models.GameStatus._
-import play.api.libs.json.{Json}
-import models.Player._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by saheb on 8/13/15.
  */
 
-object CreateGameController extends Controller{
+object CreateGameController extends Controller {
 
   def createGame = Action(parse.json) { request =>
     val gameJson = request.body

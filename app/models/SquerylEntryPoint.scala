@@ -1,6 +1,5 @@
 package models
 
-import org.squeryl.PrimitiveTypeMode.{from, inTransaction, join, select, where}
 import org.squeryl.{KeyedEntity, PrimitiveTypeMode, Query}
 import org.squeryl.annotations.Column
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
@@ -26,7 +25,7 @@ object SquerylEntryPoint extends PrimitiveTypeMode {
       )
     }
 
-    implicit object PlayerStatusWrites extends Writes[PlayerStatus]{
+    implicit val PlayerStatusWrites = new Writes[PlayerStatus]{
       def writes(p : PlayerStatus) = Json.obj(
         "player_id" -> Json.toJson(p.player_id),
         "name" -> Json.toJson(p.name),
@@ -48,13 +47,16 @@ object SquerylEntryPoint extends PrimitiveTypeMode {
   }
 
   case class PlayerStatus(
-                           player_id : Long,
+                           @Column("player_id")
+                           id : Long,
                            name : String,
                            game_id : Long,
                            position : Int,
                            num_of_cards : Int,
                            status : String
-                         )
+                         ) extends KeyedEntity[Long] {
+    def player_id = id
+  }
 
   object GameStatus {
 
@@ -137,7 +139,7 @@ object SquerylEntryPoint extends PrimitiveTypeMode {
     //    playerTable.update(player)
     //  }
 
-    implicit object PlayerWrites extends Writes[Player]{
+    implicit val PlayerWrites = new Writes[Player]{
       def writes(p : Player) = Json.obj(
         "id" -> Json.toJson(p.player_id),
         "name" -> Json.toJson(p.name),
@@ -199,9 +201,10 @@ object SquerylEntryPoint extends PrimitiveTypeMode {
                           result : String
                         )
 
+
   object GameHand {
-    implicit object GameHandWrites extends Writes[GameHand] {
-      def writes(game : GameHand) = Json.obj(
+    implicit val GameHandWrites = new Writes[GameHand] {
+      def writes(game: GameHand) = Json.obj(
         "game_id" -> Json.toJson(game.game_id),
         "player_id" -> Json.toJson(game.player_id),
         "round_number" -> Json.toJson(game.round_number),
@@ -209,12 +212,12 @@ object SquerylEntryPoint extends PrimitiveTypeMode {
       )
     }
 
-    implicit val GameHandReads : Reads[GameHand] = (
+    implicit val GameHandReads: Reads[GameHand] = (
       (JsPath \ "game_id").read[Long] and
-        (JsPath \ "round_number" ).read[Int] and
+        (JsPath \ "round_number").read[Int] and
         (JsPath \ "player_id").read[Long] and
         (JsPath \ "hand").read[String]
-      )(GameHand.apply _)
+      ) (GameHand.apply _)
   }
 
   case class GameHand(

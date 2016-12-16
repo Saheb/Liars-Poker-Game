@@ -17,7 +17,7 @@ import scala.collection.mutable.Map
  * Created by saheb on 8/13/15.
  */
 
-object GamePlayController extends Controller{
+class GamePlayController extends Controller{
 
   import Database._
   // (game_id, player_id) will act as key
@@ -137,7 +137,7 @@ object GamePlayController extends Controller{
              val action = (msg \ "action")
              Logger.info(action.toString());
              action match {
-               case JsString("GameStatus") =>
+               case JsDefined(JsString("GameStatus")) =>
                  //log the message to stdout and send response back to client
                  val player = (msg \ "player").as[Player]
                  inTransaction{
@@ -146,7 +146,7 @@ object GamePlayController extends Controller{
                    channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList)))
                  }
 
-               case JsString("Bet") =>
+               case JsDefined(JsString("Bet")) =>
                    Logger.info(msg \ "bet" toString())
                    // persist bet and then push to all channels, as done above in GameStatus case!
                    val player = (msg \ "player").as[Player]
@@ -157,19 +157,19 @@ object GamePlayController extends Controller{
                      gameBetTable.insert(new GameBet(bet.game_id, bet.round_number,bet.player_id,bet.turn_number,bet.bet))
                    }
 
-               case JsString("Ready")=>
+               case JsDefined(JsString("Ready"))=>
                  Logger.info(msg toString())
                  val player = (msg \ "player").as[Player]
                  val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
                  channels.foreach(f => f._2._2 push(Json.toJson(msg)))
 
-               case JsString("Chat") =>
+               case JsDefined(JsString("Chat")) =>
                  Logger.info(msg \ "message" toString())
                  val player = (msg \ "player").as[Player]
                  val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 != player.player_id))
                  channels.foreach(f => f._2._2 push(Json.toJson(msg)))
 
-               case JsString("Challenge") =>
+               case JsDefined(JsString("Challenge")) =>
                  val roundResult = (msg \ "roundResult").as[RoundResult]
                  Logger.info(roundResult toString)
                  inTransaction{
@@ -180,7 +180,7 @@ object GamePlayController extends Controller{
                    roundResultTable.insert(roundResult)
                  }
 
-               case JsString("RoundResult") =>
+               case JsDefined(JsString("RoundResult")) =>
                  val roundResult = (msg \ "roundResult").as[RoundResult]
                  Logger.info(roundResult toString)
                  Logger.info(s"Closing all sockets after round ${roundResult.round_number} for gameId ${game_id}");
@@ -235,7 +235,7 @@ object GamePlayController extends Controller{
                    }
                  }
 
-               case JsString("Close") =>
+               case JsDefined(JsString("Close")) =>
                  Logger.info(s"Removing socket for ${game_id} and ${player_id}");
                  //socketMap.remove((game_id,player_id));
 

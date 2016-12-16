@@ -4,12 +4,11 @@ import models.Database
 import models.SquerylEntryPoint._
 import play.api.libs.json.Json
 import play.api.mvc._
-
 /**
  * Created by saheb on 8/13/15.
  */
 
-object CreateGameController extends Controller {
+class CreateGameController extends Controller {
 
   def createGame = Action(parse.json) { request =>
     val gameJson = request.body

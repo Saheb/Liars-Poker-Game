@@ -7,7 +7,7 @@ import play.api.mvc.{Action, Controller}
 /**
   * Created by saheb on 8/15/15.
   */
-object WatchGameController extends Controller {
+class WatchGameController extends Controller {
 
   def getLiveGames = Action {
     inTransaction {

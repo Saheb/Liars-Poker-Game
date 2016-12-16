@@ -1,12 +1,12 @@
 package models
 
 import models.SquerylEntryPoint._
-import org.squeryl.Schema
+import org.squeryl.{KeyedEntityDef, Schema}
 
 /**
  * Created by saheb on 8/4/15.
  */
-object Database extends Schema{
+object Database extends Schema {
 
   val playerTable = table[Player]("player")
   val playerStats = table[PlayerStats]("player_stats")
@@ -28,7 +28,6 @@ object Database extends Schema{
       g.id is autoIncremented
     }
   }
-
 
 //  val gameStatus2GamePlay =
 //      oneToManyRelation(gameStatusTable, gamePlayTable).via((a,b) => a.id === b.game_id)

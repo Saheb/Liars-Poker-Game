@@ -13,7 +13,7 @@ import play.api.mvc._
 /**
  * Created by saheb on 8/12/15.
  */
-object LoginController extends Controller{
+class LoginController extends Controller{
 
   val logger = Logger(this.getClass)
 

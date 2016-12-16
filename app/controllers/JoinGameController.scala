@@ -12,7 +12,7 @@ import play.api.mvc.{Action, Controller}
 /**
  * Created by saheb on 8/15/15.
  */
-object JoinGameController extends Controller{
+class JoinGameController extends Controller{
 
   val (joined_players, update2client) = Concurrent.broadcast[JsValue]
 

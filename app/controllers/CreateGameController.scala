@@ -31,7 +31,7 @@ class CreateGameController extends Controller {
   def getJoinedPlayerList(game_id : Long) = Action {
     inTransaction {
       val joined_players = PlayerStatus.getJoinedPlayerList(game_id)
-      Ok(Json.toJson(joined_players))
+      Ok(Json.toJson(joined_players.toList))
     }
   }
 

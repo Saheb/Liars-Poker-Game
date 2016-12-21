@@ -92,7 +92,7 @@ class GamePlayController extends Controller{
     inTransaction{
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
       val gameHand = from(gameHandTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status and gp.player_id===player.player_id) select(gp))
-      Ok(Json.toJson(gameHand))
+      Ok(Json.toJson(gameHand.toList))
     }
   }
 
@@ -103,7 +103,7 @@ class GamePlayController extends Controller{
     inTransaction{
       val game = from(gameStatusTable)(g => where(g.game_id===game_id) select(g)).single
       val allHands = from(gameHandTable)(gp => where(gp.game_id===game_id and gp.round_number===game.status) select(gp))
-      Ok(Json.toJson(allHands))
+      Ok(Json.toJson(allHands.toList))
     }
   }
 
@@ -114,7 +114,7 @@ class GamePlayController extends Controller{
       update(playerStatusTable)(p =>
         where(p.player_id === winnerPlayer.player_id and p.game_id === game_id) set(p.position := 1))
       val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id) select(ps) orderBy(ps.position))
-      Ok(Json.toJson(playerStatusList))
+      Ok(Json.toJson(playerStatusList.toList))
     }
   }
 
@@ -143,7 +143,7 @@ class GamePlayController extends Controller{
                  inTransaction{
                    val playerStatusList = from(playerStatusTable)( ps => where(ps.game_id === game_id and ps.status <> "Out") select(ps) orderBy(ps.position))
                    val channels = socketMap.filter(p => (p._1._1 == game_id && p._1._2 == player.player_id))
-                   channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList)))
+                   channels.foreach(f => f._2._2 push(Json.toJson(playerStatusList.toList)))
                  }
 
                case JsDefined(JsString("Bet")) =>
@@ -176,7 +176,7 @@ class GamePlayController extends Controller{
                    val playerHandList = from(gameHandTable)(gh => where(gh.game_id === game_id and gh.round_number === roundResult.round_number) select(gh))
                    val channels = socketMap.filter(p => (p._1._1 == game_id))
                    channels.foreach(f => f._2._2 push(Json.toJson(roundResult)))
-                   channels.foreach(f => f._2._2 push(Json.toJson(playerHandList)))
+                   channels.foreach(f => f._2._2 push(Json.toJson(playerHandList.toList)))
                    roundResultTable.insert(roundResult)
                  }
 

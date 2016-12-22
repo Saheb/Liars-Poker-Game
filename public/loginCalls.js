@@ -6,7 +6,7 @@ var cb = new Codebird;
 cb.setConsumerKey("3tZ6woyPs0eYLLkCETRDVIICO", "zozuay9xan5IRXdiViE6mpi71JcutREwfWikTZpCPXsWm9RCfE");
 
 
-window.fbAsyncInit = function() {
+window.fbAsyncInit = function () {
     FB.init({
         appId: '962083260497512',
         xfbml: true,
@@ -14,9 +14,9 @@ window.fbAsyncInit = function() {
     });
 };
 
-(function(d, s, id) {
+(function (d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
-    if(d.getElementById(id)) {
+    if (d.getElementById(id)) {
         return;
     }
     js = d.createElement(s);
@@ -26,8 +26,8 @@ window.fbAsyncInit = function() {
 }(document, 'script', 'facebook-jssdk'));
 
 var googleUser = {};
-var startApp = function() {
-    gapi.load('auth2', function() {
+var startApp = function () {
+    gapi.load('auth2', function () {
         // Retrieve the singleton for the GoogleAuth library and set up the client.
         auth2 = gapi.auth2.init({
             client_id: '116777801623-0l4ivhohb1ob3l7le4n5bdi09q7udeqq.apps.googleusercontent.com',
@@ -52,7 +52,7 @@ function signOut() {
 
 function attachSignin(element) {
     auth2.attachClickHandler(element, {},
-        function(googleUser) {
+        function (googleUser) {
             document.getElementById('loginName').innerHTML =
                 googleUser.getBasicProfile().getName();
 
@@ -67,7 +67,7 @@ function attachSignin(element) {
                 url: "/persistLoginInfo",
                 contentType: "application/json",
                 data: JSON.stringify(player),
-                success: function(response) {
+                success: function (response) {
                     console.log(response)
                     window.sessionStorage.setItem("loginId", response)
                     window.sessionStorage.setItem("loginName", player.name)
@@ -85,20 +85,19 @@ function attachSignin(element) {
             $("#profileInfo").get(0).style.display = "inline-block";
             $("#logoutBtn").get(0).style.display = "inline-block";
         },
-        function(error) {
+        function (error) {
             alert(JSON.stringify(error, undefined, 2));
         });
 }
 
-document.getElementById('fb-login-btn').onclick = function()
-{
-    var fbCallback = function() {
-        FB.api('/me', function(response) {
+document.getElementById('fb-login-btn').onclick = function () {
+    var fbCallback = function () {
+        FB.api('/me', function (response) {
             console.log(response);
             var userId = response.id
             FB.api('/' + userId, {
                 fields: ['id', 'email', 'name']
-            }, function(response) {
+            }, function (response) {
                 console.log(response);
                 document.getElementById('loginName').innerHTML = response.name
 
@@ -113,7 +112,7 @@ document.getElementById('fb-login-btn').onclick = function()
                     url: "/persistLoginInfo",
                     contentType: "application/json",
                     data: JSON.stringify(player),
-                    success: function(response) {
+                    success: function (response) {
                         console.log(response)
                         window.sessionStorage.setItem("loginId", response)
                         window.sessionStorage.setItem("loginName", player.name)
@@ -133,17 +132,15 @@ document.getElementById('fb-login-btn').onclick = function()
             });
         });
     }
-    FB.getLoginStatus(function(response) {
-        if(response.status === 'connected') {
+    FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
             console.log('Logged in.');
             fbCallback()
         }
-        else
-        {
-            FB.login(function(response) {
+        else {
+            FB.login(function (response) {
                 console.info('FB.login response', response);
-                if(response.authResponse == null)
-                {
+                if (response.authResponse == null) {
                     console.log("Not logged in!");
                 }
                 else
@@ -167,7 +164,7 @@ document.getElementById('fb-login-btn').onclick = function()
 //                console.log("ID Token: " + id_token);
 //              };
 
-document.getElementById('twitter-login-btn').onclick = function() {
+document.getElementById('twitter-login-btn').onclick = function () {
 
     // the below is equivalent to document.getElementById
     $("#login-btns").get(0).style.display = "none";
@@ -179,7 +176,7 @@ document.getElementById('twitter-login-btn').onclick = function() {
         {
             oauth_callback: "oob"
         },
-        function(reply) {
+        function (reply) {
             // stores it
             cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
@@ -187,7 +184,7 @@ document.getElementById('twitter-login-btn').onclick = function() {
             cb.__call(
                 "oauth_authorize",
                 {},
-                function(auth_url) {
+                function (auth_url) {
                     window.codebird_auth = window.open(auth_url);
                 }
             );
@@ -195,13 +192,13 @@ document.getElementById('twitter-login-btn').onclick = function() {
     );
 }
 
-document.getElementById('submitPin').onclick = function() {
+document.getElementById('submitPin').onclick = function () {
     cb.__call(
         "oauth_accessToken",
         {
             oauth_verifier: document.getElementById("pin").value
         },
-        function(reply) {
+        function (reply) {
             // store the authenticated token, which may be different from the request token (!)
             cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
@@ -223,7 +220,7 @@ document.getElementById('submitPin').onclick = function() {
                 url: "/persistLoginInfo",
                 contentType: "application/json",
                 data: JSON.stringify(player),
-                success: function(response) {
+                success: function (response) {
                     console.log(response)
                     store.setItem("loginId", response)
                     store.setItem("loginName", player.name)
@@ -244,10 +241,9 @@ document.getElementById('submitPin').onclick = function() {
     );
 }
 
-$("#createGameBtn").get(0).onclick = function() {
+$("#createGameBtn").get(0).onclick = function () {
     var isLoggedIn = $("#loginName").text() != "Login"
-    if(isLoggedIn)
-    {
+    if (isLoggedIn) {
         var game = {
             "id": 0,
             "name": $("#loginName").text() + "'s Game",
@@ -264,7 +260,7 @@ $("#createGameBtn").get(0).onclick = function() {
                 url: "/createGame",
                 contentType: "application/json",
                 data: JSON.stringify(game),
-                success: function(response) {
+                success: function (response) {
                     console.log(response)
                     location.href = "/createGame/" + response
                 }
@@ -276,15 +272,14 @@ $("#createGameBtn").get(0).onclick = function() {
 
 }
 
-$("#joinGameBtn").get(0).onclick = function() {
+$("#joinGameBtn").get(0).onclick = function () {
     var isLoggedIn = $("#loginName").text() != "Login"
-    if(isLoggedIn)
-    {
+    if (isLoggedIn) {
         var jqxhr = $.ajax({
             type: "GET",
             url: "/joinGame",
             dataType: "html",
-            success: function(response) {
+            success: function (response) {
                 console.log(response)
                 location.href = "/joinGame"
             }
@@ -295,23 +290,23 @@ $("#joinGameBtn").get(0).onclick = function() {
         alert("You need to login to Join or Create a Game!")
 }
 
-$("#watchGameBtn").get(0).onclick = function() {
+$("#watchGameBtn").get(0).onclick = function () {
     //var isLoggedIn = $("#loginName").text() != "Login"
-        var jqxhr = $.ajax({
-            type: "GET",
-            url: "/watchGame",
-            dataType: "html",
-            success: function(response) {
-                console.log(response)
-                location.href = "/watchGame"
-            }
-        })
+    var jqxhr = $.ajax({
+        type: "GET",
+        url: "/watchGame",
+        dataType: "html",
+        success: function (response) {
+            console.log(response)
+            location.href = "/watchGame"
+        }
+    })
 }
 
-$("#logoutBtn").get(0).onclick = function() {
+$("#logoutBtn").get(0).onclick = function () {
     var loginBy = store.getItem("loginBy");
     store.clear();
-    switch(loginBy){
+    switch (loginBy) {
         case "Google":
             signOut();
             console.log("Logged out your google account!");

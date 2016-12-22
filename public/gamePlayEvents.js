@@ -2,28 +2,28 @@
  * Created by saheb on 9/2/15.
  */
 
-$(".btn-group-vertical > .btn").click(function() {
+$(".btn-group-vertical > .btn").click(function () {
     $(this).addClass("active").siblings().removeClass("active");
 });
 
-$(".btn-group > .btn").click(function() {
+$(".btn-group > .btn").click(function () {
     $(this).addClass("active").siblings().removeClass("active");
 });
 
-function dealAndGetCards(){
+function dealAndGetCards() {
     //var action = "GetCards";//(store.getItem("isAdmin")==="true")?"Deal":"GetCards";
     // TODO: Whoever clicks okdeal first, dealing of card will happen.
     var nextRoundNumber = 1;
-    if(typeof store.getItem("round_number") != 'undefined')
+    if (typeof store.getItem("round_number") != 'undefined')
         nextRoundNumber = Number(store.getItem("round_number"));
 
     var isPlaying = (store.getItem('myPosition') != 'undefined')
     var player = {
-        "id" : Number(store.getItem("loginId")),
-        "name" : store.getItem("loginName"),
-        "email" : store.getItem("loginEmail")
+        "id": Number(store.getItem("loginId")),
+        "name": store.getItem("loginName"),
+        "email": store.getItem("loginEmail")
     }
-    if(isPlaying){
+    if (isPlaying) {
 
         var json = {
             "action": "Ready",
@@ -32,25 +32,27 @@ function dealAndGetCards(){
         ws.send(JSON.stringify(json)); // sending that player is ready for next round!
 
         $.ajax({
-            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
-            data : JSON.stringify(player),
-            type : 'GET',
-            success : function(response) {
+            url: '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
+            data: JSON.stringify(player),
+            type: 'GET',
+            success: function (response) {
                 console.dir(response)
                 $.ajax({
-                    url : '/gamePlay/' + GAME_ID + '/' + 'getCards',
-                    data : JSON.stringify(player),
-                    type : 'POST',
-                    contentType : 'application/json',
-                    success : function(response) {
+                    url: '/gamePlay/' + GAME_ID + '/' + 'getCards',
+                    data: JSON.stringify(player),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    success: function (response) {
                         console.dir("Received your cards!");
                         console.dir(response)
                         deck.mount($("#container")[0]);
-                        deck.intro(); deck.flip(); deck.shuffle(); deck.shuffle();
-                        setTimeout(function(){
+                        deck.intro();
+                        deck.flip();
+                        deck.shuffle();
+                        deck.shuffle();
+                        setTimeout(function () {
                             deck.unmount();
-                            for(var i=0;i<cards.length;i++)
-                            {
+                            for (var i = 0; i < cards.length; i++) {
                                 var srcString = "/assets/cards/images/" + cards[i] + ".png";
                                 var img = $('<img id="dynamic" width="80" height="120" hspace="5" vspace="5">'); //Equivalent: $(document.createElement('img'))
                                 img.attr('src', srcString);
@@ -76,33 +78,31 @@ function dealAndGetCards(){
         $('#allHandsTable').fadeIn(1000);
 
         $.ajax({
-            url : '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
-            data : JSON.stringify(player),
-            type : 'GET',
-            success : function(response) {
+            url: '/gamePlay/' + GAME_ID + '/' + nextRoundNumber + '/' + 'dealCards',
+            data: JSON.stringify(player),
+            type: 'GET',
+            success: function (response) {
                 console.dir(response)
                 $.ajax({
-                    url : '/gamePlay/' + GAME_ID + '/getAllHands',
-                    data : JSON.stringify(player),
-                    type : 'GET',
-                    contentType : 'application/json',
-                    success : function(response) {
+                    url: '/gamePlay/' + GAME_ID + '/getAllHands',
+                    data: JSON.stringify(player),
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (response) {
                         console.dir("Received all hands!");
                         console.dir(response);
                         $('#allHandsTable td').remove();
                         //deck.mount($("#allHands")[0]);
                         //deck.sort(); deck.shuffle(); deck.shuffle();
-                        setTimeout(function(){
+                        setTimeout(function () {
                             ///deck.unmount();
                             // show all hands with player names in a div with id "allHands"
-                            for(var i=0;i<response.length;i++)
-                            {
+                            for (var i = 0; i < response.length; i++) {
                                 var p = response[i]
                                 var name = store.getItem(p.player_id)
                                 var cards = p.hand.split(",")
-                                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">' ;//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
-                                for(var c=0; c< cards.length;c++)
-                                {
+                                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">';//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
+                                for (var c = 0; c < cards.length; c++) {
                                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
                                     trStr = trStr + '<img id="dynamic" width="70" height="100" hspace="5" src=' + srcString + '>'
                                 }
@@ -119,23 +119,23 @@ function dealAndGetCards(){
 
     console.dir("Message is sent! JSON->" + JSON.stringify(player));
 }
-function getGameStatus(){
+function getGameStatus() {
     var xhr = $.ajax({
-        url : "/gamePlay/" + GAME_ID,
-        type : "GET",
+        url: "/gamePlay/" + GAME_ID,
+        type: "GET",
         dataType: "html",
-        success : function(response) {
-            location.href = "/gamePlay/"+GAME_ID
+        success: function (response) {
+            location.href = "/gamePlay/" + GAME_ID
         }
     })
 }
 $("#okdeal").get(0).onclick = dealAndGetCards
 $("#ok").get(0).onclick = getGameStatus
 
-$("#handType").get(0).onclick = function(btn) {
+$("#handType").get(0).onclick = function (btn) {
     var handType = btn.target.textContent;
     store.setItem("handType", handType);
-    switch(handType) {
+    switch (handType) {
         case "High Card":
             $("#value2Type > button").prop('disabled', true);
             $("#suitType > button").prop('disabled', true);
@@ -179,23 +179,23 @@ $("#handType").get(0).onclick = function(btn) {
     }
 }
 
-$("#valueType").get(0).onclick = function(btn) {
+$("#valueType").get(0).onclick = function (btn) {
     store.setItem("valueType", btn.target.textContent)
 }
 
-$("#value2Type").get(0).onclick = function(btn) {
+$("#value2Type").get(0).onclick = function (btn) {
     store.setItem("value2Type", btn.target.textContent)
 }
 
-$("#suitType").get(0).onclick = function(btn) {
+$("#suitType").get(0).onclick = function (btn) {
     store.setItem("suitType", btn.target.textContent)
 }
 
-$("#betBtn").get(0).onclick = function() {
+$("#betBtn").get(0).onclick = function () {
     // validate the bet by comparing with previous bet from SS.
-    if(call()){
+    if (call()) {
         var handType = store.getItem("handType");
-        switch(handType) {
+        switch (handType) {
             case "High Card":
                 $("#value2Type > button").removeClass('active');
                 $("#suitType > button").removeClass('active');
@@ -271,18 +271,18 @@ $("#betBtn").get(0).onclick = function() {
         }
         ws.send(JSON.stringify(json));
         $(".notifyjs-container").remove();
-        $.notify("Your bet was " + bet.bet.replace(/_/g," ").replace(/NA/g,""),{globalPosition : 'top center'})
+        $.notify("Your bet was " + bet.bet.replace(/_/g, " ").replace(/NA/g, ""), {globalPosition: 'top center'})
         $("#cu_handType").text(store.getItem("handType"));
         $("#cu_valueType").text(store.getItem("valueType"));
         $("#cu_suitType").text(store.getItem("suitType"));
         $("#cu_value2Type").text(store.getItem("value2Type"));
 
         store.setItem("previousBet", bet.bet);
-        store.setItem("previousBetPlayerId",bet.player_id)
+        store.setItem("previousBetPlayerId", bet.player_id)
 
         console.dir("Bet is sent...");
         // update WSS
-        store.setItem("turn_number", Number(store.getItem("turn_number"))+1)
+        store.setItem("turn_number", Number(store.getItem("turn_number")) + 1)
         $("#betBtn").prop('disabled', true)
         $("#challengeBtn").prop('disabled', true)
         var playerPositionMap = JSON.parse(store.getItem("playerPositionMap"))
@@ -292,7 +292,7 @@ $("#betBtn").get(0).onclick = function() {
         var betterIndex = validPositions.indexOf(betterPosition.toString())
         var currentPosition = betterIndex + 1
         var currentBetterName = "";
-        if(currentPosition < Number(store.getItem("num_of_players")))
+        if (currentPosition < Number(store.getItem("num_of_players")))
             currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
         else
             currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
@@ -300,16 +300,14 @@ $("#betBtn").get(0).onclick = function() {
         $('#previousBetter').text(player.name)
         drawTable();
     }
-    else
-    {
+    else {
         alert("You can't bet lower than previous bet!");
     }
 
 }
 
-$("#challengeBtn").get(0).onclick = function(){
-    if(store.getItem("previousBet")=="Hand_Card 1_Card 2_Suit")
-    {
+$("#challengeBtn").get(0).onclick = function () {
+    if (store.getItem("previousBet") == "Hand_Card 1_Card 2_Suit") {
         alert("You can't challenge at first turn of the round, Bet now and wait for your next turn!");
         return 0;
     }
@@ -323,12 +321,12 @@ $("#challengeBtn").get(0).onclick = function(){
     }
 
     var roundResult = {
-        game_id : GAME_ID,
-        round_number : Number(store.getItem("round_number")),
-        player_challenge_id : player.id, // player id of the player who challenged the bet
-        player_bet_id : Number(store.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
-        bet_challenged : store.getItem("previousBet"),
-        result : "NA"
+        game_id: GAME_ID,
+        round_number: Number(store.getItem("round_number")),
+        player_challenge_id: player.id, // player id of the player who challenged the bet
+        player_bet_id: Number(store.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
+        bet_challenged: store.getItem("previousBet"),
+        result: "NA"
     }
 
     var json = {
@@ -340,15 +338,14 @@ $("#challengeBtn").get(0).onclick = function(){
     console.dir("Challenge details are sent...");
 }
 
-$("#playAgain").get(0).onclick = function(){
+$("#playAgain").get(0).onclick = function () {
     location.href = "/"
 }
 
-$("#chatBox").keyup(function(event){
-    if(event.keyCode == 13){
+$("#chatBox").keyup(function (event) {
+    if (event.keyCode == 13) {
         var message = event.target.value;
-        if(message != "")
-        {
+        if (message != "") {
             var player = {
                 "id": Number(store.getItem("loginId")),
                 "name": store.getItem("loginName"),

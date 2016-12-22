@@ -1,13 +1,14 @@
-@(liveGames : List[models.SquerylEntryPoint.GameStatus])
+@(liveGames: List[models.SquerylEntryPoint.GameStatus])
 <!DOCTYPE html>
 
 <html>
     <head>
         <style>
         body {
-        padding-top: 70px;
-        padding-bottom: 30px;
+            padding-top: 70px;
+            padding-bottom: 30px;
         }
+
         /*.col-xs-3.custom_border {*/
         /*border-radius: 10px;*/
         /*border-style : solid;*/
@@ -16,11 +17,11 @@
         /*}*/
         </style>
         <script>
-            var store = window.sessionStorage
-            function checkLogin() {
-             if(store.length!=0)
-                document.getElementById('loginName').innerText = store.getItem("loginName")
-            }
+                var store = window.sessionStorage
+                function checkLogin() {
+                    if (store.length != 0)
+                        document.getElementById('loginName').innerText = store.getItem("loginName")
+                }
         </script>
         <title>Watching Game</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
@@ -64,7 +65,7 @@
             </h2>
 
             <div class="row container-fluid">
-            @for(game <- liveGames){
+            @for(game <- liveGames) {
                 <div class="col-xs-3 custom_border" >
                     <h3>@game.name</h3>
                     <p id="@game.game_id"> </p>
@@ -74,7 +75,7 @@
                 <script>
                     //var remaining_players = @game.max_players - @game.joined_players
                     var game_id = @game.game_id
-                    document.getElementById(game_id).innerText = "Round " + @game.status + " in play"
+                            document.getElementById(game_id).innerText = "Round " + @game.status +" in play"
                 </script>
             }
 

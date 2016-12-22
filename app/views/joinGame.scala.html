@@ -1,26 +1,27 @@
-@(activeGames : List[models.SquerylEntryPoint.GameStatus])
+@(activeGames: List[models.SquerylEntryPoint.GameStatus])
 <!DOCTYPE html>
 
 <html>
     <head>
         <style>
         body {
-        padding-top: 70px;
-        padding-bottom: 30px;
+            padding-top: 70px;
+            padding-bottom: 30px;
         }
+
         /*.col-xs-3.custom_border {*/
-            /*border-radius: 10px;*/
-            /*border-style : solid;*/
-            /*border-width : 3px;*/
-            /**/
+        /*border-radius: 10px;*/
+        /*border-style : solid;*/
+        /*border-width : 3px;*/
+        /**/
         /*}*/
         </style>
         <script>
-            var store = window.sessionStorage
-            function checkLogin() {
-             if(store.length!=0)
-                document.getElementById('loginName').innerHTML = store.getItem("loginName")
-            }
+                var store = window.sessionStorage
+                function checkLogin() {
+                    if (store.length != 0)
+                        document.getElementById('loginName').innerHTML = store.getItem("loginName")
+                }
         </script>
         <title>Joining Game</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
@@ -69,7 +70,8 @@
                         <div>
                             <ol>
                                 <li> Each player has 2-7 cards in their hand</li>
-                                <li> With the knowledge of cards in their hand and other player's bets each player makes a bet</li>
+                                <li>
+                                    With the knowledge of cards in their hand and other player's bets each player makes a bet</li>
                                 <li> Bets are nothing but poker hands </li>
                                 <ol>
                                     <li>Royal Flush (Highest)</li>
@@ -84,11 +86,13 @@
                                     <li>High Card (Lowest)</li>
                                 </ol>
                                 <li> Bet should be higher than the previous bet and you can't pass your chance</li>
-                                <li> Bet is challenged only by the next betting player if he thinks the bet won't materialize</li>
+                                <li>
+                                    Bet is challenged only by the next betting player if he thinks the bet won't materialize</li>
                                 <li> Bet would materialize or not would be concluded from cards in all player's hands.</li>
                                 <li> If challenger wins, then Better's cards increase by 1.</li>
                                 <li> If challenger loses, then Challenger's cards increase by 1.</li>
-                                <li> Player is out of the game if their card count is more than Game's max card cound. 5 or 7.</li>
+                                <li>
+                                    Player is out of the game if their card count is more than Game's max card cound. 5 or 7.</li>
                             </ol>
                         </div>
                     </div>
@@ -104,7 +108,7 @@
             </h2>
 
             <div class="row container-fluid">
-            @for(game <- activeGames){
+            @for(game <- activeGames) {
                 <div class="col-xs-3 custom_border" >
                     <h3>@game.name</h3>
                     <p id="@game.game_id"> </p>
@@ -112,12 +116,13 @@
                 </div>
 
                 <script>
-                    var remaining_players = @game.max_players - @game.joined_players
+                    var remaining_players = @game.max_players -
+                    @game.joined_players
                     var game_id = @game.game_id
-                    document.getElementById(game_id).innerText = remaining_players + " seats left"
+                            document.getElementById(game_id).innerText = remaining_players + " seats left"
                 </script>
             }
-                
+
             </div>
         </div>
     </body>

@@ -2,18 +2,19 @@ package controllers
 
 import java.util.concurrent.ExecutionException
 
-import models.Database
-import models.SquerylEntryPoint._
-import org.h2.jdbc.JdbcSQLException
+import com.google.inject.Inject
+import models.Dao
+import models.Dao._
 import play.api.Logger
-import play.api.Play.current
-import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.mvc._
+
 /**
- * Created by saheb on 8/12/15.
- */
-class LoginController extends Controller{
+  * Created by saheb on 8/12/15.
+  */
+class LoginController @Inject()(
+    dao: Dao
+) extends Controller {
 
   val logger = Logger(this.getClass)
 
@@ -24,21 +25,19 @@ class LoginController extends Controller{
     logger.info("Inserting record to database")
     try {
       inTransaction {
-        val selectQuery = from(Database.playerTable) (p => where(p.email === player.email) select(p))
-        if(selectQuery.isEmpty) {
+        val selectQuery = from(Database.playerTable)(p =>
+          where(p.email === player.email) select (p))
+        if (selectQuery.isEmpty) {
           val insertedPlayer = Database.playerTable.insert(player)
           Ok(Json.toJson(insertedPlayer.player_id))
-        }
-        else
+        } else
           Ok(Json.toJson(selectQuery.single.player_id))
       }
-    }
-      catch {
-        case e : IllegalArgumentException => BadRequest(e.getMessage)
-        case j : JdbcSQLException => BadRequest(j.getMessage)
-        case ex : ExecutionException => BadRequest(ex.getMessage)
-      }
-    finally {
+    } catch {
+      case e: IllegalArgumentException => BadRequest(e.getMessage)
+      case j: JdbcSQLException => BadRequest(j.getMessage)
+      case ex: ExecutionException => BadRequest(ex.getMessage)
+    } finally {
       conn.close()
     }
   }

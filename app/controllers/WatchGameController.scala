@@ -1,6 +1,5 @@
 package controllers
 
-import models.SquerylEntryPoint._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 

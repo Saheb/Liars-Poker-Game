@@ -1,26 +1,27 @@
-@(gameName: String, game_id : Long, joinedPlayers : List[models.SquerylEntryPoint.Player])
+@(gameName: String, game_id: Long, joinedPlayers: List[models.SquerylEntryPoint.Player])
 
 <!DOCTYPE html>
 
 <html>
     <head>
         <style>
-            body {
+        body {
             padding-top: 70px;
             padding-bottom: 30px;
-            }
+        }
         </style>
         <title>@gameName</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/ico" href="@routes.Assets.at("images/favicon.ico")">
         <script>
-            var GAME_ID = @game_id
-            var store = window.sessionStorage
-            function checkLogin() {
-             if(store.length!=0)
-                document.getElementById('loginName').innerHTML = store.getItem("loginName")
-            }
-            store.setItem("joinedPlayersSize", @joinedPlayers.size)
+                var GAME_ID =
+                @game_id
+                var store = window.sessionStorage
+                function checkLogin() {
+                    if (store.length != 0)
+                        document.getElementById('loginName').innerHTML = store.getItem("loginName")
+                }
+                store.setItem("joinedPlayersSize", @joinedPlayers.size)
         </script>
             <!-- Bootstrap core CSS -->
         <link href="@routes.Assets.at("stylesheets/bootstrap.min.css")" rel="stylesheet">
@@ -66,7 +67,8 @@
                         <div>
                             <ol>
                                 <li> Each player has 2-7 cards in their hand</li>
-                                <li> With the knowledge of cards in their hand and other player's bets each player makes a bet</li>
+                                <li>
+                                    With the knowledge of cards in their hand and other player's bets each player makes a bet</li>
                                 <li> Bets are nothing but poker hands </li>
                                 <ol>
                                     <li>Royal Flush (Highest)</li>
@@ -81,11 +83,13 @@
                                     <li>High Card (Lowest)</li>
                                 </ol>
                                 <li> Bet should be higher than the previous bet and you can't pass your chance</li>
-                                <li> Bet is challenged only by the next betting player if he thinks the bet won't materialize</li>
+                                <li>
+                                    Bet is challenged only by the next betting player if he thinks the bet won't materialize</li>
                                 <li> Bet would materialize or not would be concluded from cards in all player's hands.</li>
                                 <li> If challenger wins, then Better's cards increase by 1.</li>
                                 <li> If challenger loses, then Challenger's cards increase by 1.</li>
-                                <li> Player is out of the game if their card count is more than Game's max card cound. 5 or 7.</li>
+                                <li>
+                                    Player is out of the game if their card count is more than Game's max card cound. 5 or 7.</li>
                             </ol>
                         </div>
                     </div>
@@ -110,7 +114,7 @@
             <div class="panel panel-success">
                 <div class="panel-heading">Joined Players</div>
                 <div class="list-group">
-                @for(player <- joinedPlayers){
+                @for(player <- joinedPlayers) {
                     <li class="list-group-item">@player.name</li>
                 }
                 </div>
@@ -120,17 +124,17 @@
         </div>
         <script src="@routes.Assets.at("createGameEvents.js")"></script>
         <script>
-            var event = new EventSource("@routes.JoinGameController.updatedJoinedPlayers(game_id)");
-            event.addEventListener('message', function( event ) {
-               console.log(event.data);
-               var player = JSON.parse(event.data);
-               $.notify(player.name + " joined the game",{globalPosition : 'top center',className : 'info'});
-               $('<li class="list-group-item">' + player.name + " " + "("+ player.position +")" +'</li>').appendTo(".list-group")
-               var previousCount = Number(store.getItem("joinedPlayersSize"))
-               store.setItem("joinedPlayersSize", previousCount + 1)
-               $("#joinedPlayersSize").get(0).innerHTML = "Joined : " + (previousCount+1)
-            }
-            );
+                var event = new EventSource("@routes.JoinGameController.updatedJoinedPlayers(game_id)");
+                event.addEventListener('message', function (event) {
+                            console.log(event.data);
+                            var player = JSON.parse(event.data);
+                            $.notify(player.name + " joined the game", {globalPosition: 'top center', className: 'info'});
+                            $('<li class="list-group-item">' + player.name + " " + "(" + player.position + ")" + '</li>').appendTo(".list-group")
+                            var previousCount = Number(store.getItem("joinedPlayersSize"))
+                            store.setItem("joinedPlayersSize", previousCount + 1)
+                            $("#joinedPlayersSize").get(0).innerHTML = "Joined : " + (previousCount + 1)
+                        }
+                );
         </script>
 
     </body>

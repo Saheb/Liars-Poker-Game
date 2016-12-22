@@ -32,7 +32,7 @@
     /**
      * Array.indexOf polyfill
      */
-    if (! Array.prototype.indexOf) {
+    if (!Array.prototype.indexOf) {
         Array.prototype.indexOf = function (obj, start) {
             for (var i = (start || 0); i < this.length; i++) {
                 if (this[i] === obj) {
@@ -191,7 +191,7 @@
          * @return void
          */
         var setUseProxy = function (use_proxy) {
-            _use_proxy = !! use_proxy;
+            _use_proxy = !!use_proxy;
         };
 
         /**
@@ -203,7 +203,7 @@
          */
         var setProxy = function (proxy) {
             // add trailing slash if missing
-            if (! proxy.match(/\/$/)) {
+            if (!proxy.match(/\/$/)) {
                 proxy += "/";
             }
             _endpoint_proxy = proxy;
@@ -239,7 +239,7 @@
                 fixStr = function (str) {
                     return decodeURIComponent(str).replace(/([\\"'])/g, "\\$1").replace(/\n/g, "\\n").replace(/\r/g, "\\r");
                 };
-            if (! array) {
+            if (!array) {
                 array = this.window;
             }
 
@@ -487,7 +487,8 @@
                     app_only_auth = callback;
                 }
             } else if (typeof callback === "undefined") {
-                callback = function () {};
+                callback = function () {
+                };
             }
             switch (fn) {
                 case "oauth_authenticate":
@@ -634,7 +635,8 @@
             }
 
             if (typeof callback === "undefined") {
-                callback = function () {};
+                callback = function () {
+                };
             }
 
             var post_fields = "grant_type=client_credentials";
@@ -663,11 +665,13 @@
                     var httpstatus = 12027;
                     try {
                         httpstatus = xml.status;
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     var response = "";
                     try {
                         response = xml.responseText;
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     var reply = _parseApiReply(response);
                     reply.httpstatus = httpstatus;
                     if (httpstatus === 200) {
@@ -731,9 +735,9 @@
 
                         c[f] = m;
                         m = l(l(a << 5 | a >>> 27, 20 > f ? d & h | ~d & k : 40 > f ? d ^
-                        h ^ k : 60 > f ? d & h | d & k | h & k : d ^ h ^ k), l(
+                                h ^ k : 60 > f ? d & h | d & k | h & k : d ^ h ^ k), l(
                             l(g, c[f]), 20 > f ? 1518500249 : 40 > f ? 1859775393 :
-                                60 > f ? -1894007588 : -899497514));
+                                    60 > f ? -1894007588 : -899497514));
                         g = k;
                         k = h;
                         h = d << 30 | d >>> 2;
@@ -760,6 +764,7 @@
                 }
                 return b;
             }
+
             var g = 8;
             return function (e) {
                 var b = _oauth_consumer_secret + "&" + (null !== _oauth_token_secret ?
@@ -784,8 +789,8 @@
                         8 * (3 - (a + 1) % 4) & 255) << 8 | b[a + 2 >> 2] >> 8 * (3 -
                         (a + 2) % 4) & 255, e = 0; 4 > e; e++) {
                         c = 8 * a + 6 * e > 32 * b.length ? c + "=" : c +
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-                            .charAt(d >> 6 * (3 - e) & 63);
+                            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+                                .charAt(d >> 6 * (3 - e) & 63);
                     }
                 }
                 return c;
@@ -875,13 +880,14 @@
                     return "";
                 }
             }
+
             var d, c, h = [];
-            if (! b) {
+            if (!b) {
                 b = "&";
             }
             for (c in e) {
                 d = e[c];
-                if (f && ! isNaN(c)) {
+                if (f && !isNaN(c)) {
                     c = String(f) + c;
                 }
                 d = g(c, d, b);
@@ -989,10 +995,10 @@
                 console.warn("To generate a signature, the consumer key must be set.");
             }
             var sign_params = {
-                consumer_key:     _oauth_consumer_key,
-                version:          "1.0",
-                timestamp:        Math.round(new Date().getTime() / 1000),
-                nonce:            _nonce(),
+                consumer_key: _oauth_consumer_key,
+                version: "1.0",
+                timestamp: Math.round(new Date().getTime() / 1000),
+                nonce: _nonce(),
                 signature_method: "HMAC-SHA1"
             };
             var sign_base_params = {};
@@ -1017,14 +1023,14 @@
                 sign_base_string += key + "=" + _url(value) + "&";
             }
             sign_base_string = sign_base_string.substring(0, sign_base_string.length - 1);
-            var signature    = _sha1(httpmethod + "&" + _url(method) + "&" + _url(sign_base_string));
+            var signature = _sha1(httpmethod + "&" + _url(method) + "&" + _url(sign_base_string));
 
             params = append_to_get ? sign_base_params : oauth_params;
             params.oauth_signature = signature;
             keys = _ksort(params);
             var authorization = "";
             if (append_to_get) {
-                for(i = 0; i < keys.length; i++) {
+                for (i = 0; i < keys.length; i++) {
                     key = keys[i];
                     value = params[key];
                     authorization += key + "=" + _url(value) + "&";
@@ -1097,7 +1103,7 @@
          */
         var _buildMultipart = function (method, params) {
             // well, files will only work in multipart methods
-            if (! _detectMultipart(method)) {
+            if (!_detectMultipart(method)) {
                 return;
             }
 
@@ -1279,14 +1285,15 @@
                 app_only_auth = false;
             }
             if (typeof callback !== "function") {
-                callback = function () {};
+                callback = function () {
+                };
             }
             if (internal) {
-                params.adc            = "phone";
+                params.adc = "phone";
                 params.application_id = 333903271;
             }
 
-            var url           = _getEndpoint(method);
+            var url = _getEndpoint(method);
             var authorization = null;
 
             var xml = _getXmlRequestObject();
@@ -1300,7 +1307,7 @@
                 if (JSON.stringify(params) !== "{}") {
                     url_with_params += "?" + _http_build_query(params);
                 }
-                if (! app_only_auth) {
+                if (!app_only_auth) {
                     authorization = _sign(httpmethod, url, params);
                 }
 
@@ -1352,12 +1359,12 @@
                     return;
                 }
                 if (multipart) {
-                    if (! app_only_auth) {
+                    if (!app_only_auth) {
                         authorization = _sign(httpmethod, url, {});
                     }
                     params = _buildMultipart(method, params);
                 } else {
-                    if (! app_only_auth) {
+                    if (!app_only_auth) {
                         authorization = _sign(httpmethod, url, params);
                     }
                     params = _http_build_query(params);
@@ -1402,11 +1409,13 @@
                     var httpstatus = 12027;
                     try {
                         httpstatus = xml.status;
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     var response = "";
                     try {
                         response = xml.responseText;
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     var reply = _parseApiReply(response);
                     reply.httpstatus = httpstatus;
                     var rate = null;
@@ -1450,7 +1459,7 @@
                     // since this only happens for errors,
                     // don't perform a full decoding
                     parsed.request = reply.match(/<request>(.*)<\/request>/)[1];
-                    parsed.error   = reply.match(/<error>(.*)<\/error>/)[1];
+                    parsed.error = reply.match(/<error>(.*)<\/error>/)[1];
                 } else {
                     // assume query format
                     var elements = reply.split("&");
@@ -1506,7 +1515,9 @@
         // file name. Do this after creating the global so that if an AMD module wants
         // to call noConflict to hide this version of codebird, it will work.
         if (typeof define === "function" && define.amd) {
-            define("codebird", [], function () { return Codebird; });
+            define("codebird", [], function () {
+                return Codebird;
+            });
         }
     }
 

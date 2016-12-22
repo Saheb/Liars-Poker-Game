@@ -18,56 +18,50 @@ if (loc.protocol === "https:") {
 }
 new_uri += "//" + loc.host;
 //new_uri += loc.pathname;
-var ws = new ReconnectingWebSocket(new_uri + "/gamePlay/"+ GAME_ID + "/" + player_id +  "/play")
+var ws = new ReconnectingWebSocket(new_uri + "/gamePlay/" + GAME_ID + "/" + player_id + "/play")
 ws.debug = true;
-$.notify.defaults({ className: "info" });
+$.notify.defaults({className: "info"});
 
-ws.onopen = function()
-{
+ws.onopen = function () {
     // Web Socket is connected, send data using send()
     var player = {
-        "id" : Number(store.getItem("loginId")),
-        "name" : store.getItem("loginName"),
-        "email" : store.getItem("loginEmail")
+        "id": Number(store.getItem("loginId")),
+        "name": store.getItem("loginName"),
+        "email": store.getItem("loginEmail")
     };
-    var json = {"action" : "GameStatus", "player" : player};
-    if($('#cards img').length == 0)
-    {
+    var json = {"action": "GameStatus", "player": player};
+    if ($('#cards img').length == 0) {
         ws.send(JSON.stringify(json));
         console.log("Message is sent...");
     }
-    else
-    {
-     console.log("Reconnected to the server!");
+    else {
+        console.log("Reconnected to the server!");
     }
 };
 
-ws.onmessage = function (evt)
-{
+ws.onmessage = function (evt) {
     var gameStatusOrBet = JSON.parse(evt.data);
     console.log(gameStatusOrBet);
-    if(gameStatusOrBet.length > 1) // Game Status + Challenge Response!!
+    if (gameStatusOrBet.length > 1) // Game Status + Challenge Response!!
     {
-        if(gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response!
+        if (gameStatusOrBet[0].hasOwnProperty("hand"))// Challenge Response!
         {
             $('#playerCardsTable td').remove();
             //TODO : Animation before showing final cards!
             //deck.mount($('#container2')[0]);
             //deck.poker();
             var allCards = "";
-            for(var i=0;i<gameStatusOrBet.length;i++)
-            {
+            for (var i = 0; i < gameStatusOrBet.length; i++) {
                 var p = gameStatusOrBet[i]
                 var name = store.getItem(p.player_id)
                 var cards = p.hand.split(",")
-                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">' ;//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
-                for(var c=0; c< cards.length;c++)
-                {
+                var trStr = '<tr style="height: 100px"> <td class="col-md-1">' + name + '</td><td class="col-md-5">';//<td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>'
+                for (var c = 0; c < cards.length; c++) {
                     allCards += (cards[c] + ",")
                     var srcString = "/assets/cards/images/" + cards[c] + ".png";
                     //var img = $('<img id="dynamic" class="card" width="80" height="120" hspace="5">'); //Equivalent: $(document.createElement('img'))
                     //img.attr('src', srcString);
-                    trStr = trStr + '<img id="'+ cards[c] +'" width="70" height="100" style="opacity:0.3" hspace="5" src=' + srcString + '>'
+                    trStr = trStr + '<img id="' + cards[c] + '" width="70" height="100" style="opacity:0.3" hspace="5" src=' + srcString + '>'
                 }
                 trStr = trStr + '</td>';
                 $('#playerCardsTable tr:last').after(trStr);
@@ -76,29 +70,26 @@ ws.onmessage = function (evt)
             console.log(allCards);
             console.log(store.getItem("previousBet"));
             var result = ""
-            if(challengeWon(allCards, store.getItem("previousBet")))
-            {
-                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + " : " + store.getItem(store.getItem("player_challenge_id")) +" lost challenge against " +  store.getItem(store.getItem("previousBetPlayerId"))
+            if (challengeWon(allCards, store.getItem("previousBet"))) {
+                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + " : " + store.getItem(store.getItem("player_challenge_id")) + " lost challenge against " + store.getItem(store.getItem("previousBetPlayerId"))
                 result = "LOST"
             }
-            else
-            {
-                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + " : " + store.getItem(store.getItem("player_challenge_id")) +" won challenge against " +  store.getItem(store.getItem("previousBetPlayerId"))
+            else {
+                $("#roundResultTitle")[0].innerHTML = "Round " + store.getItem("round_number") + " : " + store.getItem(store.getItem("player_challenge_id")) + " won challenge against " + store.getItem(store.getItem("previousBetPlayerId"))
                 result = "WON"
             }
             console.log(result);
             var betString = store.getItem('previousBet').replace(/_/g, ' ').replace(/NA/g, ' ')
             $('#betString').text("Bet challenged was : " + betString);
             $("#roundResultModal").modal("show")
-            if(store.getItem("player_challenge_id") == store.getItem("loginId"))
-            {
+            if (store.getItem("player_challenge_id") == store.getItem("loginId")) {
                 var roundResult = {
-                    game_id : GAME_ID,
-                    round_number : Number(store.getItem("round_number")),
-                    player_challenge_id : Number(store.getItem("player_challenge_id")), // player id of the player who challenged the bet
-                    player_bet_id : Number(store.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
-                    bet_challenged : store.getItem("previousBet"),
-                    result : result
+                    game_id: GAME_ID,
+                    round_number: Number(store.getItem("round_number")),
+                    player_challenge_id: Number(store.getItem("player_challenge_id")), // player id of the player who challenged the bet
+                    player_bet_id: Number(store.getItem("previousBetPlayerId")), // player id of the player whose bet has been challenged
+                    bet_challenged: store.getItem("previousBet"),
+                    result: result
                 }
                 var json = {
                     "action": "RoundResult",
@@ -121,14 +112,13 @@ ws.onmessage = function (evt)
             var positionPlayerMap = {}
             var positionNameMap = {}
             var num_of_players = gameStatusOrBet.length
-            for(var i=0;i<num_of_players;i++)
-            {
+            for (var i = 0; i < num_of_players; i++) {
                 var p = gameStatusOrBet[i]
                 playerPositionMap[p.player_id] = p.position
                 positionPlayerMap[p.position] = p.player_id
                 positionNameMap[p.position] = p.name
                 store.setItem(p.player_id, p.name)
-                $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>'+ p.position +'</td></tr>');
+                $('#playerStatusTable tr:last').after('<tr> <td>' + p.name + '</td> <td>' + p.num_of_cards + '</td> <td>' + p.position + '</td></tr>');
             }
 
             store.setItem("positionNameMap", JSON.stringify(positionNameMap))
@@ -138,27 +128,23 @@ ws.onmessage = function (evt)
             var myPosition = playerPositionMap[Number(store.getItem("loginId"))]
             store.setItem("myPosition", myPosition)
 
-            if(typeof myPosition == 'undefined')
-            {
+            if (typeof myPosition == 'undefined') {
                 $('#okdeal').text("Okay! Let me watch")
                 drawTable();
             }
-            else
-            {
+            else {
                 var validPositions = Object.keys(positionPlayerMap);
                 var myIndex = validPositions.indexOf(myPosition.toString())
-                if(myIndex != 0)
-                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[myIndex-1]])
+                if (myIndex != 0)
+                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[myIndex - 1]])
                 else
-                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[num_of_players-1]])
+                    store.setItem("leftPlayerId", positionPlayerMap[validPositions[num_of_players - 1]])
                 drawTable();
-                if(myPosition == validPositions[0])
-                {
+                if (myPosition == validPositions[0]) {
                     $("#betBtn").prop('disabled', false)
                     $("#challengeBtn").prop('disabled', false)
                 }
-                else
-                {
+                else {
                     $("#betBtn").prop('disabled', true)
                     $("#challengeBtn").prop('disabled', true)
                 }
@@ -168,10 +154,10 @@ ws.onmessage = function (evt)
     }
     else // Bet + Round Result + Ready + Chat + Game Result
     {
-        if(gameStatusOrBet.hasOwnProperty("bet"))// Bet
+        if (gameStatusOrBet.hasOwnProperty("bet"))// Bet
         {
             store.setItem("previousBet", gameStatusOrBet.bet);
-            store.setItem("previousBetPlayerId",gameStatusOrBet.player_id)
+            store.setItem("previousBetPlayerId", gameStatusOrBet.player_id)
             var bet = gameStatusOrBet.bet.split("_")
             $("#cu_handType").text(bet[0]);
             $("#cu_valueType").text(bet[1]);
@@ -190,27 +176,32 @@ ws.onmessage = function (evt)
             var betterIndex = validPositions.indexOf(betterPosition.toString())
             var currentPosition = betterIndex + 1
             var currentBetterName = "";
-            if(currentPosition < Number(store.getItem("num_of_players")))
+            if (currentPosition < Number(store.getItem("num_of_players")))
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[currentPosition]])
             else
                 currentBetterName = store.getItem(positionPlayerMap[validPositions[0]])
             $('#previousBetter').text(previousBetterName)
 
-            if(gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId")))
-            {
+            if (gameStatusOrBet.player_id == Number(store.getItem("leftPlayerId"))) {
                 $("#betBtn").prop('disabled', false)
                 $("#challengeBtn").prop('disabled', false)
-                $.notify("New Bet Arrived from " + previousBetterName,{globalPosition : 'top center', autoHideDelay: 2000})
-                setTimeout(function(){
-                    $.notify("It's your turn, your friends are waiting!",{globalPosition : 'top center', className: 'error', autoHide : false})
+                $.notify("New Bet Arrived from " + previousBetterName, {
+                    globalPosition: 'top center',
+                    autoHideDelay: 2000
+                })
+                setTimeout(function () {
+                    $.notify("It's your turn, your friends are waiting!", {
+                        globalPosition: 'top center',
+                        className: 'error',
+                        autoHide: false
+                    })
                 }, 2000);
             }
-            else
-            {
-                $.notify("New Bet Arrived from " + previousBetterName,{globalPosition : 'top center'})
+            else {
+                $.notify("New Bet Arrived from " + previousBetterName, {globalPosition: 'top center'})
             }
         }
-        else if(gameStatusOrBet.hasOwnProperty('player_challenge_id'))// Round Result
+        else if (gameStatusOrBet.hasOwnProperty('player_challenge_id'))// Round Result
         {
             store.setItem("player_challenge_id", gameStatusOrBet.player_challenge_id);
             //var json = {
@@ -220,17 +211,15 @@ ws.onmessage = function (evt)
             //ws.close();
             //console.log("Closing Connection!");
         }
-        else if(gameStatusOrBet.hasOwnProperty(('action'))) // Chat or Ready
+        else if (gameStatusOrBet.hasOwnProperty(('action'))) // Chat or Ready
         {
             console.log(gameStatusOrBet.message)
             console.log(gameStatusOrBet.player.name)
-            if(gameStatusOrBet.action == "Ready")
-            {
+            if (gameStatusOrBet.action == "Ready") {
                 $('#chatMessages').append('<b>' + gameStatusOrBet.player.name);
                 $('#chatMessages').append(' has joined!' + '<br/>');
             }
-            else
-            {
+            else {
                 $('#chatMessages').append('<b>' + gameStatusOrBet.player.name + '</b><br/>');
                 $('#chatMessages').append(gameStatusOrBet.message + '<br/>');
             }
@@ -239,14 +228,13 @@ ws.onmessage = function (evt)
         {
             $('#finalStandTable td').remove();
             $.ajax({
-                type : "GET",
-                url : "/gamePlay/"+GAME_ID + "/finalStandings",
-                contentType : "application/json",
-                success : function(response) {
+                type: "GET",
+                url: "/gamePlay/" + GAME_ID + "/finalStandings",
+                contentType: "application/json",
+                success: function (response) {
                     console.log(response);
                     $('#winner').text(gameStatusOrBet[0].name + " has won the Game!");
-                    for(var i=0;i<response.length;i++)
-                    {
+                    for (var i = 0; i < response.length; i++) {
                         $('#finalStandTable tr:last').after('<tr> <td>' + response[i].name + '</td> <td>' + response[i].position + '</td></tr>');
                     }
                     $("#gameResultModal").modal("show");
@@ -256,8 +244,7 @@ ws.onmessage = function (evt)
     }
 };
 
-ws.onclose = function()
-{
+ws.onclose = function () {
     // websocket is closed.
     console.log("Connection is closed...");
 };

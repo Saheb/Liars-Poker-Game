@@ -1,8 +1,8 @@
 package util
 
 /**
- * Created by saheb on 8/25/15.
- */
+  * Created by saheb on 8/25/15.
+  */
 package main.scala
 
 import scala.collection.immutable.ListSet
@@ -13,15 +13,19 @@ import scala.util.Random
 
 //TODO : Remove variables and do it using immutables
 
-class Deck(val numOfCards : Int = 52) {
+class Deck(val numOfCards: Int = 52) {
 
-  val generator:Random = new Random()
+  val generator: Random = new Random()
   var deck = ListSet[Int]()
 
   def initialize = {
-    for(i<- 0 until numOfCards)
+    for (i <- 0 until numOfCards)
       deck = deck + i
     shuffle
+  }
+
+  def shuffle: Unit = {
+    deck = Random.shuffle(deck)
   }
 
   def pop = {
@@ -30,18 +34,14 @@ class Deck(val numOfCards : Int = 52) {
     top
   }
 
-  def shuffle: Unit = {
-    deck = Random.shuffle(deck)
-  }
-
   def size = {
     deck.size
   }
 }
 
-object Deck extends App{
+object Deck extends App {
   val deck = new Deck()
   deck.initialize
-  for(i<- 0 until deck.numOfCards)
+  for (i <- 0 until deck.numOfCards)
     println(deck.pop)
 }

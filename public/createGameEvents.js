@@ -2,36 +2,36 @@
  * Created by saheb on 9/3/15.
  */
 
-if(store.getItem("isAdmin")==="true")
+if (store.getItem("isAdmin") === "true")
     $("#startGameBtn").get(0).style.display = "block";
-else
-{
+else {
     // will be doing polling every 30 seconds to know if game has started or not!
-    function gameStartedPolling () {
+    function gameStartedPolling() {
         $.ajax({
-            url : '/gamePlay/gameStarted/' + GAME_ID,
-            type : 'GET',
+            url: '/gamePlay/gameStarted/' + GAME_ID,
+            type: 'GET',
             contentType: "application/json",
-            success : function(response) {
+            success: function (response) {
                 location.href = "/gamePlay/" + GAME_ID
                 clearInterval(gameStartPoll);
             },
-            error : function(response){
+            error: function (response) {
                 console.log("Game hasn't started yet");
             }
         })
     }
+
     //gameStartedPolling()
     var gameStartPoll = setInterval(gameStartedPolling, 5000)
 }
 
-$("#startGameBtn").get(0).onclick = function() {
+$("#startGameBtn").get(0).onclick = function () {
     var xhr = $.ajax({
-        url : "/gamePlay/" + GAME_ID,
-        type : "GET",
+        url: "/gamePlay/" + GAME_ID,
+        type: "GET",
         dataType: "html",
-        success : function(response) {
-            location.href = "/gamePlay/"+GAME_ID
+        success: function (response) {
+            location.href = "/gamePlay/" + GAME_ID
         }
     })
 }

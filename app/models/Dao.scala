@@ -1,5 +1,9 @@
 package models
 
+import com.google.inject.Inject
+import models.Dao.{GameStatus, Player, PlayerStatus}
+import play.api.Configuration
+import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
 /**
@@ -61,7 +65,7 @@ object Dao {
 
 }
 
-class Dao(val driver: JdbcProfile)
+class Dao @Inject()(val driver: JdbcProfile, config: Configuration)
     extends PlayerDao
     with PlayerStatDao
     with PlayerStatusDao
@@ -73,6 +77,42 @@ class Dao(val driver: JdbcProfile)
 
   import driver.api._
 
+  val db =
+    DatabaseConfig.forConfig[JdbcProfile](config.getString("dbConfig").get).db
+
+  def upsert(player: Player) =
+    db.run(playerTable.insertOrUpdate(player))
+
+  def getPlayers =
+    db.run(playerTable.sortBy(_.name).result)
+
+  def getPlayer(playerId: Long) =
+    db.run(playerTable.filter(_.id === playerId).result.headOption)
+
   def getJoinedPlayerList(gameId: Long) =
-    playerStatusTable.join(playerTable).on(_.id === _.id).result
+    db.run(playerStatusTable.join(playerTable).on(_.id === _.id).result)
+
+  def getPlayerStatus(playerId: Long) =
+    db.run(playerStatusTable.filter(_.id === playerId).result.headOption)
+
+  def getPlayerStatusForGame(playerId: Long, gameId: String) =
+    db.run(
+      playerStatusTable
+        .filter(_.id === playerId)
+        .filter(record => record.gameId === gameId)
+        .result
+        .headOption)
+
+  def insert(ps: PlayerStatus) =
+    db.run(playerStatusTable += ps)
+
+  def insert(gs: GameStatus) =
+    db.run(gameStatusTable += gs)
+
+  def getGameStatus(gameId: Long) =
+    db.run(gameStatusTable.filter(_.id === gameId).result.headOption)
+
+  def getAllGames =
+    db.run(gameStatusTable.result)
+
 }

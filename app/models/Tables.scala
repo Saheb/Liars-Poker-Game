@@ -16,12 +16,6 @@ trait PlayerDao { self: DriverComponent =>
 
   val playerTable = TableQuery[PlayerTable]
 
-  def getPlayers =
-    playerTable.sortBy(_.name).result
-
-  def getPlayer(playerId: Long) =
-    playerTable.filter(_.id === playerId).result.headOption
-
   class PlayerTable(tag: Tag) extends Table[Player](tag, "player") {
 
     def * = (id, name, email) <> ((Player.apply _).tupled, Player.unapply _)
@@ -133,12 +127,6 @@ trait GameStatusDao { self: DriverComponent =>
 
   val gameStatusTable = TableQuery[GameStatusTable]
 
-  def getGameStatus(gameId: Long) =
-    gameStatusTable.filter(_.id === gameId).result.headOption
-
-  def getAllGames =
-    gameStatusTable.result
-
   class GameStatusTable(tag: Tag)
       extends Table[GameStatus](tag, "game_status") {
     def * =
@@ -166,16 +154,6 @@ trait PlayerStatusDao { self: DriverComponent =>
   import driver.api._
 
   val playerStatusTable = TableQuery[PlayerStatusTable]
-
-  def getPlayerStatus(playerId: Long) =
-    playerStatusTable.filter(_.id === playerId).result.headOption
-
-  def getPlayerStatusForGame(playerId: Long, gameId: String) =
-    playerStatusTable
-      .filter(_.id === playerId)
-      .filter(record => record.gameId === gameId)
-      .result
-      .headOption
 
   class PlayerStatusTable(tag: Tag)
       extends Table[PlayerStatus](tag, "player_status") {

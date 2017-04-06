@@ -9,4 +9,7 @@ scalaVersion := "2.11.8"
 libraryDependencies += cache
 libraryDependencies += ws
 
-libraryDependencies += "com.typesafe.slick" %% "slick" % "3.1.1"
+libraryDependencies ++= Seq(
+  "com.typesafe.slick" %% "slick" % "3.1.1",
+  "org.scala-lang.modules" %% "scala-async" % "0.9.6"
+)

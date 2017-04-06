@@ -14,8 +14,8 @@ class Application @Inject()(config: Configuration) extends Controller {
 
   val dbConfig =
     DatabaseConfig.forConfig[JdbcProfile](config.getString("h2").get)
-  val db = dbConfig.db
-  val dal = new Dao(dbConfig.driver)
+  val db  = dbConfig.db
+  val dal = new Dao(dbConfig.driver, config)
 
   def home = Action {
     Ok(views.html.home())

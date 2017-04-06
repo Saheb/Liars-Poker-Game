@@ -5,18 +5,12 @@ import models.Dao
 import play.api.libs.json.Json
 import play.api.mvc._
 import models.Dao._
+import scala.async.Async.{await}
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
-/**
-  * Created by saheb on 8/13/15.
-  */
 class CreateGameController @Inject()(dao: Dao) extends Controller {
 
-  def createGame = Action(parse.json) { request =>
-    val gameJson = request.body
-    val gameStatus = gameJson.as[GameStatus]
+  def createGame = Action(BodyParsers.parse.json[GameStatus]) { request =>
+    val gameStatus = request.body
     val gameStatusF = dao.insert(gameStatus)
     val playerF = dao.getPlayer(gameStatus.admin_player)
     for {
@@ -35,16 +29,20 @@ class CreateGameController @Inject()(dao: Dao) extends Controller {
   }
 
   def gotoCreateGamePage(game_id: Long) = Action {
-    val game = Await.result(dao.getGameStatus(game_id), Duration.Inf).get
-    val playerList =
-      Await.result(dao.getJoinedPlayerList(game_id), Duration.Inf).toList
-    Ok(views.html.createGame(game.name, game_id, playerList))
+    val gameF = dao.getGameStatus(game_id)
+    val playerListF = dao.getJoinedPlayerList(game_id)
+    await(gameF) match {
+      case Some(game) =>
+        Ok(
+          views.html.createGame(game.name, game_id, await(playerListF).toList))
+      case None => NotFound
+    }
   }
 
-  def getJoinedPlayerList(game_id: Long) = Action {
-    val joined_players =
-      Await.result(dao.getJoinedPlayerList(game_id), Duration.Inf).toList
-    Ok(Json.toJson(joined_players))
+  def getJoinedPlayerList(game_id: Long) = Action.async {
+    dao.getJoinedPlayerList(game_id) map { playerList =>
+      Ok(Json.toJson(playerList.toList))
+    }
   }
 
   def modifyGame = Action {
